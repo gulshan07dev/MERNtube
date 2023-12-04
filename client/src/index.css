@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Nunito+Sans:opsz@6..12&family=Nunito:wght@500&family=Poppins:ital,wght@0,200;0,300;0,400;0,500;1,500&family=Roboto&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+body {
+  width: 100vw;
+  overflow-x: hidden;
+  font-family: "Roboto", sans-serif
+}
