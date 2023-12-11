@@ -3,7 +3,7 @@ import Navbar from "../component/navbar/Navbar";
 import Sidebar from "../component/sidebar/Sidebar";
 import { navHeight } from "../constant";
 
-export default function Layout({ children }) { 
+export default function Layout({ children }) {
   const containerStyle = {
     height: `calc(100vh - ${navHeight})`,
   };
@@ -11,9 +11,16 @@ export default function Layout({ children }) {
   return (
     <>
       <Navbar />
-      <div style={containerStyle} className="w-full bg-red-500 flex overflow-y-scroll">
+      <div
+        style={containerStyle}
+        className="w-full bg-red-500 flex overflow-y-scroll"
+        role="region"
+        aria-label="Main Content"
+      >
         <Sidebar />
-        <main className="flex-1 flex-grow">{children}</main>
+        <main className="flex-1 flex-grow" role="main">
+          {children}
+        </main>
       </div>
     </>
   );
