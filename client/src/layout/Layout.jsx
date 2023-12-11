@@ -13,7 +13,7 @@ export default function Layout({ children }) {
       <Navbar />
       <div
         style={containerStyle}
-        className="w-full bg-red-500 flex overflow-y-scroll"
+        className="w-full flex overflow-y-scroll"
         role="region"
         aria-label="Main Content"
       >
