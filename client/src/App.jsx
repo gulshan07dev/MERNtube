@@ -1,8 +1,14 @@
+ import Layout from "./layout/Layout";
+ import Home from "./pages/Home"
+ import { Routes, Route } from "react-router-dom";
+
 function App() {
   return (
-    <div className="text-center bg-red-500">
-      <h1 className="text-white text-[50px]">Youtube Like App</h1>
-    </div>
+    <Layout>
+      <Routes>
+        <Route path="/" index element={<Home />} />
+      </Routes>
+    </Layout>
   );
 }
 
