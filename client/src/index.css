@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Nunito+Sans:opsz@6..12&family=Nunito:wght@500&family=Poppins:ital,wght@0,200;0,300;0,400;0,500;1,500&family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Nunito+Sans:opsz@6..12&family=Nunito:wght@500&family=Poppins:ital,wght@0,200;0,300;0,400;0,500;1,500&family=Roboto&family=Noto+Sans:wght@300;400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -15,4 +15,17 @@ body {
   width: 100vw;
   overflow-x: hidden;
   font-family: "Roboto", sans-serif
+}
+
+#sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  background: #adadad;
+  border-radius: 10px;
 }

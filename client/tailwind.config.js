@@ -12,9 +12,10 @@ export default {
         poppins: ['Poppins', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
         hedvig_letters: ['"Hedvig Letters Serif"', 'serif'],
+        Noto_sans: ['"Noto Sans"', 'sans-serif']
       }
     },
   },
   plugins: [],
   darkMode: ["class"]
-}
+} 

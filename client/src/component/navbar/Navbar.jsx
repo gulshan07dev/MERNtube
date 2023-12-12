@@ -5,8 +5,10 @@ import { navHeight } from "../../constant";
 import { MdOutlineVideoCall, MdOutlineNotifications } from "react-icons/md";
 import Logo from "../Logo";
 import SearchBar from "./SearchBar";
+import useSidebar from "../../hooks/useSidebar";
 
 export default function Navbar() {
+  const {onToggle} = useSidebar()
   return (
     <nav
       className={`w-full flex justify-between items-center md:px-7 px-3 sticky top-0 z-50`}
@@ -15,7 +17,7 @@ export default function Navbar() {
       aria-label="Primary Navigation"
     >
       <div className="flex md:gap-2 gap-0 items-center">
-        <button className="text-2xl text-gray-500 font-[100]">
+        <button className="text-2xl text-gray-500 font-[100] hover:bg-[#f8f8f8]" onClick={onToggle}>
           <Menu />
         </button>
         <Logo />
