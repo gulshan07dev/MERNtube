@@ -10,8 +10,23 @@ const generateUniqueUsername = (fullName) => {
     return `@${baseUsername}_${randomSuffix}`;
 };
 
-const registerUser = asyncHandler(async (req, res, next) => {
+const generateAccessAndRefereshTokens = async (user) => {
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+    user.refreshToken = refreshToken;
 
+    await user.save({ validateBeforeSave: false })
+
+    return { accessToken, refreshToken }
+}
+
+const options = {
+    httpOnly: true,
+    secure: true
+}
+
+// register
+const registerUser = asyncHandler(async (req, res, next) => {
     const { fullName, email, password } = req.body;
 
     // Check if any field is empty
@@ -50,12 +65,55 @@ const registerUser = asyncHandler(async (req, res, next) => {
     }
 
     // Omit sensitive fields from the response
-    const { password: _, refreshToken, ...createdUser } = user.toObject();
+    const { password: ignoredPassword, refreshToken: ignoredRefreshToken, ...createdUser } = user.toObject();
 
     return res.status(201).json(
-        new ApiResponse(200, {user: createdUser}, "User registered successfully")
+        new ApiResponse(200, { user: createdUser }, "User registered successfully!")
     );
 
 });
 
-export { registerUser };
+// login
+const loginUser = asyncHandler(async (req, res, next) => {
+    const { username, email, password } = req.body;
+
+    // check user exist or not with this username or email
+    const user = await User.findOne({
+        $or: [
+            { username }, { email }
+        ]
+    });
+
+    if (!user) {
+        return next(new ApiError(400, "User not register with this email or username, please register"));
+    }
+
+    // check password
+    const isPasswordCorrect = await user.isPasswordCorrect(password);
+    if (!isPasswordCorrect) {
+        return next(new ApiError(400, "password is incorrect"));
+    }
+
+    // generate access token and refresh token
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user);
+
+    // Omit sensitive fields from the response
+    const { password: ignoredPassword, refreshToken: ignoredRefreshToken, ...loggedInUser } = user.toObject();
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: loggedInUser, accessToken, refreshToken
+                },
+                "User logged In Successfully!"
+            )
+        )
+})
+
+
+export { registerUser, loginUser };
