@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
+import { omit } from "../utils/omit.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const generateUniqueUsername = (fullName) => {
@@ -65,10 +66,14 @@ const registerUser = asyncHandler(async (req, res, next) => {
     }
 
     // Omit sensitive fields from the response
-    const { password: ignoredPassword, refreshToken: ignoredRefreshToken, ...createdUser } = user.toObject();
+    const sensitiveFieldsToOmit = ['password', 'refreshToken'];
+    const createdUserWithoutSensitiveFields = omit(user.toObject(), sensitiveFieldsToOmit);
 
     return res.status(201).json(
-        new ApiResponse(200, { user: createdUser }, "User registered successfully!")
+        new ApiResponse(200, {
+            user: createdUserWithoutSensitiveFields
+        },
+            "User registered successfully!")
     );
 
 });
@@ -79,13 +84,13 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
     // check user exist or not with this username or email
     const user = await User.findOne({
-        $or: [
-            { username }, { email }
-        ]
+        $or: [{ username }, { email }]
     });
 
     if (!user) {
-        return next(new ApiError(400, "User not register with this email or username, please register"));
+        return next(
+            new ApiError(400,
+                "User not register with this email or username, please register"));
     }
 
     // check password
@@ -97,23 +102,21 @@ const loginUser = asyncHandler(async (req, res, next) => {
     // generate access token and refresh token
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user);
 
-    // Omit sensitive fields from the response
-    const { password: ignoredPassword, refreshToken: ignoredRefreshToken, ...loggedInUser } = user.toObject();
+    // Omit sensitive fields from the response 
+    const sensitiveFieldsToOmit = ['password', 'refreshToken'];
+    const loggedInUserWithoutSensitiveFields = omit(user.toObject(), sensitiveFieldsToOmit);
 
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
-        .json(
-            new ApiResponse(
-                200,
-                {
-                    user: loggedInUser, accessToken, refreshToken
-                },
-                "User logged In Successfully!"
-            )
-        )
-})
+        .json(new ApiResponse(200,
+            {
+                user: loggedInUserWithoutSensitiveFields, accessToken, refreshToken
+            },
+            "User logged In Successfully!"
+        ))
+});
 
 
 export { registerUser, loginUser };
