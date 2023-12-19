@@ -63,7 +63,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     });
 
     if (!user) {
-        return next(new ApiError(500, "Failed to register user"));
+        return next(new ApiError(500, "Failed to register user, try again!"));
     }
 
     // Omit sensitive fields from the response
@@ -97,7 +97,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
     // check password
     const isPasswordCorrect = await user.isPasswordCorrect(password);
     if (!isPasswordCorrect) {
-        return next(new ApiError(400, "password is incorrect"));
+        return next(new ApiError(400, "Password is Incorrect!"));
     }
 
     // generate access token and refresh token
@@ -161,5 +161,39 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
             "Access token refreshed successfully!"))
 })
 
+// change user password
+const changeUserPassword = asyncHandler(async (req, res, next) => {
+    const { oldPassword, newPassword } = req.body;
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+    if (!oldPassword || !newPassword) {
+        return next(new ApiError(400, "All fields are required!"));
+    }
+
+    if(oldPassword === newPassword) {
+        return next(new ApiError(400, "oldPassword and newPassword are same!"));
+    }
+
+    const user = await User.findById(req.user?._id);
+
+    // check password
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+    if (!isPasswordCorrect) {
+        return next(new ApiError(400, "Incorrect oldPassword!"))
+    }
+
+    // save new password in db
+    user.password = newPassword;
+    await user.save({ validateBeforeSave: false });
+
+    return res.status(200).
+    json(new ApiResponse(400, {}, "Password changed successfully!"))
+})
+
+
+export {
+    registerUser,
+    loginUser,
+    logoutUser,
+    refreshAccessToken,
+    changeUserPassword
+};
