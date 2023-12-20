@@ -131,7 +131,7 @@ const logoutUser = asyncHandler(async (req, res) => {
         .clearCookie("accessToken", options)
         .clearCookie("refreshToken", options)
         .json(new ApiResponse(200, {}, "User logged Out successfully"))
-})
+});
 
 // refresh access token
 const refreshAccessToken = asyncHandler(async (req, res, next) => {
@@ -159,7 +159,7 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
         .cookie("refreshToken", refreshToken, options)
         .json(new ApiResponse(200, { accessToken, refreshToken },
             "Access token refreshed successfully!"))
-})
+});
 
 // change user password
 const changeUserPassword = asyncHandler(async (req, res, next) => {
@@ -169,7 +169,7 @@ const changeUserPassword = asyncHandler(async (req, res, next) => {
         return next(new ApiError(400, "All fields are required!"));
     }
 
-    if(oldPassword === newPassword) {
+    if (oldPassword === newPassword) {
         return next(new ApiError(400, "oldPassword and newPassword are same!"));
     }
 
@@ -186,8 +186,48 @@ const changeUserPassword = asyncHandler(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     return res.status(200).
-    json(new ApiResponse(400, {}, "Password changed successfully!"))
-})
+        json(new ApiResponse(400, {}, "Password changed successfully!"))
+});
+
+// change Account details
+const changeAccountDetails = asyncHandler(async (req, res, next) => {
+    const { username, fullName } = req.body;
+    const updateFields = {};
+
+    if (username) {
+        updateFields.username = username;
+    }
+
+    if (fullName) {
+        updateFields.fullName = fullName;
+    }
+
+    // Check if at least one field is provided
+    if (Object.keys(updateFields).length === 0) {
+        return next(new ApiError(400,
+            "At least one field (username or fullName) is required"));
+    }
+
+    // check username already exist or not
+    const isUsernameExist = await User.findOne({ username });
+    if (isUsernameExist) {
+        return next(new ApiError(400, "Username must be unique!"));
+    }
+
+    // save details in db
+    const updatedUser = await User.findByIdAndUpdate(req.user?._id,
+        updateFields,
+        { new: true }).select("-password -refreshToken");
+
+    if (!updatedUser) {
+        return next(new ApiError(500,
+            "Failed to update user details, try again!"));
+    }
+
+    return res.status(200).json(new ApiResponse(200,
+        { user: updatedUser },
+        "User details updated successfully!"));
+});
 
 
 export {
@@ -195,5 +235,6 @@ export {
     loginUser,
     logoutUser,
     refreshAccessToken,
-    changeUserPassword
+    changeUserPassword,
+    changeAccountDetails
 };
