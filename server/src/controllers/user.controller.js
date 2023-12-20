@@ -33,13 +33,13 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
     // Check if any field is empty
     if (![fullName, email, password].every(Boolean)) {
-        return next(new ApiError(400, "All fields are required"));
+        throw new ApiError(400, "All fields are required");
     }
 
     // Check if user already exists
     const isUserExist = await User.findOne({ email });
     if (isUserExist) {
-        return next(new ApiError(400, "User already registered, please login"));
+        throw new ApiError(400, "User already registered, please login");
     }
 
     // Generate a unique username for the user
@@ -63,7 +63,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     });
 
     if (!user) {
-        return next(new ApiError(500, "Failed to register user, try again!"));
+        throw new ApiError(500, "Failed to register user, try again!");
     }
 
     // Omit sensitive fields from the response
@@ -89,15 +89,14 @@ const loginUser = asyncHandler(async (req, res, next) => {
     });
 
     if (!user) {
-        return next(
-            new ApiError(400,
-                "User not register with this email or username, please register"));
+        throw new ApiError(400,
+            "User not register with this email or username, please register");
     }
 
     // check password
     const isPasswordCorrect = await user.isPasswordCorrect(password);
     if (!isPasswordCorrect) {
-        return next(new ApiError(400, "Password is Incorrect!"));
+        throw new ApiError(400, "Password is Incorrect!");
     }
 
     // generate access token and refresh token
@@ -138,7 +137,7 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
     const clientRefreshToken = req.cookies?.refreshToken || req.body.refreshToken;
 
     if (!clientRefreshToken) {
-        return next(new ApiError(401, "Unauthorized request!"));
+        throw new ApiError(401, "Unauthorized request!");
     }
 
     // decode token
@@ -147,7 +146,7 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
     const user = await User.findById(decodedToken._id);
 
     if (!user && clientRefreshToken !== user?.refreshToken) {
-        return next(new ApiError(401, "Unauthorized request!"));
+        throw new ApiError(401, "Unauthorized request!");
     }
 
     // generate access and refresh token
@@ -166,11 +165,11 @@ const changeUserPassword = asyncHandler(async (req, res, next) => {
     const { oldPassword, newPassword } = req.body;
 
     if (!oldPassword || !newPassword) {
-        return next(new ApiError(400, "All fields are required!"));
+        throw new ApiError(400, "All fields are required!");
     }
 
     if (oldPassword === newPassword) {
-        return next(new ApiError(400, "oldPassword and newPassword are same!"));
+        throw new ApiError(400, "oldPassword and newPassword are same!");
     }
 
     const user = await User.findById(req.user?._id);
@@ -178,7 +177,7 @@ const changeUserPassword = asyncHandler(async (req, res, next) => {
     // check password
     const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
     if (!isPasswordCorrect) {
-        return next(new ApiError(400, "Incorrect oldPassword!"))
+        throw new ApiError(400, "Incorrect oldPassword!");
     }
 
     // save new password in db
@@ -204,14 +203,14 @@ const changeAccountDetails = asyncHandler(async (req, res, next) => {
 
     // Check if at least one field is provided
     if (Object.keys(updateFields).length === 0) {
-        return next(new ApiError(400,
-            "At least one field (username or fullName) is required"));
+        throw new ApiError(400,
+            "At least one field (username or fullName) is required");
     }
 
     // check username already exist or not
     const isUsernameExist = await User.findOne({ username });
     if (isUsernameExist) {
-        return next(new ApiError(400, "Username must be unique!"));
+        throw new ApiError(400, "Username must be unique!");
     }
 
     // save details in db
@@ -220,8 +219,8 @@ const changeAccountDetails = asyncHandler(async (req, res, next) => {
         { new: true }).select("-password -refreshToken");
 
     if (!updatedUser) {
-        return next(new ApiError(500,
-            "Failed to update user details, try again!"));
+        throw new ApiError(500,
+            "Failed to update user details, try again!");
     }
 
     return res.status(200).json(new ApiResponse(200,
@@ -234,7 +233,7 @@ const changeUserAvatar = asyncHandler(async (req, res, next) => {
     const avatarFilePath = req.file?.path;
 
     if (!avatarFilePath) {
-        return next(new ApiError(400, "Avatar is required!"));
+        throw new ApiError(400, "Avatar is required!");
     }
 
     const user = await User.findById(req.user?._id);
@@ -262,7 +261,7 @@ const changeCoverImage = asyncHandler(async (req, res, next) => {
     const coverImageFilePath = req.file?.path;
 
     if (!coverImageFilePath) {
-        return next(new ApiError(400, "Cover Image is required!"));
+        throw new ApiError(400, "Cover Image is required!");
     }
 
     const user = await User.findById(req.user?._id);
