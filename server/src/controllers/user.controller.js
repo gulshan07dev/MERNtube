@@ -257,6 +257,34 @@ const changeUserAvatar = asyncHandler(async (req, res, next) => {
     ))
 })
 
+// change user coverImage
+const changeCoverImage = asyncHandler(async (req, res, next) => {
+    const coverImageFilePath = req.file?.path;
+
+    if (!coverImageFilePath) {
+        return next(new ApiError(400, "Cover Image is required!"));
+    }
+
+    const user = await User.findById(req.user?._id);
+
+    // delete previous cover image from cloudinary
+    const previousCoverImage = user.coverImage;
+    if (previousCoverImage.key) {
+        await deleteOnCloudinary(previousCoverImage.key);
+    }
+
+    // upload new cover image on cloudinary
+    const coverImage = await uploadOnCloudinary(coverImageFilePath);
+
+    // save avatar in db
+    user.coverImage = coverImage;
+    await user.save({ validateBeforeSave: false });
+
+    return res.status(200).json(new ApiResponse(200, {},
+        "Cover Image updated successfully!"
+    ))
+})
+
 
 export {
     registerUser,
@@ -265,5 +293,6 @@ export {
     refreshAccessToken,
     changeUserPassword,
     changeAccountDetails,
-    changeUserAvatar
+    changeUserAvatar,
+    changeCoverImage
 };
