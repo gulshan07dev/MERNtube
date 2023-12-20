@@ -3,7 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import { omit } from "../utils/omit.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken"
 
 const generateUniqueUsername = (fullName) => {
@@ -229,6 +229,34 @@ const changeAccountDetails = asyncHandler(async (req, res, next) => {
         "User details updated successfully!"));
 });
 
+// change user Avatar
+const changeUserAvatar = asyncHandler(async (req, res, next) => {
+    const avatarFilePath = req.file?.path;
+
+    if (!avatarFilePath) {
+        return next(new ApiError(400, "Avatar is required!"));
+    }
+
+    const user = await User.findById(req.user?._id);
+
+    // delete previous avatar from cloudinary
+    const previousAvatar = user.avatar;
+    if (previousAvatar.key) {
+        await deleteOnCloudinary(previousAvatar.key);
+    }
+
+    // upload new avatar on cloudinary
+    const avatar = await uploadOnCloudinary(avatarFilePath);
+
+    // save avatar in db
+    user.avatar = avatar;
+    await user.save({ validateBeforeSave: false });
+
+    return res.status(200).json(new ApiResponse(200, {},
+        "Avatar updated successfully!"
+    ))
+})
+
 
 export {
     registerUser,
@@ -236,5 +264,6 @@ export {
     logoutUser,
     refreshAccessToken,
     changeUserPassword,
-    changeAccountDetails
+    changeAccountDetails,
+    changeUserAvatar
 };
