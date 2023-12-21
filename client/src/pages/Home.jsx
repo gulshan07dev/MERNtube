@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import Layout from "../layout/Layout";
 
 export default function Home() {
-  return (
-    <section className='h-[200vh]'>
-      Home
-    </section>
-  )
+  return ( 
+      <Layout className="h-[200vh]">Home</Layout> 
+  );
 }

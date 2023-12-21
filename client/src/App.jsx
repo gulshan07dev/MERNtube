@@ -1,25 +1,25 @@
-import Layout from "./layout/Layout";
-import Home from "./pages/Home";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 
 function App() {
   return (
-    <Layout>
-      <Routes>
-        {/* public routes */}
-        <Route path="/" element={<Home />} />
+    <Routes>
+      <Route path="/" element={<Home />} />
 
-        {/* protected routes */}
-
-        {/* authentication routes */}
-        <Route path="/auth">
-          <Route path="login" element={<Login />} />
-          <Route path="signup" element={<Signup />} />
-        </Route>
-      </Routes>
-    </Layout>
+      {/* Authentication routes */}
+      <Route
+        path="/auth"
+        children={
+          <>
+            <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
+          </>
+        }
+      />
+    </Routes>
   );
 }
 

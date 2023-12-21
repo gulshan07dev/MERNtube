@@ -3,7 +3,7 @@ import Navbar from "../component/navbar/Navbar";
 import Sidebar from "../component/sidebar/Sidebar";
 import { navHeight } from "../constant";
 
-export default function Layout({ children }) {
+export default function Layout({ children, className }) {
   return (
     <>
       <Navbar />
@@ -15,7 +15,7 @@ export default function Layout({ children }) {
       >
         <Sidebar />
         <main className="flex-1 flex-grow" role="main">
-          {children}
+          <section className={`${className}`}>{children}</section>
         </main>
       </div>
     </>
