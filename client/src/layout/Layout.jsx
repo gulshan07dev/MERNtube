@@ -4,15 +4,11 @@ import Sidebar from "../component/sidebar/Sidebar";
 import { navHeight } from "../constant";
 
 export default function Layout({ children }) {
-  const containerStyle = {
-    height: `calc(100vh - ${navHeight})`,
-  };
-
   return (
     <>
       <Navbar />
       <div
-        style={containerStyle}
+        style={{ height: `calc(100vh - ${navHeight})` }}
         className="w-full flex overflow-y-scroll"
         role="region"
         aria-label="Main Content"

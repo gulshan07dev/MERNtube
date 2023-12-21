@@ -1,5 +1,4 @@
 import React from "react";
-import useSidebar from "../../hooks/useSidebar";
 import { AiOutlineHome } from "react-icons/ai";
 import { TfiVideoCamera, TfiVideoClapper } from "react-icons/tfi";
 import { FaHouseUser } from "react-icons/fa";
@@ -8,6 +7,9 @@ import { MdOutlineWatchLater, MdOutlineFeedback } from "react-icons/md";
 import { SlLike } from "react-icons/sl";
 import { CiSettings } from "react-icons/ci";
 import { IoIosHelpCircleOutline } from "react-icons/io";
+import { sidebarWidth } from "../../constant";
+
+import useSidebar from "../../hooks/useSidebar";
 import MenuLink from "./MenuLink";
 import Divider from "./Divider";
 
@@ -80,10 +82,11 @@ export default function Sidebar() {
 
   return (
     <aside
-    id="sidebar"
-      className={`w-[235px] h-full p-2 top-0 overflow-y-scroll  ${
+      id="sidebar"
+      className={`h-full p-2 top-0 overflow-y-scroll  ${
         isOpen ? "sticky left-0" : "fixed left-[-100%]"
       }`}
+      style={{ width: sidebarWidth }}
       role="navigation"
     >
       <div className="p-2 flex flex-col gap-2">
