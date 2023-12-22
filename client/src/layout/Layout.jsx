@@ -1,10 +1,13 @@
-import React from "react";
 import Navbar from "../component/navbar/Navbar";
 import Sidebar from "../component/sidebar/Sidebar";
 import { navHeight } from "../constant";
 
-export default function Layout({ children, className }) {
-  return (
+export default function Layout({
+  children,
+  className,
+  isShowNavigationBar = true,
+}) {
+  return isShowNavigationBar ? (
     <>
       <Navbar />
       <div
@@ -15,9 +18,13 @@ export default function Layout({ children, className }) {
       >
         <Sidebar />
         <main className="flex-1 flex-grow" role="main">
-          <section className={`${className}`}>{children}</section>
+          <section className={`min-h-full ${className}`}>{children}</section>
         </main>
       </div>
     </>
+  ) : (
+    <main role="main">
+      <section className={`min-h-full ${className}`}>{children}</section>
+    </main>
   );
 }
