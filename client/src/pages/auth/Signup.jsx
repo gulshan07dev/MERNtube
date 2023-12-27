@@ -1,15 +1,40 @@
-import React from "react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+
 import Layout from "../../layout/Layout";
-import AuthForm from "../../component/authForm/authForm";
+import AuthForm from "../../component/authForm/AuthForm";
+import useApiHandler from "../../hooks/useApiHandler";
+import { registerUser } from "../../store/slices/authSlice";
+
 
 export default function Signup() {
-  const handleSignup = ({ fullName, email, password }) => {
-    console.log("Signing up with:", fullName, email, password);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleSignup = async ({ fullName, email, password }) => {
+    if (!fullName || !email || !password) {
+      return toast.error("All fields are required!");
+    }
+
+    setIsLoading(true);
+
+    await useApiHandler(
+      () => dispatch(registerUser({ fullName, email, password })),
+      { loadingMessage: "Creating your account..." }
+    );
+
+    setIsLoading(false);
   };
 
   return (
     <Layout isShowNavigationBar={false} className="flex justify-center pt-24">
-      <AuthForm isLogin={false} handleSubmit={handleSignup} />
+      <AuthForm
+        isLogin={false}
+        title="Create an account"
+        handleSubmit={handleSignup}
+        isLoading={isLoading}
+      />
     </Layout>
   );
 }

@@ -81,11 +81,11 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
 // login
 const loginUser = asyncHandler(async (req, res, next) => {
-    const { username, email, password } = req.body;
+    const { usernameOrEmail, password } = req.body;
 
     // check user exist or not with this username or email
     const user = await User.findOne({
-        $or: [{ username }, { email }]
+        $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
     });
 
     if (!user) {
