@@ -7,11 +7,15 @@ export default async function useApiHandler(apiFunction, message) {
 
     try {
         const res = await apiFunction();
-        console.log(res)
+
         if (res.payload.success) {
             toast.success(successMessage || res.payload.message, { id: loadingToast });
         } else {
-            toast.error(errorMessage || res.payload.message, { id: loadingToast });
+            toast.error(
+                errorMessage ||
+                (Object.values(res.payload.errors).length
+                    ? [...Object.values(res.payload.errors)][0].message
+                    : res.payload.message), { id: loadingToast });
         }
 
     } catch (error) {

@@ -28,7 +28,7 @@ export default function Login() {
   };
 
   return (
-    <Layout isShowNavigationBar={false} className="flex justify-center pt-24">
+    <Layout isShowNavigationBar={false} className="bg-slate-50 flex justify-center pt-24">
       <AuthForm
         isLogin={true}
         title="Login account"

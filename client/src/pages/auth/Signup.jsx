@@ -7,12 +7,17 @@ import AuthForm from "../../component/authForm/AuthForm";
 import useApiHandler from "../../hooks/useApiHandler";
 import { registerUser } from "../../store/slices/authSlice";
 
-
 export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const handleSignup = async ({ fullName, email, password }) => {
+  const handleSignup = async ({
+    fullName,
+    email,
+    password,
+    avatar,
+    coverImage,
+  }) => {
     if (!fullName || !email || !password) {
       return toast.error("All fields are required!");
     }
@@ -20,7 +25,10 @@ export default function Signup() {
     setIsLoading(true);
 
     await useApiHandler(
-      () => dispatch(registerUser({ fullName, email, password })),
+      () =>
+        dispatch(
+          registerUser({ fullName, email, password, avatar, coverImage })
+        ),
       { loadingMessage: "Creating your account..." }
     );
 
@@ -28,7 +36,7 @@ export default function Signup() {
   };
 
   return (
-    <Layout isShowNavigationBar={false} className="flex justify-center pt-24">
+    <Layout isShowNavigationBar={false} className="bg-slate-50 flex justify-center pt-5">
       <AuthForm
         isLogin={false}
         title="Create an account"

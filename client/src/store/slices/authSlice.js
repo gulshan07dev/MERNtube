@@ -7,7 +7,7 @@ const initialState = {
 
 const registerUser = createAsyncThunk("/user/register", async (data, { rejectWithValue }) => {
     try {
-        const res = await axiosInstance.post("/users/register", data);
+        const res = await axiosInstance.post("/users/register", data, { headers: { "Content-Type": "multipart/form-data" } });
         return res?.data;
     } catch (error) {
         if (!error.response) {

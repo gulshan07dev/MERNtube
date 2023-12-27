@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../Logo";
 import Input from "./Input";
@@ -8,17 +8,29 @@ export default function AuthForm({ isLogin, title, handleSubmit, isLoading }) {
   const [email, setEmail] = useState("");
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [coverImage, setCoverImage] = useState("");
+  console.log(avatar);
+  const avatarRef = useRef(null);
+  const coverImageRef = useRef(null);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    handleSubmit({ email, usernameOrEmail, password, fullName });
+    handleSubmit({
+      email,
+      usernameOrEmail,
+      password,
+      fullName,
+      avatar,
+      coverImage,
+    });
   };
 
   return (
     <form
       onSubmit={handleFormSubmit}
-      className="w-[450px] max-w-[96%]  border border-slate-300 rounded-xl md:p-8 py-7 pb-12 px-5 flex flex-col gap-7"
+      className="w-[450px] max-w-[96%] shadow-3xl bg-white border border-slate-300 rounded-xl md:p-8 py-7 pb-12 px-5 flex flex-col gap-7"
     >
       <div className="flex flex-col gap-1 items-center mb-5">
         <Logo className="md:w-32" />
@@ -26,8 +38,58 @@ export default function AuthForm({ isLogin, title, handleSubmit, isLoading }) {
           {title}
         </h1>
       </div>
+
       {!isLogin ? (
         <>
+          {/* avatar and cover image */}
+          <div className="w-full flex flex-col items-center -mt-7">
+            <div
+              className="h-24 w-full rounded-md object-cover overflow-hidden"
+              role="button"
+              onClick={() => coverImageRef.current.click()}
+            >
+              <img
+                src={
+                  coverImage
+                    ? URL.createObjectURL(coverImage)
+                    : "/default-cover.png"
+                }
+                alt="avatar"
+              />
+              <Input
+                label="Cover Image"
+                type="file"
+                onChange={(e) => setCoverImage(e.target.files[0])}
+                isOptional={true}
+                accept=".png, .jpeg, .jpg"
+                hidden={true}
+                ref={coverImageRef}
+              />
+            </div>
+
+            <div
+              className="h-16 w-16 rounded-full object-cover -mt-8 border-2 border-white overflow-hidden"
+              role="button"
+              onClick={() => avatarRef.current.click()}
+            >
+              <img
+                src={
+                  avatar ? URL.createObjectURL(avatar) : "/default-avatar.webp"
+                }
+                alt="avatar"
+              />
+              <Input
+                label="Avatar"
+                type="file"
+                onChange={(e) => setAvatar(e.target.files[0])}
+                isOptional={true}
+                accept=".png, .jpeg, .jpg"
+                hidden={true}
+                ref={avatarRef}
+              />
+            </div>
+          </div>
+
           {/* full name */}
           <Input
             label="Full Name"
@@ -62,7 +124,7 @@ export default function AuthForm({ isLogin, title, handleSubmit, isLoading }) {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <div className="flex justify-between items-center mt-7">
+      <div className="flex justify-between items-center mt-5">
         {/* link */}
         <button
           type="button"
