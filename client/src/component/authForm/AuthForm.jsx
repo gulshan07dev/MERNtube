@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { FiAlertTriangle } from "react-icons/fi";
+
 import Logo from "../Logo";
 import Input from "./Input";
 
@@ -39,8 +41,9 @@ export default function AuthForm({
     <div className="flex flex-col gap-3">
       {/* showing error */}
       {error && (
-        <div className="w-[450px] max-w-[96%] border border-red-600 bg-red-50 shadow-sm rounded-sm p-2">
-          <p className="text-red-600 text-base font-nunito">{error}</p>
+        <div className="w-[450px] max-w-[96%] flex gap-2 items-center border border-red-600 bg-red-50 shadow-sm rounded-sm p-2 ">
+          <p className="text-red-600 text-base font-nunito w-full">{error}</p>
+          <FiAlertTriangle className="text-xl text-red-700" />
         </div>
       )}
 

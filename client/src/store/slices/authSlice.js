@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axiosInstance from "../../helper/axiosInstance";
 
 const initialState = {
+    isLoggedIn: localStorage.getItem("isLoggedIn") || false,
     user: {}
 };
 
@@ -36,6 +37,8 @@ const authSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(loginUser.fulfilled, (state, action) => {
             state.user = action.payload?.data?.user;
+            state.isLoggedIn = true;
+            localStorage.setItem("isLoggedIn", true);
         })
 
     }
