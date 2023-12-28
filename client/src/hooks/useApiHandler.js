@@ -1,7 +1,7 @@
-import toast from 'react-hot-toast'
+import toast from 'react-hot-toast';
 
-export default async function useApiHandler(apiFunction, message) {
-    const { loadingMessage, successMessage, errorMessage } = message;
+export default async function useApiHandler(apiFunction, toastMessages) {
+    const { loadingMessage, successMessage, errorMessage } = toastMessages;
 
     const loadingToast = toast.loading(loadingMessage);
 
@@ -9,16 +9,27 @@ export default async function useApiHandler(apiFunction, message) {
         const res = await apiFunction();
 
         if (res.payload.success) {
-            toast.success(successMessage || res.payload.message, { id: loadingToast });
+            toast.success(successMessage || res.payload.message,
+                { id: loadingToast });
+
+            return { isSuccess: true, error: null }
         } else {
-            toast.error(
-                errorMessage ||
+            const error = errorMessage ||
                 (Object.values(res.payload.errors).length
                     ? [...Object.values(res.payload.errors)][0].message
-                    : res.payload.message), { id: loadingToast });
+                    : res.payload.message)
+
+            toast.error(error, { id: loadingToast });
+
+            return { isSuccess: false, error }
         }
 
-    } catch (error) {
-        toast.error(errorMessage || (error.message || "something went wrong, try again"), { id: loadingToast });
+    } catch (err) {
+        const error = errorMessage || (err.message ||
+            "Something went wrong, try again")
+
+        toast.error(error, { id: loadingToast });
+
+        return { isSuccess: false, error }
     }
 }

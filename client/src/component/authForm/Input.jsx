@@ -19,6 +19,7 @@ const Input = React.forwardRef(
           className="peer w-full h-full bg-transparent text-blue-gray-700 font-poppins font-normal outline outline-0 focus:outline-0 disabled:opacity-60 border-2 border-gray-200 focus:border-t-0 border-t-0 placeholder-shown:border-t-2 text-[17px] text-gray-700 px-3 py-3.5 rounded-sm focus:border-gray-900"
           type={type}
           title={label}
+          name={label}
           value={value}
           onChange={onChange}
           ref={ref}

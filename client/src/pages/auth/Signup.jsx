@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import Layout from "../../layout/Layout";
@@ -8,8 +9,11 @@ import useApiHandler from "../../hooks/useApiHandler";
 import { registerUser } from "../../store/slices/authSlice";
 
 export default function Signup() {
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSignup = async ({
     fullName,
@@ -24,24 +28,32 @@ export default function Signup() {
 
     setIsLoading(true);
 
-    await useApiHandler(
+    const { isSuccess, error } = await useApiHandler(
       () =>
         dispatch(
           registerUser({ fullName, email, password, avatar, coverImage })
         ),
       { loadingMessage: "Creating your account..." }
     );
-
+    setError(error);
     setIsLoading(false);
+
+    if (isSuccess) {
+      navigate("/auth/login", { state: { usernameOrEmail: email, password } });
+    }
   };
 
   return (
-    <Layout isShowNavigationBar={false} className="bg-slate-50 flex justify-center pt-5">
+    <Layout
+      isShowNavigationBar={false}
+      className="bg-slate-50 flex justify-center pt-5"
+    >
       <AuthForm
         isLogin={false}
         title="Create an account"
         handleSubmit={handleSignup}
         isLoading={isLoading}
+        error={error}
       />
     </Layout>
   );
