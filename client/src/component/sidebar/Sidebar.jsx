@@ -7,8 +7,8 @@ import { MdOutlineWatchLater, MdOutlineFeedback } from "react-icons/md";
 import { SlLike } from "react-icons/sl";
 import { CiSettings } from "react-icons/ci";
 import { IoIosHelpCircleOutline } from "react-icons/io";
-import { sidebarWidth } from "../../constant";
 
+import { navHeight, sidebarWidth } from "../../constant";
 import useSidebar from "../../hooks/useSidebar";
 import MenuLink from "./MenuLink";
 import Divider from "./Divider";
@@ -83,10 +83,10 @@ export default function Sidebar() {
   return (
     <aside
       id="sidebar"
-      className={`h-full p-2 top-0 overflow-y-scroll  ${
-        isOpen ? "sticky left-0" : "fixed left-[-100%]"
+      className={`h-full bg-white p-2 top-0 overflow-y-scroll md:sticky md:left-0 max-md:fixed  ${
+        isOpen ? "max-md:left-0" : "max-md:left-[-100%]"
       }`}
-      style={{ width: sidebarWidth }}
+      style={{ width: sidebarWidth, top: isOpen ? navHeight : 0 }}
       role="navigation"
     >
       <div className="p-2 flex flex-col gap-2">

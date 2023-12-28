@@ -4,6 +4,7 @@ import { FiAlertTriangle } from "react-icons/fi";
 
 import Logo from "../Logo";
 import Input from "./Input";
+import Button from "../Button";
 
 export default function AuthForm({
   isLogin,
@@ -43,7 +44,7 @@ export default function AuthForm({
       {error && (
         <div className="w-[450px] max-w-[96%] flex gap-2 items-center border border-red-600 bg-red-50 shadow-sm rounded-sm p-2 ">
           <p className="text-red-600 text-base font-nunito w-full">{error}</p>
-          <FiAlertTriangle className="text-xl text-red-700" />
+          <FiAlertTriangle className="text-xl text-red" />
         </div>
       )}
 
@@ -179,7 +180,7 @@ export default function AuthForm({
           {/* link */}
           <button
             type="button"
-            className="text-sm text-gray-600 hover:text-gray-800 font-medium font-Noto_s"
+            className="text-sm text-gray-600 hover:text-gray-800 font-medium font-Noto_sans"
           >
             {isLogin ? (
               <Link to="/auth/signup">Don't have an account?</Link>
@@ -188,20 +189,19 @@ export default function AuthForm({
             )}
           </button>
 
-          {/* submit */}
-          <button
+          <Button
+            label={
+              isLogin
+                ? isLoading
+                  ? "Processing..."
+                  : "Login your account"
+                : isLoading
+                ? "Processing..."
+                : "Create your account"
+            }
             type="submit"
             disabled={isLoading}
-            className="px-4 py-3 rounded-sm bg-[#ff1cf4] hover:opacity-60 transition-[background] text-white font-medium font-poppins disabled:opacity-60"
-          >
-            {isLogin
-              ? isLoading
-                ? "Processing..."
-                : "Login your account"
-              : isLoading
-              ? "Processing..."
-              : "Create your account"}
-          </button>
+          />
         </div>
       </form>
     </div>
