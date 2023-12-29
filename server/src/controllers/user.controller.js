@@ -236,7 +236,8 @@ const changeUserAvatar = asyncHandler(async (req, res, next) => {
         throw new ApiError(400, "Avatar is required!");
     }
 
-    const user = await User.findById(req.user?._id);
+    const user = await User.findById(req.user?._id)
+        .select("-password -refreshToken");
 
     // delete previous avatar from cloudinary
     const previousAvatar = user.avatar;
@@ -251,20 +252,21 @@ const changeUserAvatar = asyncHandler(async (req, res, next) => {
     user.avatar = avatar;
     await user.save({ validateBeforeSave: false });
 
-    return res.status(200).json(new ApiResponse(200, {},
+    return res.status(200).json(new ApiResponse(200, { user },
         "Avatar updated successfully!"
     ))
 })
 
 // change user coverImage
-const changeCoverImage = asyncHandler(async (req, res, next) => {
+const changeUserCoverImage = asyncHandler(async (req, res, next) => {
     const coverImageFilePath = req.file?.path;
 
     if (!coverImageFilePath) {
         throw new ApiError(400, "Cover Image is required!");
     }
 
-    const user = await User.findById(req.user?._id);
+    const user = await User.findById(req.user?._id)
+        .select("-password -refreshToken");
 
     // delete previous cover image from cloudinary
     const previousCoverImage = user.coverImage;
@@ -279,11 +281,21 @@ const changeCoverImage = asyncHandler(async (req, res, next) => {
     user.coverImage = coverImage;
     await user.save({ validateBeforeSave: false });
 
-    return res.status(200).json(new ApiResponse(200, {},
+    return res.status(200).json(new ApiResponse(200, { user },
         "Cover Image updated successfully!"
     ))
 })
 
+// get current user
+const getCurrentUser = asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({ _id: req.user._id })
+        .select("-password -refreshToken");
+
+    return res.status(200).json(new ApiResponse(
+        200,
+        { user },
+        "User fetched successfully"))
+})
 
 export {
     registerUser,
@@ -293,5 +305,6 @@ export {
     changeUserPassword,
     changeAccountDetails,
     changeUserAvatar,
-    changeCoverImage
+    changeUserCoverImage,
+    getCurrentUser
 };
