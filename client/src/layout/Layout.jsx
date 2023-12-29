@@ -18,13 +18,13 @@ export default function Layout({
       >
         <Sidebar />
         <main className="flex-1 flex-grow" role="main">
-          <section className={`min-h-full ${className}`}>{children}</section>
+          <section className={`w-full min-h-full ${className}`}>{children}</section>
         </main>
       </div>
     </>
   ) : (
-    <main role="main">
-      <section className={`min-h-full ${className}`}>{children}</section>
+    <main role="main" className="w-full">
+      <section className={`w-full min-h-screen ${className}`}>{children}</section>
     </main>
   );
 }

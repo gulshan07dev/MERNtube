@@ -1,4 +1,4 @@
-import React from "react";
+import { twJoin } from "tailwind-merge";
 
 export default function Button({
   label,
@@ -9,12 +9,12 @@ export default function Button({
 }) {
   return (
     <button
-      className={`${className} rounded-[4px] border border-[#ff12f3] bg-[#ff1cf4] hover:opacity-60
-       transition-[background] text-white font-medium font-Noto_sans
-       disabled:opacity-60 ${
-         isLarge ? "px-4 py-2 text-lg" : "px-3 py-1.5 text-sm"
-       }`}
-       onClick={onClick}
+      className={twJoin(
+        "rounded-[4px] border border-[#ff12f3] bg-[#ff1cf4] hover:opacity-60 transition-[background] text-white font-medium font-Noto_sans disabled:opacity-60",
+        isLarge ? ["px-4 py-2 text-base"] : ["px-3 py-1.5 text-sm"],
+        className
+      )}
+      onClick={onClick}
       {...props}
     >
       {label}

@@ -39,10 +39,10 @@ export default function AuthForm({
   }, []);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 justify-center w-[450px] max-w-[96%]">
       {/* showing error */}
       {error && (
-        <div className="w-[450px] max-w-[96%] flex gap-2 items-center border border-red-600 bg-red-50 shadow-sm rounded-sm p-2 ">
+        <div className="w-full flex gap-2 items-center border border-red-600 bg-red-50 shadow-sm rounded-sm p-2 ">
           <p className="text-red-600 text-base font-nunito w-full">{error}</p>
           <FiAlertTriangle className="text-xl text-red" />
         </div>
@@ -50,7 +50,7 @@ export default function AuthForm({
 
       <form
         onSubmit={handleFormSubmit}
-        className="w-[450px] max-w-[96%] shadow-3xl bg-white border border-slate-300 rounded-xl md:p-8 py-7 pb-12 px-5 flex flex-col gap-7"
+        className="w-full shadow-3xl bg-white border border-slate-300 rounded-xl md:py-8 py-7 pb-12 md:px-5 px-3.5 flex flex-col gap-7"
       >
         <div className="flex flex-col gap-1 items-center mb-5">
           <Logo className="md:w-32" />

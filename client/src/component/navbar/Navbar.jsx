@@ -49,7 +49,7 @@ export default function Navbar() {
               label="Signup"
               type="button"
               isLarge={false}
-              className="bg-slate-50 text-violet-500 border-slate-300"
+              className="bg-slate-50 text-violet-600 border-slate-300"
               onClick={() => navigate("/auth/signup")}
             />
           </div>
