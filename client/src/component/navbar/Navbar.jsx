@@ -21,9 +21,9 @@ export default function Navbar() {
       role="navigation"
       aria-label="Primary Navigation"
     >
-      <div className="flex md:gap-2 gap-0 items-center">
+      <div className="flex items-center">
         <button
-          className="md:hidden text-2xl text-gray-500 font-[100] hover:bg-[#f8f8f8]"
+          className="md:hidden text-2xl text-gray-500 font-[100] w-10 h-10 grid place-items-center rounded-full bg-slate-100 hover:bg-[#f8f8f8]"
           onClick={onToggle}
         >
           <Menu />
@@ -43,13 +43,14 @@ export default function Navbar() {
               type="button"
               isLarge={false}
               onClick={() => navigate("/auth/login")}
+              className="text-xs"
             />
 
             <Button
               label="Signup"
               type="button"
               isLarge={false}
-              className="bg-slate-50 text-violet-600 border-slate-300"
+              className="text-xs bg-slate-50 text-violet-600 border-slate-300"
               onClick={() => navigate("/auth/signup")}
             />
           </div>
