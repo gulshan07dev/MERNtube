@@ -39,7 +39,7 @@ export default function AuthForm({
   }, []);
 
   return (
-    <div className="flex flex-col gap-3 justify-center w-[450px] max-w-[96%]">
+    <div className="flex flex-col gap-3 justify-center w-[450px] max-w-[92%]">
       {/* showing error */}
       {error && (
         <div className="w-full flex gap-2 items-center border border-red-600 bg-red-50 shadow-sm rounded-sm p-2 ">

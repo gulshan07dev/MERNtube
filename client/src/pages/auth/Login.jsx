@@ -39,7 +39,7 @@ export default function Login() {
   return (
     <Layout
       isShowNavigationBar={false}
-      className="bg-slate-50 flex justify-center md:pt-24 pt-16 pb-7"
+      className="bg-slate-50 flex justify-center md:pt-24 pt-14 pb-7"
     >
       <AuthForm
         isLogin={true}

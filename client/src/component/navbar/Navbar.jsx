@@ -36,7 +36,15 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-1">
-        {isLoggedIn ? null : ( //TODO
+        {isLoggedIn ? (
+          <div>
+            //TODO - user profile menu showing after click on avatar
+            <Avatar
+              url={user?.avatar?.url || ""}
+              fullName={user?.fullName || ""}
+            />
+          </div>
+        ) : (
           <div className="flex gap-2 items-center">
             <Button
               label="Login"
@@ -55,7 +63,6 @@ export default function Navbar() {
             />
           </div>
         )}
-        <Avatar url={user?.avatar?.url || ""} fullName={user?.fullName || ""} />
       </div>
     </nav>
   );
