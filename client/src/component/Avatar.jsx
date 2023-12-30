@@ -1,8 +1,13 @@
+import { twMerge } from "tailwind-merge";
+
 export default function Avatar({ url, fullName, className = "w-10 h-10" }) {
   return (
     <div
-      className={`avatar cursor-pointer rounded-full overflow-hidden
-    ${className}`}
+      className={twMerge(
+        "avatar cursor-pointer rounded-full overflow-hidden",
+        className
+      )}
+      role="button"
     >
       {fullName && !url ? (
         <span
