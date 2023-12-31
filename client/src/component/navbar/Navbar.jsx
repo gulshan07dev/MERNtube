@@ -9,6 +9,7 @@ import useSidebar from "../../hooks/useSidebar";
 import Avatar from "../Avatar";
 import Button from "../Button";
 import DropdownMenu from "../DropdownMenu";
+import LogoutBtn from "./LogoutBtn";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -82,11 +83,7 @@ const Navbar = () => {
             <Link to="/setting">Setting</Link>
             <hr />
             {/* logout */}
-            <Button
-              label="Logout"
-              isLarge={false}
-              className="bg-red-500 text-sm"
-            />
+           <LogoutBtn />
           </DropdownMenu>
         ) : (
           // If user is not logged in, show login/signup buttons
