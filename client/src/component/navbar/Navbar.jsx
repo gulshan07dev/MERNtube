@@ -1,17 +1,18 @@
 import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { Menu } from "@mui/icons-material";
+import { twMerge } from "tailwind-merge";
 
-import { navHeight } from "../../constant";
+import { navHeight } from "@/constant";
 import Logo from "../Logo";
 import SearchBar from "./SearchBar";
-import useSidebar from "../../hooks/useSidebar";
+import useSidebar from "@/hooks/useSidebar";
 import Avatar from "../Avatar";
 import Button from "../Button";
 import DropdownMenu from "../DropdownMenu";
 import LogoutBtn from "./LogoutBtn";
 
-const Navbar = () => {
+const Navbar = ({ showSidebarToggleBtn }) => {
   const navigate = useNavigate();
   const { onToggle } = useSidebar();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -27,11 +28,14 @@ const Navbar = () => {
       <div className="flex items-center">
         {/* Toggle Sidebar Button */}
         <button
-          className="md:hidden text-2xl text-gray-500 font-[100] w-10 h-10 grid place-items-center rounded-full bg-slate-100 hover:bg-[#f8f8f8]"
+          className={twMerge(
+            "text-2xl text-gray-500 font-[100] w-10 h-10 grid place-items-center rounded-full bg-slate-100 hover:bg-[#f8f8f8",
+            showSidebarToggleBtn ? "md:block" : "md:hidden"
+          )}
           onClick={onToggle}
         >
           <Menu />
-        </button> 
+        </button>
 
         <Logo />
       </div>
@@ -78,12 +82,12 @@ const Navbar = () => {
               </div>
             </div>
             {/* Dropdown Menu Options */}
-            <Link to="/profile">Profile</Link>
+            <Link to="/account">Account</Link>
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/setting">Setting</Link>
             <hr />
             {/* logout */}
-           <LogoutBtn />
+            <LogoutBtn />
           </DropdownMenu>
         ) : (
           // If user is not logged in, show login/signup buttons

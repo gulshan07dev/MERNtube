@@ -45,7 +45,7 @@ export default function Signup() {
 
   return (
     <Layout
-      isShowNavigationBar={false}
+      showNavigationBar={false}
       className="bg-slate-50 flex justify-center md:pt-5 pt-3 pb-7"
     >
       <AuthForm

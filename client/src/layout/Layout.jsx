@@ -1,3 +1,5 @@
+import { twMerge } from "tailwind-merge";
+
 import Navbar from "../component/navbar/Navbar";
 import Sidebar from "../component/sidebar/Sidebar";
 import { navHeight } from "../constant";
@@ -5,26 +7,31 @@ import { navHeight } from "../constant";
 export default function Layout({
   children,
   className,
-  isShowNavigationBar = true,
+  showNavigationBar = true,
+  showSidebar = true,
 }) {
-  return isShowNavigationBar ? (
+  return showNavigationBar ? (
     <>
-      <Navbar />
+      <Navbar showSidebarToggleBtn={!showSidebar} />
       <div
         style={{ height: `calc(100vh - ${navHeight})` }}
-        className="w-full flex overflow-y-scroll"
+        className="w-full relative flex overflow-y-scroll"
         role="region"
         aria-label="Main Content"
       >
-        <Sidebar />
+        <Sidebar isHidden={!showSidebar} />
         <main className="flex-1 flex-grow" role="main">
-          <section className={`w-full min-h-full ${className}`}>{children}</section>
+          <section className={twMerge("w-full min-h-full", className)}>
+            {children}
+          </section>
         </main>
       </div>
     </>
   ) : (
     <main role="main" className="w-full">
-      <section className={`w-full min-h-screen ${className}`}>{children}</section>
+      <section className={twMerge("w-full min-h-full", className)}>
+        {children}
+      </section>
     </main>
   );
 }

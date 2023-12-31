@@ -1,4 +1,4 @@
-import React from "react";
+import { twMerge } from "tailwind-merge";
 import { AiOutlineHome } from "react-icons/ai";
 import { TfiVideoCamera, TfiVideoClapper } from "react-icons/tfi";
 import { FaHouseUser } from "react-icons/fa";
@@ -13,7 +13,7 @@ import useSidebar from "../../hooks/useSidebar";
 import MenuLink from "./MenuLink";
 import Divider from "./Divider";
 
-export default function Sidebar() {
+export default function Sidebar({ isHidden }) {
   const { isOpen, onToggle } = useSidebar();
 
   const mainMenu = [
@@ -83,10 +83,12 @@ export default function Sidebar() {
   return (
     <aside
       id="sidebar"
-      className={`h-full bg-white p-2 top-0 overflow-y-scroll md:sticky md:left-0 max-md:fixed  ${
-        isOpen ? "max-md:left-0" : "max-md:left-[-100%]"
-      }`}
-      style={{ width: sidebarWidth, top: isOpen ? navHeight : 0 }}
+      className={twMerge(
+        "h-full bg-white p-2 overflow-y-scroll max-md:fixed transition-all duration-500 delay-0",
+        isOpen ? "left-0" : isHidden ? "left-[-100%]" : "max-md:left-[-100%]",
+        isHidden ? ["fixed"] : ["md:sticky md:left-0"]
+      )}
+      style={{ width: sidebarWidth }}
       role="navigation"
     >
       <div className="p-2 flex flex-col gap-2">
