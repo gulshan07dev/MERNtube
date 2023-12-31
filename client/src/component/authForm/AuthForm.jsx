@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FiAlertTriangle } from "react-icons/fi";
 
 import Logo from "../Logo";
-import Input from "./Input";
+import Input from "../Input";
 import Button from "../Button";
 
 export default function AuthForm({

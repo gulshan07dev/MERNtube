@@ -1,48 +1,36 @@
 import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { Menu } from "@mui/icons-material";
-import { twMerge } from "tailwind-merge";
 
 import { navHeight } from "@/constant";
 import Logo from "../Logo";
 import SearchBar from "./SearchBar";
-import useSidebar from "@/hooks/useSidebar";
 import Avatar from "../Avatar";
 import Button from "../Button";
 import DropdownMenu from "../DropdownMenu";
 import LogoutBtn from "./LogoutBtn";
+import SidebarToggleBtn from "./SidebarToggleBtn";
 
 const Navbar = ({ showSidebarToggleBtn }) => {
   const navigate = useNavigate();
-  const { onToggle } = useSidebar();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   return (
     <nav
-      className={`w-full flex justify-between items-center md:px-7 px-3 sticky top-0 z-50`}
+      className={`w-full flex justify-between items-center md:px-7 px-3 sticky top-0 z-[48]`}
       style={{ height: navHeight }}
       role="navigation"
       aria-label="Primary Navigation"
     >
       {/* Left Section */}
       <div className="flex items-center">
-        {/* Toggle Sidebar Button */}
-        <button
-          className={twMerge(
-            "text-2xl text-gray-500 font-[100] w-10 h-10 grid place-items-center rounded-full bg-slate-100 hover:bg-[#f8f8f8",
-            showSidebarToggleBtn ? "md:block" : "md:hidden"
-          )}
-          onClick={onToggle}
-        >
-          <Menu />
-        </button>
-
+        <SidebarToggleBtn
+          className={showSidebarToggleBtn ? "md:block" : "md:hidden"}
+        />
         <Logo />
       </div>
 
       {/* Center Section */}
       <div className="max-sm:hidden">
-        {/* Search Bar */}
         <SearchBar />
       </div>
 
@@ -82,7 +70,7 @@ const Navbar = ({ showSidebarToggleBtn }) => {
               </div>
             </div>
             {/* Dropdown Menu Options */}
-            <Link to="/account">Account</Link>
+            <Link to="/account">Account & Password</Link>
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/setting">Setting</Link>
             <hr />

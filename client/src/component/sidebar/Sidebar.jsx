@@ -8,25 +8,15 @@ import { SlLike } from "react-icons/sl";
 import { CiSettings } from "react-icons/ci";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 
-import { navHeight, sidebarWidth } from "@/constant";
+import { sidebarWidth } from "@/constant";
 import useSidebar from "@/hooks/useSidebar";
 import MenuLink from "./MenuLink";
 import Divider from "./Divider";
-import { useRef } from "react";
-import useClickOutside from "@/hooks/useClickOutside ";
+import SidebarToggleBtn from "../navbar/SidebarToggleBtn";
+import Logo from "../Logo";
 
 export default function Sidebar({ isHidden }) {
-  const { isOpen, onToggle } = useSidebar();
-  const sidebarRef = useRef(null);
-
-  const onClose = () => {
-    if (isOpen) {
-      onToggle();
-    }
-    return;
-  };
-
-  useClickOutside(sidebarRef, onClose);
+  const { isOpen, onClose } = useSidebar();
 
   const mainMenu = [
     {
@@ -93,58 +83,84 @@ export default function Sidebar({ isHidden }) {
   ];
 
   return (
-    <aside
-      id="sidebar"
-      className={twMerge(
-        "h-full bg-white p-2 overflow-y-scroll max-md:fixed transition-all duration-500 delay-0",
-        isOpen ? "left-0" : isHidden ? "left-[-100%]" : "max-md:left-[-100%]",
-        isHidden ? ["fixed"] : ["md:sticky md:top-0 md:left-0"]
-      )}
-      style={{ width: sidebarWidth }}
-      ref={sidebarRef}
-      role="navigation"
-    >
-      <div className="p-2 flex flex-col gap-2">
-        {/* Main Menu */}
-        {mainMenu.map((menuItem) => (
-          <MenuLink
-            key={menuItem.slug}
-            label={menuItem.label}
-            icon={menuItem.icon}
-            slug={menuItem.slug}
-          />
-        ))}
-        <Divider />
+    <>
+      <aside
+        id="sidebar"
+        className={twMerge(
+          "h-full bg-white px-2 top-0 overflow-y-scroll z-50 max-md:fixed transition-all duration-500 delay-0",
+          isOpen ? "left-0" : isHidden ? "left-[-100%]" : "max-md:left-[-100%]",
+          isHidden ? ["fixed"] : ["md:sticky md:left-0"]
+        )}
+        style={{ width: sidebarWidth }}
+        role="navigation"
+      >
+        <div
+          className={`px-2 pb-2 flex flex-col gap-2 ${
+            !isHidden && !isOpen ? "pt-4" : ""
+          }`}
+        >
+          <div
+            className={`sticky top-0 mb-2 bg-white items-center ${
+              isHidden ? "flex" :  "md:hidden flex"
+            }`}
+          >
+            <SidebarToggleBtn />
+            <Logo />
+          </div>
 
-        {/* User Menu */}
-        {userMenu.map((menuItem) => (
-          <MenuLink
-            key={menuItem.slug}
-            label={menuItem.label}
-            icon={menuItem.icon}
-            slug={menuItem.slug}
-          />
-        ))}
-        <Divider />
+          {/* Main Menu */}
+          {mainMenu.map((menuItem) => (
+            <MenuLink
+              key={menuItem.slug}
+              label={menuItem.label}
+              icon={menuItem.icon}
+              slug={menuItem.slug}
+            />
+          ))}
+          <Divider />
 
-        {/* Miscellaneous Menu */}
-        {miscellaneousMenu.map((menuItem) => (
-          <MenuLink
-            key={menuItem.slug}
-            label={menuItem.label}
-            icon={menuItem.icon}
-            slug={menuItem.slug}
-          />
-        ))}
-        <Divider />
+          {/* User Menu */}
+          {userMenu.map((menuItem) => (
+            <MenuLink
+              key={menuItem.slug}
+              label={menuItem.label}
+              icon={menuItem.icon}
+              slug={menuItem.slug}
+            />
+          ))}
+          <Divider />
 
-        <div className="p-3">
-          <p className="text-sm font-hedvig_letters text-gray-700 leading-none">
-            Made With <span className="text-lg text-red-600">❤</span>
-            <br /> <span className="pl-3 font-Noto_sans">By Gulshan</span>
-          </p>
+          {/* Miscellaneous Menu */}
+          {miscellaneousMenu.map((menuItem) => (
+            <MenuLink
+              key={menuItem.slug}
+              label={menuItem.label}
+              icon={menuItem.icon}
+              slug={menuItem.slug}
+            />
+          ))}
+          <Divider />
+
+          <div className="p-3">
+            <p className="text-sm font-hedvig_letters text-gray-700 leading-none">
+              Made With <span className="text-lg text-red-600">❤</span>
+              <br /> <span className="pl-3 font-Noto_sans">By Gulshan</span>
+            </p>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+      {/* overlay */}
+      <div
+        className={twMerge(
+          "fixed z-[49] top-0 left-0 right-0 bottom-0 w-screen h-screen",
+          isOpen && isHidden
+            ? ["bg-gray-300 opacity-50"]
+            : isOpen
+            ? ["max-md:bg-white max-md:opacity-30 md:hidden"]
+            : "hidden"
+        )}
+        onClick={onClose}
+      ></div>
+    </>
   );
 }
