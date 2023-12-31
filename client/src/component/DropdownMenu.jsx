@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+
+import useClickOutside from "@/hooks/useClickOutside ";
 
 const DropdownMenu = ({ button, children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,18 +10,11 @@ const DropdownMenu = ({ button, children }) => {
     setIsOpen((prev) => !prev);
   };
 
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsOpen(false);
-    }
+  const handleClose = () => {
+    setIsOpen(false);
   };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  useClickOutside(dropdownRef, handleClose);
 
   return (
     <div className="relative" ref={dropdownRef}>

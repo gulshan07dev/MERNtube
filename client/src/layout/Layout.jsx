@@ -29,7 +29,7 @@ export default function Layout({
     </>
   ) : (
     <main role="main" className="w-full">
-      <section className={twMerge("w-full min-h-full", className)}>
+      <section className={twMerge("w-full min-h-screen", className)}>
         {children}
       </section>
     </main>

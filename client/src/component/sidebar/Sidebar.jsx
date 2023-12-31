@@ -8,13 +8,25 @@ import { SlLike } from "react-icons/sl";
 import { CiSettings } from "react-icons/ci";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 
-import { navHeight, sidebarWidth } from "../../constant";
-import useSidebar from "../../hooks/useSidebar";
+import { navHeight, sidebarWidth } from "@/constant";
+import useSidebar from "@/hooks/useSidebar";
 import MenuLink from "./MenuLink";
 import Divider from "./Divider";
+import { useRef } from "react";
+import useClickOutside from "@/hooks/useClickOutside ";
 
 export default function Sidebar({ isHidden }) {
   const { isOpen, onToggle } = useSidebar();
+  const sidebarRef = useRef(null);
+
+  const onClose = () => {
+    if (isOpen) {
+      onToggle();
+    }
+    return;
+  };
+
+  useClickOutside(sidebarRef, onClose);
 
   const mainMenu = [
     {
@@ -86,9 +98,10 @@ export default function Sidebar({ isHidden }) {
       className={twMerge(
         "h-full bg-white p-2 overflow-y-scroll max-md:fixed transition-all duration-500 delay-0",
         isOpen ? "left-0" : isHidden ? "left-[-100%]" : "max-md:left-[-100%]",
-        isHidden ? ["fixed"] : ["md:sticky md:left-0"]
+        isHidden ? ["fixed"] : ["md:sticky md:top-0 md:left-0"]
       )}
       style={{ width: sidebarWidth }}
+      ref={sidebarRef}
       role="navigation"
     >
       <div className="p-2 flex flex-col gap-2">
