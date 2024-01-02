@@ -4,7 +4,7 @@ export default function Button({
   label,
   isLarge = true,
   onClick = () => {},
-  className = "selection:",
+  className = "",
   ...props
 }) {
   return (
@@ -15,6 +15,7 @@ export default function Button({
         className
       )}
       onClick={onClick}
+      name={label}
       {...props}
     >
       {label}

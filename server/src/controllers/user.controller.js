@@ -185,7 +185,7 @@ const changeUserPassword = asyncHandler(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     return res.status(200).
-        json(new ApiResponse(400, {}, "Password changed successfully!"))
+        json(new ApiResponse(200, {}, "Password changed successfully!"))
 });
 
 // change Account details

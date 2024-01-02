@@ -53,7 +53,7 @@ const Navbar = ({ showSidebarToggleBtn }) => {
                 url={user?.avatar?.url || ""}
                 fullName={user?.fullName || ""}
               />
-              <div className="flex flex-col max-w-[160px]">
+              <div className="flex flex-col min-w-[120px] max-w-[165px]">
                 <h1 className="text-base text-gray-900 font-roboto truncate">
                   {user.fullName}
                 </h1>

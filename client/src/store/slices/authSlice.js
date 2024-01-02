@@ -63,7 +63,8 @@ const refreshAccessToken = createAsyncThunk("/users/refresh-token",
 const changeUserPassword = createAsyncThunk("/users/change-password",
     async (data, { rejectWithValue }) => {
         try {
-            const res = await axiosInstance.patch("/users/refresh-token", data);
+            const res = await axiosInstance.patch("/users/change-password", data);
+            console.log(res)
             return res?.data;
         } catch (error) {
             if (!error.response) {
