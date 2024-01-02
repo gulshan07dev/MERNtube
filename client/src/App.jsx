@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 
 import AuthRequired from "./helper/auth/AuthRequired";
 import AuthNotRequired from "./helper/auth/AuthNotRequired";
-import { getCurrentUser } from "./store/slices/authSlice";
+import { getCurrentUser, refreshAccessToken } from "./store/slices/authSlice";
 import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
@@ -17,8 +17,13 @@ function App() {
     await dispatch(getCurrentUser());
   };
 
+  const refreshToken = async () => {
+    await dispatch(refreshAccessToken());
+  };
+
   useEffect(() => {
     fetchCurrentUser();
+    refreshToken();
   }, []);
   return (
     <Routes>

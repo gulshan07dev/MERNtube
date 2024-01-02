@@ -24,7 +24,8 @@ const generateAccessAndRefereshTokens = async (user) => {
 
 const options = {
     httpOnly: true,
-    secure: true
+    secure: true,
+    SameSite: "none"
 }
 
 // register
