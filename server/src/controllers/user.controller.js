@@ -29,7 +29,7 @@ const options = {
 }
 
 // register
-const registerUser = asyncHandler(async (req, res, next) => {
+const registerUser = asyncHandler(async (req, res) => {
     const { fullName, email, password } = req.body;
 
     // Check if any field is empty
@@ -81,7 +81,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
 });
 
 // login
-const loginUser = asyncHandler(async (req, res, next) => {
+const loginUser = asyncHandler(async (req, res) => {
     const { usernameOrEmail, password } = req.body;
 
     // check user exist or not with this username or email
@@ -134,7 +134,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 // refresh access token
-const refreshAccessToken = asyncHandler(async (req, res, next) => {
+const refreshAccessToken = asyncHandler(async (req, res) => {
     const clientRefreshToken = req.cookies?.refreshToken || req.body.refreshToken;
 
     if (!clientRefreshToken) {
@@ -162,7 +162,7 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
 });
 
 // change user password
-const changeUserPassword = asyncHandler(async (req, res, next) => {
+const changeUserPassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword } = req.body;
 
     if (!oldPassword || !newPassword) {
@@ -190,7 +190,7 @@ const changeUserPassword = asyncHandler(async (req, res, next) => {
 });
 
 // change Account details
-const changeAccountDetails = asyncHandler(async (req, res, next) => {
+const changeAccountDetails = asyncHandler(async (req, res) => {
     const { username, fullName } = req.body;
     const updateFields = {};
 
@@ -230,7 +230,7 @@ const changeAccountDetails = asyncHandler(async (req, res, next) => {
 });
 
 // change user Avatar
-const changeUserAvatar = asyncHandler(async (req, res, next) => {
+const changeUserAvatar = asyncHandler(async (req, res) => {
     const avatarFilePath = req.file?.path;
 
     if (!avatarFilePath) {
@@ -259,7 +259,7 @@ const changeUserAvatar = asyncHandler(async (req, res, next) => {
 })
 
 // change user coverImage
-const changeUserCoverImage = asyncHandler(async (req, res, next) => {
+const changeUserCoverImage = asyncHandler(async (req, res) => {
     const coverImageFilePath = req.file?.path;
 
     if (!coverImageFilePath) {
@@ -288,7 +288,7 @@ const changeUserCoverImage = asyncHandler(async (req, res, next) => {
 })
 
 // get current user
-const getCurrentUser = asyncHandler(async (req, res, next) => {
+const getCurrentUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ _id: req.user._id })
         .select("-password -refreshToken");
 
@@ -296,6 +296,78 @@ const getCurrentUser = asyncHandler(async (req, res, next) => {
         200,
         { user },
         "User fetched successfully"))
+})
+
+// channel
+const channel = asyncHandler(async (req, res) => {
+    const { username } = req.params;
+
+    if (!username) {
+        throw new ApiError(400, "Username is missing!");
+    }
+
+    const channel = await User.aggregate([
+        {
+            $match: {
+                username
+            }
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers"
+            }
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "subscriber",
+                as: "subscribedTo"
+            }
+        },
+        {
+            $addFields: {
+                subscriberCount: {
+                    $size: "$subscribers"
+                },
+                channelSubscribedToCount: {
+                    $size: "$subscribedTo"
+                },
+                isSubscribed: {
+                    $cond: {
+                        if: { $in: [req.user._id, "$subscribers.subscriber"] },
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                username: 1,
+                fullName: 1,
+                email: 1,
+                avatar: 1,
+                coverImage: 1,
+                subscriberCount: 1,
+                channelSubscribedToCount: 1,
+                isSubscribed: 1,
+            }
+        }
+    ])
+
+    if (!channel) {
+        throw new ApiError(404, "channel does not exist!");
+    }
+
+    res.status(200).json(new ApiResponse(
+        200,
+        { channel: channel[0] },
+        "User channel fetched successfully"
+    ))
 })
 
 export {
@@ -307,5 +379,6 @@ export {
     changeAccountDetails,
     changeUserAvatar,
     changeUserCoverImage,
-    getCurrentUser
+    getCurrentUser,
+    channel
 };
