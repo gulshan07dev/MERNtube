@@ -5,6 +5,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 import { omit } from "../utils/omit.js";
 import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken"
+import { Types } from "mongoose";
 
 const generateUniqueUsername = (fullName) => {
     const baseUsername = fullName.split(" ")[0].toLowerCase();
@@ -370,6 +371,59 @@ const channel = asyncHandler(async (req, res) => {
     ))
 })
 
+// get user watch history
+const getUserWatchHistory = asyncHandler(async (req, res) => {
+    const user = await User.aggregate([
+        {
+            $match: {
+                _id: new Types.ObjectId(req.user._id)
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory",
+                foreignField: "_id",
+                as: "watchHistory",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "owner",
+                            foreignField: "_id",
+                            as: "owner",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        username: 1,
+                                        fullName: 1,
+                                        avatar: 1,
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $addFields: {
+                            owner: {
+                                $first: "$owner"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ])
+
+    console.log(user)
+
+    res.status(200).json(new ApiResponse(
+        200,
+        { watchHistory: user[0].watchHistory },
+        "User watch history fetched successfully"
+    ))
+})
+
 export {
     registerUser,
     loginUser,
@@ -380,5 +434,6 @@ export {
     changeUserAvatar,
     changeUserCoverImage,
     getCurrentUser,
-    channel
+    channel,
+    getUserWatchHistory
 };

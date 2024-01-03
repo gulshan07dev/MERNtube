@@ -9,7 +9,8 @@ import {
     changeUserAvatar,
     changeUserCoverImage,
     getCurrentUser,
-    channel
+    channel,
+    getUserWatchHistory
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
@@ -47,5 +48,6 @@ router.route("/current-user").get(verifyJwt, getCurrentUser);
 
 router.route("/channel/:username").get(verifyJwt, channel);
 
+router.route("/watch-history").get(verifyJwt, getUserWatchHistory);
 
 export default router;
