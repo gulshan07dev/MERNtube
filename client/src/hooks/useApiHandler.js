@@ -8,16 +8,16 @@ export default async function useApiHandler(apiFunction, toastMessages) {
     try {
         const res = await apiFunction();
 
-        if (res.payload.success) {
+        if (res?.payload?.success) {
             toast.success(successMessage || res.payload.message,
                 { id: loadingToast });
 
             return { isSuccess: true, error: null }
         } else {
             const error = errorMessage ||
-                (Object.values(res.payload.errors).length
-                    ? [...Object.values(res.payload.errors)][0].message
-                    : res.payload.message)
+                (Object.values(res?.payload?.errors)?.length
+                    ? [...Object.values(res?.payload?.errors)]?.[0]?.message
+                    : res?.payload?.message)
 
             toast.error(error, { id: loadingToast });
 
@@ -25,7 +25,7 @@ export default async function useApiHandler(apiFunction, toastMessages) {
         }
 
     } catch (err) {
-        const error = errorMessage || (err.message ||
+        const error = errorMessage || (err?.message ||
             "Something went wrong, try again")
 
         toast.error(error, { id: loadingToast });
