@@ -60,8 +60,8 @@ const registerUser = asyncHandler(async (req, res) => {
         fullName,
         email,
         password,
-        avatar,
-        coverImage,
+        avatar: { key: avatar?.public_id, url: avatar?.url },
+        coverImage: { key: coverImage?.public_id, url: coverImage?.url },
     });
 
     if (!user) {
@@ -251,7 +251,7 @@ const changeUserAvatar = asyncHandler(async (req, res) => {
     const avatar = await uploadOnCloudinary(avatarFilePath);
 
     // save avatar in db
-    user.avatar = avatar;
+    user.avatar = { key: avatar?.public_id, url: avatar?.url };
     await user.save({ validateBeforeSave: false });
 
     return res.status(200).json(new ApiResponse(200, { user },
@@ -280,7 +280,7 @@ const changeUserCoverImage = asyncHandler(async (req, res) => {
     const coverImage = await uploadOnCloudinary(coverImageFilePath);
 
     // save avatar in db
-    user.coverImage = coverImage;
+    user.coverImage = { key: coverImage?.public_id, url: coverImage?.url };
     await user.save({ validateBeforeSave: false });
 
     return res.status(200).json(new ApiResponse(200, { user },
@@ -414,8 +414,6 @@ const getUserWatchHistory = asyncHandler(async (req, res) => {
             }
         }
     ])
-
-    console.log(user)
 
     res.status(200).json(new ApiResponse(
         200,

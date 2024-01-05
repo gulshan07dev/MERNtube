@@ -9,11 +9,10 @@ cloudinary.config({
 export const uploadOnCloudinary = async (localFilePath) => {
     try {
         if (!localFilePath) return null;
-        const response = await cloudinary.uploader.upload(localFilePath, {
+        return await cloudinary.uploader.upload(localFilePath, {
             folder: "Merntube",
             resource_type: "auto"
         })
-        return { key: response?.public_id, url: response?.url }
     } catch (error) {
         throw error
     }
