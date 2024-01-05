@@ -6,10 +6,9 @@ const asyncHandler = (requestHandler) => {
             .catch((err) => next(err))
             .finally(() => {
                 if (req.files) {
-                    Object.entries(req.files)
-                        .map((key) => key[1])
+                    Object.values(req.files)
                         .map(([file]) => file.path)
-                        .forEach(path => fs.unlinkSync(path))
+                        .forEach(path => path && fs.unlinkSync(path))
                 }
                 if (req.file) {
                     fs.unlinkSync(req.file?.path);

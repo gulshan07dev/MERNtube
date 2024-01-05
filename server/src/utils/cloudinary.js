@@ -14,7 +14,7 @@ export const uploadOnCloudinary = async (localFilePath) => {
             resource_type: "auto"
         })
     } catch (error) {
-        throw error
+        return null
     }
 }
 
