@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineHome } from "react-icons/ai";
 import { TfiVideoCamera, TfiVideoClapper } from "react-icons/tfi";
@@ -15,72 +17,87 @@ import Divider from "./Divider";
 import SidebarToggleBtn from "../navbar/SidebarToggleBtn";
 import Logo from "../Logo";
 
-export default function Sidebar({ isHidden }) {
+const Sidebar = ({ isHidden }) => {
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
   const { isOpen, onClose } = useSidebar();
 
-  const mainMenu = [
-    {
-      label: "Home",
-      icon: <AiOutlineHome />,
-      slug: "/",
-    },
-    {
-      label: "Shorts",
-      icon: <TfiVideoCamera />,
-      slug: "/shorts",
-    },
-    {
-      label: "Subscriptions",
-      icon: <TfiVideoClapper />,
-      slug: "/subscriptions",
-    },
-  ];
+  const menuItems = useMemo(
+    () => [
+      { label: "Home", icon: <AiOutlineHome />, slug: "/", active: true },
+      {
+        label: "Shorts",
+        icon: <TfiVideoCamera />,
+        slug: "/shorts",
+        active: true,
+      },
+      {
+        label: "Subscriptions",
+        icon: <TfiVideoClapper />,
+        slug: "/subscriptions",
+        active: true,
+      },
+    ],
+    []
+  );
 
-  const userMenu = [
-    {
-      label: "Your channel",
-      icon: <FaHouseUser />,
-      slug: "/your-channel",
-    },
-    {
-      label: "History",
-      icon: <RiHistoryFill />,
-      slug: "/history",
-    },
-    {
-      label: "Your videos",
-      icon: <RiVideoLine />,
-      slug: "/your-videos",
-    },
-    {
-      label: "Watch Later",
-      icon: <MdOutlineWatchLater />,
-      slug: "/watch-later",
-    },
-    {
-      label: "Liked videos",
-      icon: <SlLike />,
-      slug: "/liked-videos",
-    },
-  ];
+  const userMenu = useMemo(
+    () => [
+      {
+        label: "Your channel",
+        icon: <FaHouseUser />,
+        slug: `/${user?.username}`,
+        active: isLoggedIn,
+      },
+      {
+        label: "History",
+        icon: <RiHistoryFill />,
+        slug: "/history",
+        active: true,
+      },
+      {
+        label: "Your videos",
+        icon: <RiVideoLine />,
+        slug: "/your-videos",
+        active: true,
+      },
+      {
+        label: "Watch Later",
+        icon: <MdOutlineWatchLater />,
+        slug: "/watch-later",
+        active: true,
+      },
+      {
+        label: "Liked videos",
+        icon: <SlLike />,
+        slug: "/liked-videos",
+        active: true,
+      },
+    ],
+    [user, isLoggedIn]
+  );
 
-  const miscellaneousMenu = [
-    {
-      label: "Settings",
-      icon: <CiSettings />,
-      slug: "/settings",
-    },
-    {
-      label: "Help",
-      icon: <IoIosHelpCircleOutline />,
-      slug: "/help",
-    },
-    {
-      label: "Send Feedback",
-      icon: <MdOutlineFeedback />,
-      slug: "/send-feedback",
-    },
-  ];
+  const miscellaneousMenu = useMemo(
+    () => [
+      {
+        label: "Settings",
+        icon: <CiSettings />,
+        slug: "/settings",
+        active: true,
+      },
+      {
+        label: "Help",
+        icon: <IoIosHelpCircleOutline />,
+        slug: "/help",
+        active: true,
+      },
+      {
+        label: "Send Feedback",
+        icon: <MdOutlineFeedback />,
+        slug: "/send-feedback",
+      },
+    ],
+    []
+  );
 
   return (
     <>
@@ -101,44 +118,32 @@ export default function Sidebar({ isHidden }) {
         >
           <div
             className={`sticky top-0 mb-2 bg-white items-center ${
-              isHidden ? "flex" :  "md:hidden flex"
+              isHidden ? "flex" : "md:hidden flex"
             }`}
           >
             <SidebarToggleBtn />
             <Logo />
           </div>
 
-          {/* Main Menu */}
-          {mainMenu.map((menuItem) => (
-            <MenuLink
-              key={menuItem.slug}
-              label={menuItem.label}
-              icon={menuItem.icon}
-              slug={menuItem.slug}
-            />
-          ))}
+          {/* Menu Items */}
+          {menuItems.map(
+            (menuItem) =>
+              menuItem.active && <MenuLink key={menuItem.slug} {...menuItem} />
+          )}
           <Divider />
 
           {/* User Menu */}
-          {userMenu.map((menuItem) => (
-            <MenuLink
-              key={menuItem.slug}
-              label={menuItem.label}
-              icon={menuItem.icon}
-              slug={menuItem.slug}
-            />
-          ))}
+          {userMenu.map(
+            (menuItem) =>
+              menuItem.active && <MenuLink key={menuItem.slug} {...menuItem} />
+          )}
           <Divider />
 
           {/* Miscellaneous Menu */}
-          {miscellaneousMenu.map((menuItem) => (
-            <MenuLink
-              key={menuItem.slug}
-              label={menuItem.label}
-              icon={menuItem.icon}
-              slug={menuItem.slug}
-            />
-          ))}
+          {miscellaneousMenu.map(
+            (menuItem) =>
+              menuItem.active && <MenuLink key={menuItem.slug} {...menuItem} />
+          )}
           <Divider />
 
           <div className="p-3">
@@ -163,4 +168,6 @@ export default function Sidebar({ isHidden }) {
       ></div>
     </>
   );
-}
+};
+
+export default Sidebar;
