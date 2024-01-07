@@ -1,6 +1,5 @@
 import { Video } from "../models/video.model.js"
-import { User } from "../models/user.model.js"
-import { Types, isValidObjectId } from "mongoose";
+import { Types } from "mongoose";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from ".././utils/ApiError.js"
 import ApiResponse from ".././utils/ApiResponse.js"
@@ -162,6 +161,84 @@ const getVideoById = asyncHandler(async (req, res) => {
     ))
 })
 
+// get all videos
+const getAllVideos = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
+
+    const pipeline = [];
+
+    // Match stage for filtering by userId
+    if (userId) {
+        pipeline.push({
+            $match: {
+                owner: new Types.ObjectId(userId)
+            }
+        })
+    }
+
+    // Match stage for based on text query
+    if (query) {
+        pipeline.push({
+            $match: {
+                $or: [
+                    { title: { $regex: query, $options: 'i' } },
+                    { description: { $regex: query, $options: 'i' } }
+                ]
+            }
+        });
+    }
+
+    // Sort stage
+    if (sortBy && sortType) {
+        const sortTypeValue = sortType === 'desc' ? -1 : 1;
+        pipeline.push({
+            $sort: { [sortBy]: sortTypeValue }
+        });
+    }
+
+    // populate the owner
+    pipeline.push({
+        $lookup: {
+            from: "users",
+            localField: "owner",
+            foreignField: "_id",
+            as: "owner",
+            pipeline: [
+                {
+                    $project: {
+                        username: 1,
+                        fullName: 1,
+                        avatar: 1
+                    }
+                }
+            ]
+        }
+    })
+
+    // add the calculated owner field
+    pipeline.push({
+        $addFields: {
+            owner: {
+                $first: "$owner"
+            }
+        }
+    })
+
+    const aggregate = Video.aggregate(pipeline)
+
+    Video.aggregatePaginate(aggregate, { page, limit })
+        .then(function (result) {
+            return res.status(200).json(new ApiResponse(
+                200,
+                { result },
+                "Fetched videos successfully"
+            ))
+        })
+        .catch(function (error) {
+            throw error
+        })
+})
+
 // delete video by videoId
 const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
@@ -198,7 +275,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
 
     const video = await Video.findById(videoId);
 
-    if(!video) {
+    if (!video) {
         throw new ApiError(404, "Video not found!");
     }
 
@@ -217,6 +294,7 @@ export {
     publishAVideo,
     updateVideo,
     getVideoById,
+    getAllVideos,
     deleteVideo,
     togglePublishStatus
 }

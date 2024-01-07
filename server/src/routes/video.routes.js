@@ -5,6 +5,7 @@ import {
     publishAVideo,
     updateVideo,
     getVideoById,
+    getAllVideos,
     deleteVideo,
     togglePublishStatus,
 } from "../controllers/video.controller.js";
@@ -16,6 +17,7 @@ router.route("/")
         { name: "videoFile", maxCount: 1 },
         { name: "thumbnail", maxCount: 1 },
     ]), publishAVideo)
+    .get(getAllVideos)
 
 router.route("/:videoId")
     .patch(verifyJwt, upload.single("thumbnail"), updateVideo)
