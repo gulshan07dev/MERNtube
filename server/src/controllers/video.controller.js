@@ -1,5 +1,7 @@
-import { Video } from "../models/video.model.js"
+import { Video } from "../models/video.model.js";
+import { User } from "../models/user.model.js";
 import { Types } from "mongoose";
+import { isValidObjectId } from "mongoose";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from ".././utils/ApiError.js"
 import ApiResponse from ".././utils/ApiResponse.js"
@@ -69,11 +71,21 @@ const updateVideo = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
 
+    // check if Invalid videoId
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid videoId!");
+    }
+
     // delete previous thumbnail from cloudinary, if it exists
     const thumbnailLocalPath = req.file?.path;
 
+    const oldVideoDetails = await Video.findOne({ _id: videoId });
+
+    if (!oldVideoDetails) {
+        throw new ApiError(404, "Video not find!");
+    }
+
     if (thumbnailLocalPath) {
-        const oldVideoDetails = await Video.findOne({ _id: videoId });
         await deleteOnCloudinary(oldVideoDetails.thumbnail?.key);
     }
 
@@ -81,6 +93,10 @@ const updateVideo = asyncHandler(async (req, res) => {
     let thumbnail;
     if (thumbnailLocalPath) {
         thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+    }
+
+    if (!thumbnail && thumbnailLocalPath) {
+        throw new ApiError(500, "Failed to upload thumbnail!, please try again");
     }
 
     // update video with new details
@@ -98,18 +114,18 @@ const updateVideo = asyncHandler(async (req, res) => {
         };
     }
 
-    const video = await Video.findByIdAndUpdate(
+    const updatedVideo = await Video.findByIdAndUpdate(
         videoId,
         updateFields,
         { new: true });
 
-    if (!video) {
+    if (!updatedVideo) {
         throw new ApiError(500, "Something went wrong while updating video details, try again");
     }
 
     return res.status(200).json(new ApiResponse(
         200,
-        { video },
+        { updatedVideo },
         "Video updated successfully!"
     ));
 });
@@ -117,6 +133,11 @@ const updateVideo = asyncHandler(async (req, res) => {
 // get video by videoId
 const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
+
+    // check if Invalid videoId
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid videoId!");
+    }
 
     const video = await Video.aggregate([
         {
@@ -168,6 +189,17 @@ const getAllVideos = asyncHandler(async (req, res) => {
     const pipeline = [];
 
     // Match stage for filtering by userId
+
+    if (!isValidObjectId(userId)) {
+        throw new ApiError(400, "Invalid userId!");
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        throw new ApiError(404, "User Not available witht this userId!");
+    }
+
     if (userId) {
         pipeline.push({
             $match: {
@@ -243,6 +275,11 @@ const getAllVideos = asyncHandler(async (req, res) => {
 const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
 
+    // check if Invalid videoId
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid videoId!");
+    }
+
     // Retrieve video details
     const video = await Video.findById(videoId);
 
@@ -271,7 +308,12 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 // toggle public status by videoId
 const togglePublishStatus = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
+    const { videoId } = req.params;
+
+    // check if Invalid videoId
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid videoId!");
+    }
 
     const video = await Video.findById(videoId);
 
