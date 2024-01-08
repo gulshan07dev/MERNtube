@@ -13,10 +13,12 @@ app.use(express.static("public"))
 // import routes
 import userRouter from "./routes/user.routes.js"
 import videoRouter from "./routes/video.routes.js"
+import CommentRouter from "./routes/comment.routes.js"
 
 // routes declarations
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/videos", videoRouter);
+app.use("/api/v1/comments", CommentRouter);
 
 // error middlewares
 import errorMiddleware from "./middlewares/error.middleware.js";
