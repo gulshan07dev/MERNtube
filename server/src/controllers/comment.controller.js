@@ -67,6 +67,7 @@ const addCommentToVideoOrTweet = asyncHandler(async (req, res) => {
 const updateComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
     const { newContent } = req.body;
+    const userId = req.user._id;
 
     // check if invalid commentId
     if (!isValidObjectId(commentId)) {
@@ -77,6 +78,15 @@ const updateComment = asyncHandler(async (req, res) => {
         throw new ApiError(400, "New Content is required!");
     }
 
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+        throw new ApiError(404, "Comment not found!");
+    }
+
+    if (comment.owner.toString() !== userId) {
+        throw new ApiError(403, "You do not have permission to update this comment!");
+    }
+
     // update comment with new content
     const updatedComment = await Comment.findByIdAndUpdate(commentId, {
         $set: {
@@ -85,13 +95,13 @@ const updateComment = asyncHandler(async (req, res) => {
     }, { new: true })
 
     if (!updatedComment) {
-        throw new ApiError(404, "Comment not found!");
+        throw new ApiError(404, "Something went wrong while updating comment!");
     }
 
     res.status(201).json(new ApiResponse(
         201,
         { updatedComment },
-        "Comment added successfully"
+        "Comment updated successfully"
     ));
 })
 
@@ -104,11 +114,20 @@ const deleteComment = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid commentId!");
     }
 
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+        throw new ApiError(404, "Comment not found!");
+    }
+
+    if (comment.owner.toString() !== userId) {
+        throw new ApiError(403, "You do not have permission to update this comment!");
+    }
+
     // delete the comment
     const deletedComment = await Comment.findByIdAndDelete(commentId);
 
     if (!deletedComment) {
-        throw new ApiError(404, "Comment not found!");
+        throw new ApiError(404, "Something went wrong while deleting comment!");
     }
 
     return res.status(200).json(new ApiResponse(
