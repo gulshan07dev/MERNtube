@@ -31,6 +31,7 @@ const UpdateAccountDetailsForm = () => {
 
     const { isSuccess, error } = await useApiHandler(
       async () => dispatch(changeAccountDetails(formData)),
+      true,
       { loadingMessage: "Updating..." }
     );
 

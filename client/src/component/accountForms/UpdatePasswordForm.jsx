@@ -28,6 +28,7 @@ const UpdatePasswordForm = () => {
 
     const { isSuccess, error } = await useApiHandler(
       async () => dispatch(changeUserPassword(formData)),
+      true,
       { loadingMessage: "Updating..." }
     );
 

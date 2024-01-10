@@ -33,6 +33,7 @@ export default function Signup() {
         dispatch(
           registerUser({ fullName, email, password, avatar, coverImage })
         ),
+        true,
       { loadingMessage: "Creating your account..." }
     );
     setError(error);

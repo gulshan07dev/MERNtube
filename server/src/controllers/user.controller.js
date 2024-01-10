@@ -307,6 +307,12 @@ const channel = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Username is missing!");
     }
 
+    // check if channel not exist
+    const isChannelExist = await User.findOne({ username });
+    if (!isChannelExist) {
+        throw new ApiError(404, "channel does not exist!");
+    }
+
     const channel = await User.aggregate([
         {
             $match: {
@@ -330,6 +336,14 @@ const channel = asyncHandler(async (req, res) => {
             }
         },
         {
+            $lookup: {
+                from: "videos",
+                localField: "_id",
+                foreignField: "owner",
+                as: "videos"
+            }
+        },
+        {
             $addFields: {
                 subscriberCount: {
                     $size: "$subscribers"
@@ -339,10 +353,13 @@ const channel = asyncHandler(async (req, res) => {
                 },
                 isSubscribed: {
                     $cond: {
-                        if: { $in: [req.user._id, "$subscribers.subscriber"] },
+                        if: { $in: [isChannelExist._id, "$subscribers.subscriber"] },
                         then: true,
                         else: false
                     }
+                },
+                videoCount: {
+                    $size: "$videos"
                 }
             }
         },
@@ -356,6 +373,7 @@ const channel = asyncHandler(async (req, res) => {
                 subscriberCount: 1,
                 channelSubscribedToCount: 1,
                 isSubscribed: 1,
+                videoCount: 1
             }
         }
     ])

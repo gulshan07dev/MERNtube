@@ -25,6 +25,7 @@ export default function Login() {
 
     const { isSuccess, error } = await useApiHandler(
       async () => dispatch(loginUser({ usernameOrEmail, password })),
+      true,
       { loadingMessage: "Logging in..." }
     );
 

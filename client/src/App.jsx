@@ -9,6 +9,10 @@ import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Account from "./pages/Account";
+import Videos from "./pages/channel/Videos";
+import Tweets from "./pages/channel/Tweets";
+import Channel from "./pages/channel/Channel";
+import ChannelLayout from "./layout/ChannelLayout";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,7 +31,15 @@ function App() {
   }, []);
   return (
     <Routes>
+      {/* home page */}
       <Route path="/" element={<Home />} />
+
+      {/* channel */}
+      <Route path="/c/:username" element={<ChannelLayout />}>
+        <Route path="" element={<Channel />} />
+        <Route path="videos" element={<Videos />} />
+        <Route path="tweets" element={<Tweets />} />
+      </Route>
 
       {/* protected routes */}
       <Route element={<AuthRequired />}>

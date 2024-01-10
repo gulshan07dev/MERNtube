@@ -132,6 +132,19 @@ const getCurrentUser = createAsyncThunk("/users/current-user",
         }
     })
 
+const getChannel = createAsyncThunk("/users/c/username",
+    async (username, { rejectWithValue }) => {
+        try {
+            const res = await axiosInstance.get(`/users/c/${username}`);
+            return res?.data;
+        } catch (error) {
+            if (!error.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    })
+
 
 const authSlice = createSlice({
     name: "auth",
@@ -187,5 +200,6 @@ export {
     changeAccountDetails,
     changeUserAvatar,
     changeCoverImage,
-    getCurrentUser
+    getCurrentUser,
+    getChannel
 }

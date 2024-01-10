@@ -20,7 +20,7 @@ export default function Layout({
         aria-label="Main Content"
       >
         <Sidebar isHidden={!showSidebar} />
-        <main className="flex-1 flex-grow" role="main">
+        <main className="w-full flex-1 flex-grow" role="main">
           <section className={twMerge("w-full min-h-full", className)}>
             {children}
           </section>

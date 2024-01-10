@@ -1,21 +1,22 @@
 import toast from 'react-hot-toast';
 
-export default async function useApiHandler(apiFunction, toastMessages) {
+export default async function useApiHandler(apiFunction,
+    isShowToastMessage, toastMessages) {
     const { loadingMessage, successMessage, errorMessage } = toastMessages;
 
-    const loadingToast = toast.loading(loadingMessage);
+    const loadingToast = isShowToastMessage ? toast.loading(loadingMessage) : null;
 
     try {
         const res = await apiFunction();
 
         if (res?.payload?.success) {
-            toast.success(successMessage || res.payload.message,
-                { id: loadingToast });
+            isShowToastMessage ? toast.success(successMessage || res.payload.message,
+                { id: loadingToast }) : null;
 
-            return { isSuccess: true, error: null }
+            return { isSuccess: true, error: null, data: res?.payload?.data }
         } else {
             const error = errorMessage ||
-                (Object.values(res?.payload?.errors)?.length
+                (Object.values(res?.payload?.errors || {})?.length
                     ? [...Object.values(res?.payload?.errors)]?.[0]?.message
                     : res?.payload?.message)
 
