@@ -34,16 +34,18 @@ function App() {
       {/* home page */}
       <Route path="/" element={<Home />} />
 
-      {/* channel */}
-      <Route path="/c/:username" element={<ChannelLayout />}>
-        <Route path="" element={<Channel />} />
-        <Route path="videos" element={<Videos />} />
-        <Route path="tweets" element={<Tweets />} />
-      </Route>
-
-      {/* protected routes */}
+      {/* ....protected routes.... */}
       <Route element={<AuthRequired />}>
+        
+        {/* account */}
         <Route path="/account" element={<Account />} />
+
+        {/* channel */}
+        <Route path="/c/:username" element={<ChannelLayout />}>
+          <Route path="" element={<Channel />} />
+          <Route path="videos" element={<Videos />} />
+          <Route path="tweets" element={<Tweets />} />
+        </Route>
       </Route>
 
       {/* Authentication routes */}

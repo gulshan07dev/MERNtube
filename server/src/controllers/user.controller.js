@@ -1,4 +1,5 @@
 import { User } from "../models/user.model.js";
+import { Subscription } from "../models/subscription.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -308,15 +309,15 @@ const channel = asyncHandler(async (req, res) => {
     }
 
     // check if channel not exist
-    const isChannelExist = await User.findOne({ username });
-    if (!isChannelExist) {
+    const user = await User.findOne({ username });
+    if (!user) {
         throw new ApiError(404, "channel does not exist!");
     }
 
     const channel = await User.aggregate([
         {
             $match: {
-                username
+                username: username?.toLowerCase()
             }
         },
         {
@@ -351,13 +352,14 @@ const channel = asyncHandler(async (req, res) => {
                 channelSubscribedToCount: {
                     $size: "$subscribedTo"
                 },
-                isSubscribed: {
-                    $cond: {
-                        if: { $in: [isChannelExist._id, "$subscribers.subscriber"] },
-                        then: true,
-                        else: false
-                    }
-                },
+                // TODO this is not working
+                // isSubscribed: {
+                //     $cond: {
+                //         if: { $in: [req.user._id, ["$subscribers.subscriber"]] },
+                //         then: true,
+                //         else: false
+                //     }
+                // },
                 videoCount: {
                     $size: "$videos"
                 }
@@ -372,19 +374,25 @@ const channel = asyncHandler(async (req, res) => {
                 coverImage: 1,
                 subscriberCount: 1,
                 channelSubscribedToCount: 1,
-                isSubscribed: 1,
+                // isSubscribed: 1,
                 videoCount: 1
             }
         }
     ])
 
+
     if (!channel) {
         throw new ApiError(404, "channel does not exist!");
     }
 
+    const isSubscribed = await Subscription.find({
+        subscriber: req.user._id,
+        channel: user._id
+    })
+
     res.status(200).json(new ApiResponse(
         200,
-        { channel: channel[0] },
+        { channel: {...channel[0], isSubscribed: Boolean(isSubscribed?.length)} },
         "User channel fetched successfully"
     ))
 })

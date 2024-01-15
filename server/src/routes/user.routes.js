@@ -46,7 +46,7 @@ router.route("/change-coverImage").patch(
 
 router.route("/current-user").get(verifyJwt, getCurrentUser);
 
-router.route("/c/:username").get(channel);
+router.route("/c/:username").get(verifyJwt, channel);
 
 router.route("/watch-history").get(verifyJwt, getUserWatchHistory);
 
