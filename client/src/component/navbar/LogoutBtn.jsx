@@ -18,6 +18,7 @@ export default function LogoutBtn({ className = "" }) {
 
     const { isSuccess, error } = await useApiHandler(
       () => dispatch(logoutUser()),
+      true,
       { loadingMessage: "Logout..." }
     );
 
