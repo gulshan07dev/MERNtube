@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, Outlet, useParams, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
@@ -8,13 +8,13 @@ import { getChannel } from "@/store/slices/authSlice";
 import useApiHandler from "@/hooks/useApiHandler";
 import Avatar from "@/component/Avatar";
 import Skeleton from "@/component/skeleton/Skeleton";
+import SubscribeBtn from "@/component/channel/SubscribeBtn";
 
 export default function ChannelLayout() {
   const dispatch = useDispatch();
   const { username } = useParams();
   const location = useLocation();
 
-  const { user } = useSelector((state) => state.auth);
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -41,7 +41,7 @@ export default function ChannelLayout() {
 
   useEffect(() => {
     fetchChannel();
-  }, []);
+  }, [username]);
 
   const channelTabsLink = [
     {
@@ -117,10 +117,10 @@ export default function ChannelLayout() {
                   </h1>
 
                   {/* Username and subscriber/video count */}
-                  <p className="md:text-lg text-sm text-zinc-600 font-semibold leading-none">
+                  <p className="md:text-lg text-sm text-zinc-600 font-semibold leading-tight">
                     {channel?.username}
                   </p>
-                  <p className="md:text-lg text-sm text-zinc-600 font-semibold leading-none">
+                  <p className="md:text-lg text-sm text-zinc-600 font-semibold leading-loose">
                     {channel?.subscriberCount}{" "}
                     {channel?.subscriberCount <= 1
                       ? "Subscriber"
@@ -129,6 +129,11 @@ export default function ChannelLayout() {
                     {channel?.videoCount}{" "}
                     {channel?.videoCount <= 1 ? "video" : "videos"}
                   </p>
+                  {/* subscribe button */}
+                  <SubscribeBtn
+                    isSubscribed={channel?.isSubscribed}
+                    channelId={channel?._id}
+                  />
                 </div>
               </div>
             </>
@@ -140,6 +145,7 @@ export default function ChannelLayout() {
               // Render channel tabs with appropriate styles
               <Link
                 to={slug}
+                key={slug}
                 className={twMerge(
                   "text-base text-zinc-500 font-semibold font-poppins transition-all",
                   location.pathname === slug &&
