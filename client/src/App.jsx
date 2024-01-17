@@ -9,10 +9,10 @@ import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Account from "./pages/Account";
+import ChannelLayout from "./layout/ChannelLayout";
+import Channel from "./pages/channel/Channel";
 import Videos from "./pages/channel/Videos";
 import Tweets from "./pages/channel/Tweets";
-import Channel from "./pages/channel/Channel";
-import ChannelLayout from "./layout/ChannelLayout";
 
 function App() {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ function App() {
         
         {/* account */}
         <Route path="/account" element={<Account />} />
-
+ 
         {/* channel */}
         <Route path="/c/:username" element={<ChannelLayout />}>
           <Route path="" element={<Channel />} />
