@@ -27,7 +27,8 @@ const generateAccessAndRefereshTokens = async (user) => {
 const options = {
     httpOnly: true,
     secure: true,
-    SameSite: "none"
+    SameSite: "none",
+    maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
 }
 
 // register

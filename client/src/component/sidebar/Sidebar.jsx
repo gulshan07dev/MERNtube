@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineHome } from "react-icons/ai";
-import { TfiVideoCamera, TfiVideoClapper } from "react-icons/tfi";
 import { FaHouseUser, FaUserCheck } from "react-icons/fa";
 import { RiVideoLine, RiHistoryFill } from "react-icons/ri";
 import { MdOutlineWatchLater, MdOutlineFeedback } from "react-icons/md";
@@ -27,21 +26,15 @@ const Sidebar = ({ isHidden }) => {
     () => [
       { label: "Home", icon: <AiOutlineHome />, slug: "/", active: true },
       {
-        label: "Shorts",
-        icon: <TfiVideoCamera />,
-        slug: "/shorts",
+        label: "Subscriptions",
+        icon: <TfiVideoClapper />,
+        slug: "/subscriptions",
         active: true,
       },
       {
         label: "Create",
         icon: <MdCloudUpload />,
         slug: "/create",
-        active: true,
-      },
-      {
-        label: "Subscriptions",
-        icon: <TfiVideoClapper />,
-        slug: "/subscriptions",
         active: true,
       },
       {
