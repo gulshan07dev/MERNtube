@@ -19,7 +19,7 @@ body {
 }
 
 #sidebar::-webkit-scrollbar {
-  width: 8px;
+  width: 5px;
 }
 
 #sidebar::-webkit-scrollbar-track {
@@ -27,6 +27,6 @@ body {
 }
 
 #sidebar::-webkit-scrollbar-thumb {
-  background: #adadad;
-  border-radius: 10px;
+  background: #adadadaf;
+  border-radius: 7px;
 }

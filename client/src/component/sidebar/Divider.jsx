@@ -1,5 +1,9 @@
-import React from 'react'
+import { twMerge } from "tailwind-merge";
 
-export default function Devider() {
-  return <div className="w-full h-[1.5px] bg-[#00000015] m-1"></div>;
+export default function Devider({ className = "" }) {
+  return (
+    <div
+      className={twMerge("w-full h-[1.5px] bg-[#00000015] m-1", className)}
+    ></div>
+  );
 }

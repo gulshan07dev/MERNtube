@@ -3,12 +3,13 @@ import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineHome } from "react-icons/ai";
 import { TfiVideoCamera, TfiVideoClapper } from "react-icons/tfi";
-import { FaHouseUser } from "react-icons/fa";
+import { FaHouseUser, FaUserCheck } from "react-icons/fa";
 import { RiVideoLine, RiHistoryFill } from "react-icons/ri";
 import { MdOutlineWatchLater, MdOutlineFeedback } from "react-icons/md";
 import { SlLike } from "react-icons/sl";
 import { CiSettings } from "react-icons/ci";
 import { IoIosHelpCircleOutline } from "react-icons/io";
+import { MdCloudUpload } from "react-icons/md";
 
 import { sidebarWidth } from "@/constant";
 import useSidebar from "@/hooks/useSidebar";
@@ -16,6 +17,7 @@ import MenuLink from "./MenuLink";
 import Divider from "./Divider";
 import SidebarToggleBtn from "../navbar/SidebarToggleBtn";
 import Logo from "../Logo";
+import Avatar from "../Avatar";
 
 const Sidebar = ({ isHidden }) => {
   const { user, isLoggedIn } = useSelector((state) => state.auth);
@@ -31,9 +33,27 @@ const Sidebar = ({ isHidden }) => {
         active: true,
       },
       {
+        label: "Create",
+        icon: <MdCloudUpload />,
+        slug: "/create",
+        active: true,
+      },
+      {
         label: "Subscriptions",
         icon: <TfiVideoClapper />,
         slug: "/subscriptions",
+        active: true,
+      },
+      {
+        label: "You",
+        icon: (
+          <Avatar
+            fullName={user?.fullName}
+            url={user?.avatar?.url}
+            className="h-7 w-7"
+          />
+        ),
+        slug: "/you",
         active: true,
       },
     ],
@@ -126,11 +146,26 @@ const Sidebar = ({ isHidden }) => {
           </div>
 
           {/* Menu Items */}
-          {menuItems.map(
-            (menuItem) =>
-              menuItem.active && <MenuLink key={menuItem.slug} {...menuItem} />
-          )}
-          <Divider />
+          <div
+            className={twMerge(
+              "md:px-2 md:pb-2 flex md:flex-col md:gap-2",
+              "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white max-md:border max-md:items-center max-md:transition-all",
+              isOpen && "max-md:-bottom-[60px]"
+            )}
+          >
+            {menuItems.map(
+              (menuItem) =>
+                menuItem.active && (
+                  <MenuLink
+                    key={menuItem.slug}
+                    {...menuItem}
+                    className="max-md:flex-col max-md:justify-center max-md:items-center
+                    max-md:gap-1 max-md:w-[20vw]"
+                  />
+                )
+            )}
+          </div>
+          <Divider className="max-md:hidden" />
 
           {/* User Menu */}
           {userMenu.map(
@@ -146,7 +181,7 @@ const Sidebar = ({ isHidden }) => {
           )}
           <Divider />
 
-          <div className="p-3">
+          <div className="px-3 pb-3">
             <p className="text-sm font-hedvig_letters text-gray-700 leading-none">
               Made With <span className="text-lg text-red-600">❤</span>
               <br /> <span className="pl-3 font-Noto_sans">By Gulshan</span>
