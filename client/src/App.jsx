@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 
@@ -16,9 +16,11 @@ import Tweets from "./pages/channel/Tweets";
 
 function App() {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
   const fetchCurrentUser = async () => {
     await dispatch(getCurrentUser());
+    setLoading(false);
   };
 
   const refreshToken = async () => {
@@ -30,30 +32,31 @@ function App() {
     refreshToken();
   }, []);
   return (
-    <Routes>
-      {/* home page */}
-      <Route path="/" element={<Home />} />
+    !loading && (
+      <Routes>
+        {/* home page */}
+        <Route path="/" element={<Home />} />
 
-      {/* ....protected routes.... */}
-      <Route element={<AuthRequired />}>
-        
-        {/* account */}
-        <Route path="/account" element={<Account />} />
- 
-        {/* channel */}
-        <Route path="/c/:username" element={<ChannelLayout />}>
-          <Route path="" element={<Channel />} />
-          <Route path="videos" element={<Videos />} />
-          <Route path="tweets" element={<Tweets />} />
+        {/* ....protected routes.... */}
+        <Route element={<AuthRequired />}>
+          {/* account */}
+          <Route path="/account" element={<Account />} />
+
+          {/* channel */}
+          <Route path="/c/:username" element={<ChannelLayout />}>
+            <Route path="" element={<Channel />} />
+            <Route path="videos" element={<Videos />} />
+            <Route path="tweets" element={<Tweets />} />
+          </Route>
         </Route>
-      </Route>
 
-      {/* Authentication routes */}
-      <Route element={<AuthNotRequired />}>
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/signup" element={<Signup />} />
-      </Route>
-    </Routes>
+        {/* Authentication routes */}
+        <Route element={<AuthNotRequired />}>
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/signup" element={<Signup />} />
+        </Route>
+      </Routes>
+    )
   );
 }
 

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
 
 import Form from "@/component/Form";
 import Input from "@/component/Input";
@@ -10,22 +9,18 @@ import { changeAccountDetails } from "@/store/slices/authSlice";
 
 const UpdateAccountDetailsForm = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state?.auth);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const initialAccountDetails = {
-    username: user.username,
-    fullName: user.fullName,
+    username: user?.username,
+    fullName: user?.fullName,
   };
   const { formData, handleInputChange } = useForm(initialAccountDetails);
 
   const onSubmit = async () => {
-    if (!Object.values(formData).every((field) => field?.trim(" "))) {
-      return toast.error("All fields are required!");
-    }
-
     setLoading(true);
     setError(null);
 
@@ -53,13 +48,13 @@ const UpdateAccountDetailsForm = () => {
           <Input
             label="Username"
             type="text"
-            value={formData.username}
+            value={formData?.username}
             onChange={(e) => handleInputChange("username", e.target.value)}
           />
           <Input
             label="Full Name"
             type="text"
-            value={formData.fullName}
+            value={formData?.fullName}
             onChange={(e) => handleInputChange("fullName", e.target.value)}
           />
         </>

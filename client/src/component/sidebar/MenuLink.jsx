@@ -25,7 +25,7 @@ export default function MenuLink({ label, icon, slug, className }) {
           <span
             className={`text-[15px] font-roboto font-[500] truncate ${
               isActive ? "text-zinc-950" : "text-zinc-700"
-            }`}
+            } ${className}`}
           >
             {label}
           </span>

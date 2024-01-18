@@ -154,7 +154,7 @@ const Sidebar = ({ isHidden }) => {
                     key={menuItem.slug}
                     {...menuItem}
                     className="max-md:flex-col max-md:justify-center max-md:items-center
-                    max-md:gap-1 max-md:w-[20vw]"
+                    max-md:gap-1 max-md:w-[20vw] max-md:text-xs"
                   />
                 )
             )}
