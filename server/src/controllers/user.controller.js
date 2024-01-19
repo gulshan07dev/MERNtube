@@ -24,11 +24,10 @@ const generateAccessAndRefereshTokens = async (user) => {
     return { accessToken, refreshToken }
 }
 
-const options = {
+const cookieOptions = {
     httpOnly: true,
     secure: true,
-    SameSite: "none",
-    maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
+    sameSite: 'none'
 }
 
 // register
@@ -112,11 +111,14 @@ const loginUser = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
-        .json(new ApiResponse(200,
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", refreshToken, cookieOptions)
+        .json(new ApiResponse(
+            200,
             {
-                user: loggedInUserWithoutSensitiveFields, accessToken, refreshToken
+                user: loggedInUserWithoutSensitiveFields,
+                accessToken,
+                refreshToken
             },
             "User logged In Successfully!"
         ))
@@ -131,8 +133,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .clearCookie("accessToken", options)
-        .clearCookie("refreshToken", options)
+        .clearCookie("accessToken", cookieOptions)
+        .clearCookie("refreshToken", cookieOptions)
         .json(new ApiResponse(200, {}, "User logged Out successfully"))
 });
 
@@ -158,9 +160,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     return res.
         status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
-        .json(new ApiResponse(200, { accessToken, refreshToken },
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", refreshToken, cookieOptions)
+        .json(new ApiResponse(
+            200,
+            { accessToken, refreshToken },
             "Access token refreshed successfully!"))
 });
 
@@ -393,7 +397,7 @@ const channel = asyncHandler(async (req, res) => {
 
     res.status(200).json(new ApiResponse(
         200,
-        { channel: {...channel[0], isSubscribed: Boolean(isSubscribed?.length)} },
+        { channel: { ...channel[0], isSubscribed: Boolean(isSubscribed?.length) } },
         "User channel fetched successfully"
     ))
 })
