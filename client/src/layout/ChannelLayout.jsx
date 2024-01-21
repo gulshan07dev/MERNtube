@@ -1,41 +1,26 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Link, Outlet, useParams, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
 import Layout from "./Layout";
+import useActionHandler from "@/hooks/useActionHandler";
 import { getChannel } from "@/store/slices/authSlice";
-import useApiHandler from "@/hooks/useApiHandler";
 import Avatar from "@/component/Avatar";
 import Skeleton from "@/component/skeleton/Skeleton";
 import SubscribeBtn from "@/component/channel/SubscribeBtn";
 
 export default function ChannelLayout() {
-  const dispatch = useDispatch();
   const { username } = useParams();
   const location = useLocation();
-
   const [channel, setChannel] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+
+  const { error, isLoading, handleAction } = useActionHandler(getChannel);
 
   async function fetchChannel() {
-    setLoading(true);
-    setError(null);
-
-    const { isSuccess, error, data } = await useApiHandler(
-      async () => dispatch(getChannel(username)),
-      false,
-      {}
-    );
+    const { isSuccess, resData } = await handleAction(username);
 
     if (isSuccess) {
-      setLoading(false);
-      setChannel(data.channel);
-    }
-
-    if (error) {
-      setError(error);
+      setChannel(resData?.channel);
     }
   }
 
@@ -86,7 +71,7 @@ export default function ChannelLayout() {
       ) : (
         // Render channel details if no error
         <div className="w-full flex flex-col gap-8">
-          {loading ? (
+          {isLoading ? (
             // Use ChannelLayoutSkeleton component while loading
             <ChannelLayoutSkeleton />
           ) : (
@@ -154,7 +139,7 @@ export default function ChannelLayout() {
               >
                 <button
                   className="disabled:opacity-70 disabled:animate-pulse"
-                  disabled={loading}
+                  disabled={isLoading}
                 >
                   {label}
                 </button>
@@ -163,7 +148,7 @@ export default function ChannelLayout() {
           </div>
         </div>
       )}
-      {!loading && !error && <Outlet />}
+      {!isLoading && !error && <Outlet />}
     </Layout>
   );
 }

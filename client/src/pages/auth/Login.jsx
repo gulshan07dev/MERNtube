@@ -1,36 +1,25 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import {useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import Layout from "../../layout/Layout";
 import AuthForm from "../../component/authForm/AuthForm";
-import useApiHandler from "../../hooks/useApiHandler";
+import useActionHandler from "@/hooks/useActionHandler";
 import { loginUser } from "../../store/slices/authSlice";
 
 export default function Login() {
-  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { isLoading, error, handleAction } = useActionHandler(loginUser, {
+    loadingMessage: "Logging in...",
+  });
 
   const handleLogin = async ({ usernameOrEmail, password }) => {
     if (!usernameOrEmail || !password) {
       return toast.error("All fields are required!");
     }
 
-    setIsLoading(true);
-
-    const { isSuccess, error } = await useApiHandler(
-      async () => dispatch(loginUser({ usernameOrEmail, password })),
-      true,
-      { loadingMessage: "Logging in..." }
-    );
-
-    setError(error);
-    setIsLoading(false);
+    const { isSuccess } = handleAction({ usernameOrEmail, password });
 
     if (isSuccess) {
       navigate("/");

@@ -1,28 +1,19 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
 import Button from "../Button";
-import useApiHandler from "@/hooks/useApiHandler";
+import useActionHandler from "@/hooks/useActionHandler";
 import { logoutUser } from "@/store/slices/authSlice";
 
 export default function LogoutBtn({ className = "" }) {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const { error, isLoading, handleAction } = useActionHandler(logoutUser, {
+    loadingMessage: "Logout...",
+  });
 
   const handleLogout = async () => {
-    setIsLoading(true);
-
-    const { isSuccess, error } = await useApiHandler(
-      () => dispatch(logoutUser()),
-      true,
-      { loadingMessage: "Logout..." }
-    );
-
-    setIsLoading(false);
+    const { isSuccess } = await handleAction();
 
     if (isSuccess) {
       navigate("/");

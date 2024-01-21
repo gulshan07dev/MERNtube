@@ -1,18 +1,20 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import Form from "@/component/Form";
 import Input from "@/component/Input";
 import useForm from "@/hooks/useForm";
-import useApiHandler from "@/hooks/useApiHandler";
+import useActionHandler from "@/hooks/useActionHandler";
 import { changeAccountDetails } from "@/store/slices/authSlice";
 
 const UpdateAccountDetailsForm = () => {
-  const dispatch = useDispatch();
   const { user } = useSelector((state) => state?.auth);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { error, isLoading, handleAction } = useActionHandler(
+    changeAccountDetails,
+    {
+      loadingMessage: "Updating...",
+    }
+  );
 
   const initialAccountDetails = {
     username: user?.username,
@@ -21,19 +23,7 @@ const UpdateAccountDetailsForm = () => {
   const { formData, handleInputChange } = useForm(initialAccountDetails);
 
   const onSubmit = async () => {
-    setLoading(true);
-    setError(null);
-
-    const { isSuccess, error } = await useApiHandler(
-      async () => dispatch(changeAccountDetails(formData)),
-      true,
-      { loadingMessage: "Updating..." }
-    );
-
-    if (!isSuccess) {
-      setError(error);
-    }
-    setLoading(false);
+    await handleAction(formData);
   };
 
   return (
@@ -41,7 +31,7 @@ const UpdateAccountDetailsForm = () => {
       title="Account"
       description="Make changes to your account here. Click save when you're done."
       submitButtonLabel="Save changes"
-      isLoading={loading}
+      isLoading={isLoading}
       error={error}
       inputs={
         <>

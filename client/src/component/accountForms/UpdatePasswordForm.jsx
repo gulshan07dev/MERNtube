@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 
 import Form from "@/component/Form";
 import Input from "@/component/Input";
 import useForm from "@/hooks/useForm";
 import { changeUserPassword } from "@/store/slices/authSlice";
-import useApiHandler from "@/hooks/useApiHandler";
+import useActionHandler from "@/hooks/useActionHandler";
 
 const UpdatePasswordForm = () => {
-  const dispatch = useDispatch();
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { error, isLoading, handleAction } = useActionHandler(
+    changeUserPassword,
+    {
+      loadingMessage: "Updating...",
+    }
+  );
 
   const initialUserPassword = { oldPassword: "", newPassword: "" };
   const { formData, handleInputChange, resetForm } =
@@ -23,22 +23,11 @@ const UpdatePasswordForm = () => {
       return toast.error("All fields are required!");
     }
 
-    setLoading(true);
-    setError(null);
-
-    const { isSuccess, error } = await useApiHandler(
-      async () => dispatch(changeUserPassword(formData)),
-      true,
-      { loadingMessage: "Updating..." }
-    );
+    const { isSuccess } = await handleAction(formData);
 
     if (isSuccess) {
       resetForm();
-    } else {
-      setError(error);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -46,7 +35,7 @@ const UpdatePasswordForm = () => {
       title="Password"
       description="Make changes to your password here. Click save when you're done."
       submitButtonLabel="Save changes"
-      isLoading={loading}
+      isLoading={isLoading}
       error={error}
       inputs={
         <>

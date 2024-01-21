@@ -1,7 +1,6 @@
 import toast from 'react-hot-toast';
 
-export default async function useApiHandler(apiFunction,
-    isShowToastMessage, toastMessages) {
+export default async function useApiHandler(apiFunction, isShowToastMessage, toastMessages) {
     const { loadingMessage, successMessage, errorMessage } = toastMessages;
 
     const loadingToast = isShowToastMessage ? toast.loading(loadingMessage) : null;
@@ -13,7 +12,7 @@ export default async function useApiHandler(apiFunction,
             isShowToastMessage ? toast.success(successMessage || res.payload.message,
                 { id: loadingToast }) : null;
 
-            return { isSuccess: true, error: null, data: res?.payload?.data }
+            return { isSuccess: true, error: null, resData: res?.payload?.data }
         } else {
             const error = errorMessage ||
                 (Object.values(res?.payload?.errors || {})?.length

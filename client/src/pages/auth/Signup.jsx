@@ -1,19 +1,17 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import Layout from "../../layout/Layout";
 import AuthForm from "../../component/authForm/AuthForm";
-import useApiHandler from "../../hooks/useApiHandler";
+import useActionHandler from "@/hooks/useActionHandler";
 import { registerUser } from "../../store/slices/authSlice";
 
 export default function Signup() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { error, isLoading, handleAction } = useActionHandler(registerUser, {
+    loadingMessage: "Creating your account...",
+  });
 
   const handleSignup = async ({
     fullName,
@@ -26,18 +24,13 @@ export default function Signup() {
       return toast.error("All fields are required!");
     }
 
-    setIsLoading(true);
-
-    const { isSuccess, error } = await useApiHandler(
-      () =>
-        dispatch(
-          registerUser({ fullName, email, password, avatar, coverImage })
-        ),
-        true,
-      { loadingMessage: "Creating your account..." }
-    );
-    setError(error);
-    setIsLoading(false);
+    const { isSuccess } = await handleAction({
+      fullName,
+      email,
+      password,
+      avatar,
+      coverImage,
+    });
 
     if (isSuccess) {
       navigate("/auth/login", { state: { usernameOrEmail: email, password } });

@@ -20,7 +20,7 @@ import Logo from "../Logo";
 import Avatar from "../Avatar";
 
 const Sidebar = ({ isHidden }) => {
-  const { user, isLoggedIn } = useSelector((state) => state.auth);
+  const { user, isLoggedIn } = useSelector((state) => state?.auth);
   const { isOpen, onClose } = useSidebar();
 
   const menuItems = useMemo(
