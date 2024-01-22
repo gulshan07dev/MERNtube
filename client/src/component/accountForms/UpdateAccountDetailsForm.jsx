@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 
-import Form from "@/component/Form";
-import Input from "@/component/Input";
+import Form from "@/component/CoreUI/Form";
+import Input from "@/component/CoreUI/Input";
 import useForm from "@/hooks/useForm";
 import useActionHandler from "@/hooks/useActionHandler";
 import { changeAccountDetails } from "@/store/slices/authSlice";

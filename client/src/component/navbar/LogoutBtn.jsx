@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import Button from "../Button";
+import Button from "../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import { logoutUser } from "@/store/slices/authSlice";
 

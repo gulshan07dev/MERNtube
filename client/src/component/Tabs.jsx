@@ -1,13 +1,18 @@
 import { useState } from "react";
 
-import Button from "./Button";
+import Button from "./CoreUI/Button";
 import { twMerge } from "tailwind-merge";
 
-const Tabs = ({ tabs }) => {
+const Tabs = ({ tabs, className = "" }) => {
   const [selectedTab, setSelectedTab] = useState(tabs[0].label);
 
   return (
-    <div className="max-w-[500px] w-[95%] flex flex-col gap-5">
+    <div
+      className={twMerge(
+        "max-w-[600px] w-[95%] flex flex-col gap-5",
+        className
+      )}
+    >
       <div className="bg-slate-100 rounded-lg p-3 flex items-center justify-center">
         {tabs.map((tab) => (
           <Button

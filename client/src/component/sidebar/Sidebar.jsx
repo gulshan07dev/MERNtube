@@ -16,8 +16,8 @@ import useSidebar from "@/hooks/useSidebar";
 import MenuLink from "./MenuLink";
 import Divider from "./Divider";
 import SidebarToggleBtn from "../navbar/SidebarToggleBtn";
-import Logo from "../Logo";
-import Avatar from "../Avatar";
+import Logo from "../CoreUI/Logo";
+import Avatar from "../CoreUI/Avatar";
 
 const Sidebar = ({ isHidden }) => {
   const { user, isLoggedIn } = useSelector((state) => state?.auth);

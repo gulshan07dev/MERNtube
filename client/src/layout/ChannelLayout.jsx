@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import Layout from "./Layout";
 import useActionHandler from "@/hooks/useActionHandler";
 import { getChannel } from "@/store/slices/authSlice";
-import Avatar from "@/component/Avatar";
+import Avatar from "@/component/CoreUI/Avatar";
 import Skeleton from "@/component/skeleton/Skeleton";
 import SubscribeBtn from "@/component/channel/SubscribeBtn";
 

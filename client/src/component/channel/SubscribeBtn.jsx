@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaUserPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
-import Button from "../Button";
+import Button from "../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import { toggleSubscription } from "@/store/slices/subscriptionSlice";
 

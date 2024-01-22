@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 
-import Form from "@/component/Form";
-import Input from "@/component/Input";
+import Form from "@/component/CoreUI/Form";
+import Input from "@/component/CoreUI/Input";
 import useForm from "@/hooks/useForm";
 import { changeUserPassword } from "@/store/slices/authSlice";
 import useActionHandler from "@/hooks/useActionHandler";

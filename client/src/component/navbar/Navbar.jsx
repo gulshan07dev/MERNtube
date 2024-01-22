@@ -2,11 +2,11 @@ import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 
 import { navHeight } from "@/constant";
-import Logo from "../Logo";
+import Logo from "../CoreUI/Logo";
 import SearchBar from "./SearchBar";
-import Avatar from "../Avatar";
-import Button from "../Button";
-import DropdownMenu from "../DropdownMenu";
+import Avatar from "../CoreUI/Avatar";
+import Button from "../CoreUI/Button";
+import DropdownMenu from "../CoreUI/DropdownMenu";
 import LogoutBtn from "./LogoutBtn";
 import SidebarToggleBtn from "./SidebarToggleBtn";
 
