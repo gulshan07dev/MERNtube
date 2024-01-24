@@ -93,7 +93,7 @@ export default function AuthForm({
                 accept=".png, .jpeg, .jpg"
                 fileType="image"
                 ref={coverImageRef}
-                className="h-24 w-full rounded-md object-cover overflow-hidden"
+                className="h-24 w-full rounded-md object-cover border-2 border-dashed border-blue-500 overflow-hidden"
                 onChange={(file) =>
                   setAuthInputs((prev: any) => ({
                     ...prev,

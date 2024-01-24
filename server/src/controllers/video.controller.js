@@ -12,8 +12,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
     const { title, description, isPublished = true } = req.body;
 
     // Check if any field is empty
-    if (![title, description].every(Boolean)) {
-        throw new ApiError(400, "All fields are required!");
+    if (!title) {
+        throw new ApiError(400, "title is required!");
     }
 
     // upload video & thumbnail on cloudinary

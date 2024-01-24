@@ -13,6 +13,7 @@ import ChannelLayout from "./layout/ChannelLayout";
 import Channel from "./pages/channel/Channel";
 import Videos from "./pages/channel/Videos";
 import Tweets from "./pages/channel/Tweets";
+import Create from "./pages/Create";
 import { AppDispatch } from "./store/store";
 
 function App() {
@@ -49,6 +50,9 @@ function App() {
             <Route path="videos" element={<Videos />} />
             <Route path="tweets" element={<Tweets />} />
           </Route>
+
+          {/* create */}
+          <Route path="/create" element={<Create />} />
         </Route>
 
         {/* Authentication routes */}

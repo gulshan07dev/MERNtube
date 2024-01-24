@@ -8,7 +8,8 @@ interface FormProps {
   inputs: React.ReactNode;
   submitButtonLabel: string;
   submitButtonIcon?: React.ReactElement;
-  isSubmitButtonPositionLeft?: Boolean;
+  isSubmitButtonPositionLeft?: boolean;
+  isButtonDisabled?: boolean
   onSubmit: () => void;
   isLoading: boolean | undefined;
   error?: string | null;
@@ -21,6 +22,7 @@ export default function Form({
   submitButtonLabel,
   submitButtonIcon,
   isSubmitButtonPositionLeft = true,
+  isButtonDisabled,
   onSubmit,
   isLoading,
   error,
@@ -52,7 +54,7 @@ export default function Form({
         label={isLoading ? "Loading..." : submitButtonLabel}
         type="submit"
         icon={submitButtonIcon}
-        disabled={isLoading}
+        disabled={isButtonDisabled}
         className={`w-fit px-8 text-base ${
           isSubmitButtonPositionLeft ? "self-start" : "self-end"
         }`}

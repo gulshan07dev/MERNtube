@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit"
 import authSlice from "./slices/authSlice";
 import subscriptionSlice from "./slices/subscriptionSlice";
 import videoSlice from "./slices/videoSlice";
+import tweetSlice from "./slices/tweetSlice";
 
 const store = configureStore({
     reducer: {
         auth: authSlice,
         subscription: subscriptionSlice,
-        video: videoSlice
+        video: videoSlice,
+        tweet: tweetSlice
     },
     devTools: import.meta.env.MODE === "development"
 })
