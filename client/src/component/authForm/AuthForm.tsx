@@ -87,36 +87,7 @@ export default function AuthForm({
           <>
             {/* avatar and cover image */}
             <div className="w-full flex flex-col items-center -mt-7">
-              {/* <div
-                className="h-24 w-full rounded-md object-cover overflow-hidden"
-                role="button"
-                onClick={() => coverImageRef.current.click()}
-              >
-                <img
-                  src={
-                    authInputs.coverImage
-                      ? URL.createObjectURL(authInputs.coverImage)
-                      : "/default-cover.png"
-                  }
-                  alt="coverImage"
-                />
-                <Input
-                  label="Cover Image"
-                  type="file"
-                  onChange={(e) =>
-                    setAuthInputs((prev) => ({
-                      ...prev,
-                      coverImage: e.target.files[0],
-                    }))
-                  }
-                  isOptional={true}
-                  accept=".png, .jpeg, .jpg"
-                  hidden={true}
-                  ref={coverImageRef}
-                />
-              </div> */}
-
-              <FileUpload 
+              <FileUpload
                 label="Cover Image"
                 defaultImageSrc="/default-cover.png"
                 accept=".png, .jpeg, .jpg"
@@ -130,35 +101,20 @@ export default function AuthForm({
                   }))
                 }
               />
-
-              {/* <div
+              <FileUpload
+                label="Avatar"
+                defaultImageSrc="/default-avatar.webp"
+                accept=".png, .jpeg, .jpg"
+                fileType="image"
+                ref={avatarRef}
                 className="h-16 w-16 rounded-full object-cover -mt-8 border-2 border-white overflow-hidden"
-                role="button"
-                onClick={() => avatarRef.current.click()}
-              >
-                <img
-                  src={
-                    authInputs.avatar
-                      ? URL.createObjectURL(authInputs.avatar)
-                      : "/default-avatar.webp"
-                  }
-                  alt="avatar"
-                />
-                <Input
-                  label="Avatar"
-                  type="file"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setAuthInputs((prev: any) => ({
-                      ...prev,
-                      avatar: e.target.files?.[0],
-                    }))
-                  }
-                  isOptional={true}
-                  accept=".png, .jpeg, .jpg"
-                  hidden={true}
-                  ref={avatarRef}
-                /> 
-              </div> */}
+                onChange={(file) =>
+                  setAuthInputs((prev: any) => ({
+                    ...prev,
+                    avatar: file,
+                  }))
+                }
+              />
             </div>
 
             {/* full name */}

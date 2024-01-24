@@ -27,7 +27,7 @@ const UpdateAccountDetailsForm = () => {
   });
 
   const onSubmit = async () => {
-    if (formData.username === user.username) {
+    if (formData.username === user?.username) {
       return await handleAction({ fullName: formData.fullName });
     }
     return await handleAction(formData);
