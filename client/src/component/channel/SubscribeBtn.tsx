@@ -31,7 +31,7 @@ export default function SubscribeBtn({
     }
   };
 
-  return user._id !== channelId ? (
+  return user?._id !== channelId ? (
     <Button
       label={
         isLoading ? "subscribing..." : subscribed ? "Un subscribe" : "subscribe"

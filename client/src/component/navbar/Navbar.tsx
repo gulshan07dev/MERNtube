@@ -61,10 +61,10 @@ const Navbar = ({
               />
               <div className="flex flex-col min-w-[120px] max-w-[165px]">
                 <h1 className="text-base text-gray-900 font-roboto truncate">
-                  {user.fullName}
+                  {user?.fullName}
                 </h1>
                 <p className="text-sm text-gray-700 font-nunito leading-none truncate">
-                  {user.username}
+                  {user?.username}
                 </p>
                 {/* Link to user's channel */}
                 <Link

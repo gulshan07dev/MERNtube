@@ -9,7 +9,7 @@ const createVideo = createAsyncThunk("/videos/create",
             const res = await axiosInstance.post("/videos", data,
                 { headers: { "Content-Type": "multipart/form-data" } })
             return res.data;
-        } catch (error) {
+        } catch (error: any) {
             if (!error.response) {
                 throw error;
             }
@@ -21,7 +21,7 @@ const videoSlice = createSlice({
     name: "video",
     initialState,
     reducers: {},
-    extraReducers: (builder) => { }
+    extraReducers: (_builder) => { }
 })
 
 export default videoSlice.reducer
