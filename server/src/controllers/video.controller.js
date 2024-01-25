@@ -171,7 +171,7 @@ const getVideoById = asyncHandler(async (req, res) => {
         }
     ])
 
-    if (!video) {
+    if (!video.length) {
         throw new ApiError(404, "Video not find!")
     }
 
@@ -190,13 +190,13 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
     // Match stage for filtering by userId
 
-    if (!isValidObjectId(userId)) {
+    if (userId && !isValidObjectId(userId)) {
         throw new ApiError(400, "Invalid userId!");
     }
 
     const user = await User.findById(userId);
 
-    if (!user) {
+    if (userId && !user) {
         throw new ApiError(404, "User Not available witht this userId!");
     }
 
