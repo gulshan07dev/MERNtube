@@ -1,4 +1,5 @@
 import VideoCard from "@/component/video/VideoCard";
+import VideoSkeleton from "@/component/video/VideoSkeleton";
 import Layout from "@/layout/Layout";
 import { getAllVideos } from "@/store/slices/videoSlice";
 import { AppDispatch, RootState } from "@/store/store";
@@ -7,8 +8,9 @@ import { useSelector, useDispatch } from "react-redux";
 
 export default function Home() {
   const dispatch: AppDispatch = useDispatch();
-  const { error, loading, videos, currPage, totalPages, hasNextPage } =
-    useSelector((state: RootState) => state?.video);
+  const { loading, videos, currPage, totalPages, hasNextPage } = useSelector(
+    (state: RootState) => state?.video
+  );
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -34,12 +36,12 @@ export default function Home() {
       container.scrollTop + container.clientHeight >=
         container.scrollHeight - container.clientHeight
     ) {
-      fetchVideos(currPage + 1, 10);
+      fetchVideos(currPage + 1, 6);
     }
   }
 
   useEffect(() => {
-    fetchVideos(1, 10);
+    fetchVideos(1, 6);
   }, []);
 
   useEffect(() => {
@@ -52,17 +54,18 @@ export default function Home() {
         container.removeEventListener("scroll", handleScroll);
       };
     }
-  }, [currPage, videos, loading, hasNextPage, totalPages]);
+  }, [currPage, videos, loading, hasNextPage, totalPages, containerRef]);
 
   return (
     <Layout
       ref={containerRef}
-      className="flex flex-wrap max-lg:justify-center md:gap-8 gap-5 py-5 max-md:pb-20 lg:pl-8 max-lg:px-1"
+      className="min-h-screen flex flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10 py-5 max-md:pb-20 lg:pl-8 max-lg:px-5"
     >
       {videos.map((video) => (
-        <VideoCard video={video} />
+        <VideoCard key={video?._id} video={video} />
       ))}
-      {loading && <p>loading...</p>}
+      {loading &&
+        Array.from({ length: 6 }).map((_, idx) => <VideoSkeleton key={idx} />)}
     </Layout>
   );
 }

@@ -7,10 +7,7 @@ import Avatar from "../CoreUI/Avatar";
 
 export default function VideoCard({ video }: { video: Video }) {
   return (
-    <div
-      key={video._id}
-      className="rounded-md lg:w-[315px] md:w-[500px] max-sm:w-full overflow-hidden"
-    >
+    <div className="rounded-md w-[315px] max-lg:w-[415px] max-sm:w-full overflow-hidden">
       <Link to={video._id} className="flex flex-col gap-2">
         <img
           src={video.thumbnail.url}
@@ -21,6 +18,7 @@ export default function VideoCard({ video }: { video: Video }) {
           <Avatar
             fullName={video?.owner?.fullName}
             url={video?.owner?.avatar?.url}
+            className="h-8 w-8"
           />
           <div className="flex flex-col gap-[1px]">
             <h1 className="text-[16px] font-roboto font-medium text-[#0f0f0f] line-clamp-2">
