@@ -37,6 +37,7 @@ const UpdatePasswordForm = () => {
       description="Make changes to your password here. Click save when you're done."
       submitButtonLabel="Save changes"
       isLoading={isLoading}
+      isButtonDisabled={isLoading || !Object.values(formData).every(Boolean)}
       error={error}
       inputs={
         <>

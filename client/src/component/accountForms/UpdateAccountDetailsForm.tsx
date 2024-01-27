@@ -39,6 +39,11 @@ const UpdateAccountDetailsForm = () => {
       description="Make changes to your account here. Click save when you're done."
       submitButtonLabel="Save changes"
       isLoading={isLoading}
+      isButtonDisabled={
+        isLoading ||
+        user?.username === formData.username &&
+        user?.fullName === formData.fullName
+      }
       error={error}
       inputs={
         <>
