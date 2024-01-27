@@ -1,11 +1,11 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiAlertTriangle } from "react-icons/fi";
 
 import Logo from "../CoreUI/Logo";
 import Input from "../CoreUI/Input";
 import Button from "../CoreUI/Button";
 import FileUpload from "../FileUpload";
+import ErrorMessage from "../ErrorMessage";
 
 interface AuthFormProps {
   type: AuthFormType;
@@ -65,12 +65,7 @@ export default function AuthForm({
   return (
     <div className="flex flex-col gap-3 justify-center w-[450px] max-w-[93%]">
       {/* showing error */}
-      {error && (
-        <div className="w-full flex gap-2 items-center border border-red-600 bg-red-50 shadow-sm rounded-sm p-2 ">
-          <p className="text-red-600 text-base font-nunito w-full">{error}</p>
-          <FiAlertTriangle className="text-xl text-red" />
-        </div>
-      )}
+      {error && <ErrorMessage errorMessage={error} />}
 
       <form
         onSubmit={handleFormSubmit}

@@ -1,6 +1,5 @@
-import { FiAlertTriangle } from "react-icons/fi";
-
 import Button from "./Button";
+import ErrorMessage from "../ErrorMessage";
 
 interface FormProps {
   title: string;
@@ -9,7 +8,7 @@ interface FormProps {
   submitButtonLabel: string;
   submitButtonIcon?: React.ReactElement;
   isSubmitButtonPositionLeft?: boolean;
-  isButtonDisabled?: boolean
+  isButtonDisabled?: boolean;
   onSubmit: () => void;
   isLoading: boolean | undefined;
   error?: string | null;
@@ -43,12 +42,7 @@ export default function Form({
           {description}
         </p>
       </div>
-      {error && (
-        <div className="w-full flex gap-2 items-center border border-red-600 bg-red-50 shadow-sm rounded-sm p-2 ">
-          <p className="text-red-600 text-base font-nunito w-full">{error}</p>
-          <FiAlertTriangle className="text-xl text-red" />
-        </div>
-      )}
+      {error && <ErrorMessage errorMessage={error} />}
       {inputs}
       <Button
         label={isLoading ? "Loading..." : submitButtonLabel}
