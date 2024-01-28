@@ -17,15 +17,18 @@ export default function Login() {
     },
   });
 
-  const handleLogin = async (formData: {
+  const handleLogin = async ({
+    usernameOrEmail,
+    password,
+  }: {
     usernameOrEmail?: string;
     password?: string;
   }) => {
-    if (!formData.usernameOrEmail || !formData.password) {
+    if (!usernameOrEmail || !password) {
       return toast.error("All fields are required!");
     }
 
-    const { isSuccess } = await handleAction(formData);
+    const { isSuccess } = await handleAction({ usernameOrEmail, password });
 
     if (isSuccess) {
       navigate("/");
