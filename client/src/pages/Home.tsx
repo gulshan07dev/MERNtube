@@ -1,33 +1,34 @@
-import VideoCard from "@/component/video/VideoCard";
-import VideoSkeleton from "@/component/video/VideoSkeleton";
-import Layout from "@/layout/Layout";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { getAllVideos } from "@/store/slices/videoSlice";
 import { AppDispatch, RootState } from "@/store/store";
-import { useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import Layout from "@/layout/Layout";
+import Button from "@/component/CoreUI/Button";
+import VideoCard from "@/component/video/VideoCard";
+import VideoSkeleton from "@/component/video/VideoSkeleton";
+import { twMerge } from "tailwind-merge";
 
-export default function Home() {
+const Home: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { loading, videos, currPage, totalPages, hasNextPage } = useSelector(
-    (state: RootState) => state?.video
-  );
+  const { loading, videos, currPage, totalPages, totalDocs, hasNextPage } =
+    useSelector((state: RootState) => state?.video);
 
+  const limit = 6;
+  const [sortType, setSortType] = useState("desc");
   const containerRef = useRef<HTMLDivElement>(null);
 
-  function fetchVideos(page: number, limit: number) {
-    dispatch(getAllVideos({ page, limit }));
-  }
-
-  function handleScroll() {
-    const container = containerRef.current;
-
+  const fetchVideos = (page: number) => {
     if (loading) {
-      // If already loading, do nothing
       return;
     }
 
+    dispatch(getAllVideos({ page, limit, sortBy: "createdAt", sortType }));
+  };
+
+  const handleScroll = () => {
+    const container = containerRef.current;
+
     if (currPage >= totalPages || !hasNextPage) {
-      // No more videos to fetch
       return;
     }
 
@@ -36,13 +37,13 @@ export default function Home() {
       container.scrollTop + container.clientHeight >=
         container.scrollHeight - container.clientHeight
     ) {
-      fetchVideos(currPage + 1, 6);
+      fetchVideos(currPage + 1);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchVideos(1, 6);
-  }, []);
+    fetchVideos(1);
+  }, [sortType]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -54,18 +55,50 @@ export default function Home() {
         container.removeEventListener("scroll", handleScroll);
       };
     }
-  }, [currPage, videos, loading, hasNextPage, totalPages, containerRef]);
+  }, [currPage, sortType, videos, loading, hasNextPage, totalPages]);
+
+  const renderVideoSkeletons = () => {
+    const numSkeletons =
+      totalDocs - videos.length < limit && totalDocs - videos.length !== 0
+        ? totalDocs - videos.length
+        : limit;
+
+    return Array.from({ length: numSkeletons }).map((_, idx) => (
+      <VideoSkeleton key={idx} />
+    ));
+  };
 
   return (
     <Layout
       ref={containerRef}
-      className="min-h-screen flex flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10 py-5 max-md:pb-20 lg:pl-8 max-lg:px-5"
+      className="min-h-screen bg-white flex flex-col pb-5 max-md:pb-20 lg:pl-8 max-lg:px-5"
     >
-      {videos.map((video) => (
-        <VideoCard key={video?._id} video={video} />
-      ))}
-      {loading &&
-        Array.from({ length: 6 }).map((_, idx) => <VideoSkeleton key={idx} />)}
+      {/* filter */}
+      <div className="w-full bg-white flex pb-3 pt-2 gap-3 sticky top-0">
+        {["desc", "acc"].map((type) => (
+          <Button
+            key={type}
+            label={type === "desc" ? "Newest" : "Oldest"}
+            isLarge={false}
+            onClick={() => setSortType(type)}
+            className={twMerge(
+              "rounded-lg bg-gray-200 text-sm text-[#0f0f0f] font-roboto border-none",
+              "hover:opacity-100",
+              sortType === type
+                ? ["bg-black text-white"]
+                : ["hover:bg-gray-300"]
+            )}
+          />
+        ))}
+      </div>
+      <div className="flex flex-grow flex-wrap bg-white items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
+        {videos.map((video) => (
+          <VideoCard key={video?._id} video={video} />
+        ))}
+        {loading && renderVideoSkeletons()}
+      </div>
     </Layout>
   );
-}
+};
+
+export default Home;

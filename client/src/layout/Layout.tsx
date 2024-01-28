@@ -25,7 +25,7 @@ const Layout = React.forwardRef(
         <Navbar showSidebarToggleBtn={!showSidebar} />
         <div
           style={{ height: `calc(100vh - ${navHeight})` }}
-          className="w-full relative flex overflow-y-scroll"
+          className="w-full bg-white relative flex overflow-y-scroll"
           role="region"
           aria-label="Main Content"
           ref={ref}
