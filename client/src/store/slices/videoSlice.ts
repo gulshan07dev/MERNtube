@@ -122,6 +122,9 @@ const videoSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllVideos.pending, (state) => {
+        if (state.currPage === 1) {
+          state.videos = [];
+        }
         state.loading = true;
         state.error = null;
         state.hasNextPage = false;
