@@ -12,7 +12,7 @@ export default function VideoCard({ video }: { video: Video }) {
         <img
           src={video.thumbnail.url}
           title={video.title}
-          className="w-full lg:h-[180px] md:h-[215px] h-[230px] rounded-md"
+          className="w-full lg:h-[180px] md:h-[215px] h-[200px] rounded-md"
         />
         <div className="flex gap-2">
           <Avatar

@@ -5,7 +5,7 @@ interface AppLoadingState {
 }
 
 const initialState: AppLoadingState = {
-  user: false,
+  user: true,
 };
 
 const appLoadingSlice = createSlice({

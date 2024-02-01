@@ -6,6 +6,7 @@ import Input from "../CoreUI/Input";
 import Button from "../CoreUI/Button";
 import FileUpload from "../FileUpload";
 import ErrorMessage from "../ErrorMessage";
+import Devider from "../Divider";
 
 interface AuthFormProps {
   type: AuthFormType;
@@ -166,11 +167,12 @@ export default function AuthForm({
           }
         />
 
-        <div className="flex justify-between items-center mt-5">
+        <div className="flex justify-between items-center md:gap-4 gap-2 mt-5">
           {/* link */}
+
           <button
             type="button"
-            className="text-sm text-gray-600 hover:text-gray-800 font-medium font-Noto_sans"
+            className="w-1/2 text-sm max-sm:text-[13.5px] text-gray-600 hover:text-gray-800 font-medium font-Noto_sans"
           >
             {type === AuthFormType.LOGIN ? (
               <Link to="/auth/signup">Don't have an account?</Link>
@@ -178,6 +180,8 @@ export default function AuthForm({
               <Link to="/auth/login">Already have an account?</Link>
             )}
           </button>
+
+          <Devider type="vertical" className="bg-zinc-300" />
 
           <Button
             label={
@@ -191,6 +195,7 @@ export default function AuthForm({
             }
             type="submit"
             disabled={isLoading}
+            className="rounded-md md:w-[45%] w-1/2 max-sm:text-[13px]"
           />
         </div>
       </form>

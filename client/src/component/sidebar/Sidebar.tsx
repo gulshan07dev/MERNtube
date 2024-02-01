@@ -14,7 +14,7 @@ import { MdCloudUpload } from "react-icons/md";
 import { sidebarWidth } from "@/constant";
 import useSidebar from "@/hooks/useSidebar";
 import MenuLink from "./MenuLink";
-import Divider from "./Divider";
+import Divider from "../Divider";
 import SidebarToggleBtn from "../navbar/SidebarToggleBtn";
 import Logo from "../CoreUI/Logo";
 import Avatar from "../CoreUI/Avatar";
