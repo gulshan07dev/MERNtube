@@ -1,6 +1,7 @@
 import axiosInstance from "@/helper/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "./authSlice";
+import { queryParams } from "@/component/ScrollPagination";
 
 export interface Video {
   _id: string;
@@ -13,15 +14,6 @@ export interface Video {
   isPublished: boolean;
   owner: User;
   createdAt: Date;
-}
-
-interface queryParams {
-  page?: number;
-  limit?: number;
-  query?: string;
-  sortBy?: string;
-  sortType?: "acc" | "desc";
-  userId?: string;
 }
 
 interface initialState {
@@ -122,9 +114,6 @@ const videoSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllVideos.pending, (state) => {
-        if (state.currPage === 1) {
-          state.videos = [];
-        }
         state.loading = true;
         state.error = null;
         state.hasNextPage = false;

@@ -6,20 +6,17 @@ import Sidebar from "../component/sidebar/Sidebar";
 import { navHeight } from "../constant";
 import OfflineDetector from "@/component/OfflineDetector";
 
-const Layout = React.forwardRef(
+interface LayoutProps {
+  children: React.ReactNode;
+  className?: string;
+  showNavigationBar?: boolean;
+  showSidebar?: boolean;
+}
+
+const Layout = React.forwardRef<HTMLDivElement, LayoutProps>(
   (
-    {
-      children,
-      className,
-      showNavigationBar = true,
-      showSidebar = true,
-    }: {
-      children: React.ReactNode;
-      className?: string;
-      showNavigationBar?: boolean;
-      showSidebar?: boolean;
-    },
-    ref: React.ForwardedRef<HTMLDivElement>
+    { children, className, showNavigationBar = true, showSidebar = true },
+    ref
   ) => {
     return showNavigationBar ? (
       <>
@@ -40,7 +37,7 @@ const Layout = React.forwardRef(
         </div>
       </>
     ) : (
-      <main role="main" className="w-full">
+      <main role="main" className="w-full" ref={ref}>
         <section className={twMerge("w-full min-h-screen", className)}>
           <OfflineDetector>{children}</OfflineDetector>
         </section>

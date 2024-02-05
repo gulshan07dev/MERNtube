@@ -30,14 +30,14 @@ const OfflineDetector: React.FC<OfflineDetectorProps> = ({ children }) => {
   ) : (
     <div className="p-10 flex flex-col gap-10 justify-center items-center m-auto">
       <FaWifi className="-mt-16 text-7xl text-red-600 shadow-md rounded-full" />
-      <p className="font-bold text-3xl font-poppins -mt-5">
+      <p className="font-bold md:text-3xl text-2xl font-poppins -mt-5">
         Oops! You're offline.
       </p>
       <Button
         label="Refresh"
         icon={<WiRefresh />}
         onClick={() => window.location.reload()}
-        className="bg-zinc-600 text-white px-7 py-2.5 rounded-md text-lg font-hedvig_letters"
+        className="bg-zinc-600 text-white border-none px-7 py-2.5 rounded-md text-lg font-hedvig_letters"
       />
     </div>
   );
