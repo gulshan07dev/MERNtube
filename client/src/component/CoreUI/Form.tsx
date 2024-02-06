@@ -1,5 +1,5 @@
 import Button from "./Button";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../error/ErrorMessage";
 
 interface FormProps {
   title: string;

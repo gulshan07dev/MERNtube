@@ -5,7 +5,7 @@ import Logo from "../CoreUI/Logo";
 import Input from "../CoreUI/Input";
 import Button from "../CoreUI/Button";
 import FileUpload from "../FileUpload";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../error/ErrorMessage";
 import Devider from "../Divider";
 
 interface AuthFormProps {
