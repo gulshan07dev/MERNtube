@@ -149,7 +149,7 @@ export default function ChannelLayout() {
           </div>
         </div>
       )}
-      {!isLoading && !error && <Outlet />}
+      {!error && <Outlet />}
     </Layout>
   );
 }
