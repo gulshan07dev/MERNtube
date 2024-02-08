@@ -33,7 +33,7 @@ const createTweet = asyncHandler(async (req, res) => {
 
 // update tweet
 const updateTweet = asyncHandler(async (req, res) => {
-    const { newContent } = req.body;
+    const { content } = req.body;
     const { tweetId } = req.params;
     const userId = req.user._id;
 
@@ -43,7 +43,7 @@ const updateTweet = asyncHandler(async (req, res) => {
     }
 
     // Check if newContent is provided
-    if (!newContent) {
+    if (!content) {
         throw new ApiError(400, "New content is required!");
     }
 
@@ -58,7 +58,7 @@ const updateTweet = asyncHandler(async (req, res) => {
 
     // Update tweet with new content
     const updatedTweet = await Tweet.findByIdAndUpdate(tweetId,
-        { $set: { content: newContent } },
+        { $set: { content } },
         { new: true }
     );
 

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { abbreviateNumber } from "js-abbreviation-number";
-import { formatDistanceToNow } from "date-fns";
+import TimeAgo from "react-timeago";
 
 import { Video } from "@/store/slices/videoSlice";
 import Avatar from "../CoreUI/Avatar";
@@ -29,9 +29,7 @@ export default function VideoCard({ data }: { data: Video }) {
             </p>
             <p className="text-sm text-[#606060] font-roboto font-normal leading-none">
               {abbreviateNumber(data?.views, 1)} views{" · "}
-              {formatDistanceToNow(new Date(data?.createdAt), {
-                addSuffix: true,
-              })}
+              <TimeAgo date={data?.createdAt} />
             </p>
           </div>
         </div>
