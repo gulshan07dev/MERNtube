@@ -110,7 +110,11 @@ const getAllVideos = createAsyncThunk(
 const videoSlice = createSlice({
   name: "video",
   initialState,
-  reducers: {},
+  reducers: {
+    setVideos: (state, action) => {
+      state.videos = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllVideos.pending, (state) => {
@@ -140,5 +144,5 @@ const videoSlice = createSlice({
 });
 
 export default videoSlice.reducer;
-export const {} = videoSlice.actions;
+export const { setVideos } = videoSlice.actions;
 export { createVideo, updateVideo, getVideoByVideoId, getAllVideos };

@@ -1,16 +1,15 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import Layout from "@/layout/Layout";
 import ScrollPagination, { queryParams } from "@/component/ScrollPagination";
-import { getAllVideos } from "@/store/slices/videoSlice";
+import { getAllVideos, setVideos } from "@/store/slices/videoSlice";
 import { AppDispatch, RootState } from "@/store/store";
 import VideoCard from "@/component/video/VideoCard";
 import VideoSkeleton from "@/component/video/VideoSkeleton";
 
 const Home: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const containerRef = useRef(null);
 
   const {
     loading,
@@ -24,24 +23,26 @@ const Home: React.FC = () => {
 
   const fetchVideos = (queryParams: queryParams) => {
     if (loading) return;
+    if (queryParams.page === 1) {
+      dispatch(setVideos([]));
+    }
     dispatch(getAllVideos(queryParams));
   };
 
   return (
-    <Layout ref={containerRef}>
+    <Layout className="lg:pl-8 max-lg:px-5">
       <ScrollPagination
         RenderComponent={VideoCard}
-        currPage={currPage}
+        SkeletonComponent={VideoSkeleton}
         data={videos}
         fetchData={fetchVideos}
-        error={error}
-        loading={loading}
         queryParams={{ limit: 6, sortBy: "createdAt" }}
+        loading={loading}
+        error={error}
+        currPage={currPage}
         hasNextPage={hasNextPage}
         totalPages={totalPages}
         totalDocs={totalDocs}
-        SkeletonComponent={VideoSkeleton}
-        containerRef={containerRef}
       />
     </Layout>
   );

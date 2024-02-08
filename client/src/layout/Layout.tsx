@@ -13,37 +13,37 @@ interface LayoutProps {
   showSidebar?: boolean;
 }
 
-const Layout = React.forwardRef<HTMLDivElement, LayoutProps>(
-  (
-    { children, className, showNavigationBar = true, showSidebar = true },
-    ref
-  ) => {
-    return showNavigationBar ? (
-      <>
-        <Navbar showSidebarToggleBtn={!showSidebar} />
-        <div
-          style={{ height: `calc(100vh - ${navHeight})` }}
-          className="w-full bg-white relative flex overflow-y-scroll"
-          role="region"
-          aria-label="Main Content"
-          ref={ref}
-        >
-          <Sidebar isHidden={!showSidebar} />
-          <main className="w-full flex-1 flex-grow" role="main">
-            <section className={twMerge("w-full min-h-full", className)}>
-              <OfflineDetector>{children}</OfflineDetector>
-            </section>
-          </main>
-        </div>
-      </>
-    ) : (
-      <main role="main" className="w-full" ref={ref}>
-        <section className={twMerge("w-full min-h-screen", className)}>
-          <OfflineDetector>{children}</OfflineDetector>
-        </section>
-      </main>
-    );
-  }
-);
+const Layout: React.FC<LayoutProps> = ({
+  children,
+  className,
+  showNavigationBar = true,
+  showSidebar = true,
+}) => {
+  return showNavigationBar ? (
+    <>
+      <Navbar showSidebarToggleBtn={!showSidebar} />
+      <div
+        style={{ height: `calc(100vh - ${navHeight})` }}
+        className="w-full bg-white relative flex overflow-y-scroll"
+        role="region"
+        aria-label="Main Content"
+        id="main-container"
+      >
+        <Sidebar isHidden={!showSidebar} />
+        <main className="w-full flex-1 flex-grow" role="main">
+          <section className={twMerge("w-full min-h-full flex", className)}>
+            <OfflineDetector>{children}</OfflineDetector>
+          </section>
+        </main>
+      </div>
+    </>
+  ) : (
+    <main role="main" className="w-full" id="main-container">
+      <section className={twMerge("w-full min-h-screen flex", className)}>
+        <OfflineDetector>{children}</OfflineDetector>
+      </section>
+    </main>
+  );
+};
 
 export default Layout;

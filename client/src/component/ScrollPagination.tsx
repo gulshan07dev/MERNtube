@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
-
 import { twMerge } from "tailwind-merge";
-import ErrorMessage from "./ErrorMessage";
 import Button from "./CoreUI/Button";
+import ErrorDialog from "./error/ErrorDialog";
 
 export interface queryParams {
   page?: number;
@@ -26,7 +25,6 @@ interface ScrollPaginationProps<T> {
   hasNextPage: boolean;
   RenderComponent: React.FC<{ data: T }>;
   SkeletonComponent?: React.FC;
-  containerRef: React.RefObject<HTMLElement>;
 }
 
 const ScrollPagination = <T extends any>({
@@ -40,15 +38,13 @@ const ScrollPagination = <T extends any>({
   totalPages,
   hasNextPage,
   RenderComponent,
-  SkeletonComponent,
-  containerRef,
+  SkeletonComponent, 
 }: ScrollPaginationProps<T>) => {
   const [sortType, setSortType] = useState<"acc" | "desc">("desc");
 
   const handleScroll = () => {
-    const container = containerRef.current;
-    console.log(container?.scrollTop);
-    console.log(container);
+    const container = document.getElementById("main-container");
+
     if (currPage >= totalPages || !hasNextPage) {
       return;
     }
@@ -66,7 +62,7 @@ const ScrollPagination = <T extends any>({
   }, [sortType]);
 
   useEffect(() => {
-    const container = containerRef.current;
+    const container = document.getElementById("main-container");
 
     if (container) {
       container.addEventListener("scroll", handleScroll);
@@ -77,11 +73,9 @@ const ScrollPagination = <T extends any>({
     }
   }, [
     currPage,
-    data,
     loading,
     hasNextPage,
     totalPages,
-    sortType,
     queryParams.limit,
     queryParams.page,
     queryParams.query,
@@ -103,17 +97,18 @@ const ScrollPagination = <T extends any>({
     );
   };
 
+  const handleSortTypeChange = (type: "acc" | "desc") => {
+    setSortType(type);
+  };
+
   return (
-    <div className="bg-white flex flex-col pb-5 max-md:pb-24 lg:pl-8 max-lg:px-5">
+    <div className="w-full min-h-screen flex flex-col pb-5 max-md:pb-24">
       {error ? (
-        <div className="p-4 rounded-md m-auto w-[95%] max-w-[550px] flex flex-col gap-7">
-          <ErrorMessage errorMessage={error} />
-          <Button
-            label="Try again"
-            onClick={() => fetchData({ ...queryParams, page: 1, sortType })}
-            className="bg-[#ff0c71]"
-          />
-        </div>
+        <ErrorDialog
+          errorMessage={error}
+          buttonLabel="Try again"
+          buttonOnClick={() => fetchData({ ...queryParams, page: 1, sortType })}
+        />
       ) : (
         <>
           {/* filter */}
@@ -123,7 +118,7 @@ const ScrollPagination = <T extends any>({
                 key={type}
                 label={type === "desc" ? "Newest" : "Oldest"}
                 isLarge={false}
-                onClick={() => setSortType(type as "acc" | "desc")}
+                onClick={() => handleSortTypeChange(type as "acc" | "desc")}
                 className={twMerge(
                   "rounded-lg bg-gray-200 text-sm text-[#0f0f0f] font-roboto border-none",
                   "hover:opacity-100",
@@ -134,7 +129,7 @@ const ScrollPagination = <T extends any>({
               />
             ))}
           </div>
-          <div className="min-h-screen flex flex-grow flex-wrap bg-white items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
+          <div className="flex flex-grow flex-wrap bg-white items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
             {data.map((item, index) => (
               <RenderComponent key={index} data={item} />
             ))}
