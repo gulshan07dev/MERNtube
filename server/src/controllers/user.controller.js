@@ -357,14 +357,13 @@ const channel = asyncHandler(async (req, res) => {
                 channelSubscribedToCount: {
                     $size: "$subscribedTo"
                 },
-                // TODO this is not working
-                // isSubscribed: {
-                //     $cond: {
-                //         if: { $in: [req.user._id, ["$subscribers.subscriber"]] },
-                //         then: true,
-                //         else: false
-                //     }
-                // },
+                isSubscribed: {
+                    $cond: {
+                        if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+                        then: true,
+                        else: false
+                    }
+                },
                 videoCount: {
                     $size: "$videos"
                 }
@@ -379,25 +378,20 @@ const channel = asyncHandler(async (req, res) => {
                 coverImage: 1,
                 subscriberCount: 1,
                 channelSubscribedToCount: 1,
-                // isSubscribed: 1,
+                isSubscribed: 1,
                 videoCount: 1
             }
         }
     ])
 
 
-    if (!channel) {
+    if (!channel?.length) {
         throw new ApiError(404, "channel does not exist!");
     }
 
-    const isSubscribed = await Subscription.find({
-        subscriber: req.user._id,
-        channel: user._id
-    })
-
     res.status(200).json(new ApiResponse(
         200,
-        { channel: { ...channel[0], isSubscribed: Boolean(isSubscribed?.length) } },
+        { channel: channel[0] },
         "User channel fetched successfully"
     ))
 })
