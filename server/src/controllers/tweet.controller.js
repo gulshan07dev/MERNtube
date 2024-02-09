@@ -1,6 +1,6 @@
 import { Tweet } from "../models/tweet.model.js"
 import { User } from "../models/user.model.js"
-import { isValidObjectId } from "mongoose"
+import { Types, isValidObjectId } from "mongoose"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
 import asyncHandler from "../utils/asyncHandler.js"
@@ -108,23 +108,68 @@ const deleteTweet = asyncHandler(async (req, res) => {
 
 // get user tweets
 const getUserTweets = asyncHandler(async (req, res) => {
-    const {userId} = req.params;
+    const { userId } = req.params;
 
     // check if Invalid userId
-    if(!isValidObjectId(userId)) {
+    if (!isValidObjectId(userId)) {
         throw new ApiError(400, "Invalid userId!");
     }
 
-    const user = await User.findOne({_id: userId});
-    if(!user) {
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
         throw new ApiError(404, "User not find!");
     }
-    
-    const tweets = await Tweet.find({owner: userId});
+
+    const tweets = await Tweet.aggregate([
+        {
+            $match: {
+                owner: new Types.ObjectId(userId)
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner"
+            }
+        },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "tweet",
+                as: "tweetLikes"
+            }
+        },
+        {
+            $addFields: {
+                owner: { $first: "$owner" },
+                tweetLikesCount: { $size: "$tweetLikes" },
+                isLiked: {
+                    $cond: {
+                        if: { $in: [req.user?._id, "$tweetLikes.owner"] },
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                content: 1,
+                owner: 1,
+                tweetLikesCount: 1,
+                isLiked: 1,
+                createdAt: 1
+            }
+        }
+    ]);
+
 
     return res.status(200).json(new ApiResponse(
         200,
-        {tweets},
+        { tweets },
         "Tweets fetched successfully"
     ))
 })

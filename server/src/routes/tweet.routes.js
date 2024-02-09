@@ -8,13 +8,14 @@ import {
 } from "../controllers/tweet.controller.js";
 
 const router = Router();
+router.use(verifyJwt)
 
 router.route("/")
     .post(verifyJwt, createTweet)
 
 router.route("/:tweetId")
-    .patch(verifyJwt, updateTweet)
-    .delete(verifyJwt, deleteTweet)
+    .patch(updateTweet)
+    .delete(deleteTweet)
 
 router.route("/:userId")
     .get(getUserTweets)
