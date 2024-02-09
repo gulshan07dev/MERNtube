@@ -17,7 +17,7 @@ export interface Video {
 }
 
 interface initialState {
-  video: Video | null;
+  video: Video | [];
   videos: Video[];
   loading: boolean;
   error: string | null;
@@ -28,7 +28,7 @@ interface initialState {
 }
 
 const initialState: initialState = {
-  video: null,
+  video:  [],
   videos: [],
   loading: false,
   error: null,

@@ -1,7 +1,9 @@
 import TimeAgo from "react-timeago";
-import { IoIosThumbsUp, IoIosChatbubbles } from "react-icons/io";
+import { IoIosChatbubbles } from "react-icons/io";
 
+import LikeBtn from "../CoreUI/LikeBtn";
 import { Tweet } from "@/store/slices/tweetSlice";
+import { toggleTweetLike } from "@/store/slices/likeSlice";
 
 const TweetCard = ({ data }: { data: Tweet }) => {
   return (
@@ -23,12 +25,12 @@ const TweetCard = ({ data }: { data: Tweet }) => {
       {/* Bottom Section */}
       <div className="flex justify-between items-center">
         {/* Like Button */}
-        <button className="flex items-center space-x-1 text-gray-600 text-lg hover:text-blue-500 transition-all rounded-full px-3 py-1 hover:bg-slate-100">
-          <span className="text-xl">
-            <IoIosThumbsUp />
-          </span>
-          <span>{5}</span>
-        </button>
+        <LikeBtn
+          isLiked={data?.isLiked}
+          likeCount={data?.tweetLikesCount}
+          contentId={data?._id}
+          toggleLikeAction={toggleTweetLike}
+        />
 
         {/* Comment Button */}
         <button className="flex items-center space-x-1 text-gray-600 text-lg hover:text-blue-500 transition-all rounded-full px-3 py-1 hover:bg-slate-100">
