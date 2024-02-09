@@ -6,6 +6,8 @@ export interface Tweet {
   _id: string;
   content: string;
   owner: User;
+  tweetLikesCount: number;
+  isLiked: boolean;
   createdAt: Date;
 }
 
