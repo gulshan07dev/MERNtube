@@ -8,7 +8,7 @@ import asyncHandler from "../utils/asyncHandler.js"
 // toggle subscription by channel id
 const toggleSubscription = asyncHandler(async (req, res) => {
     const { channelId } = req.params;
-    const userId = req.user._id;
+    const userId = req.user?._id;
 
     // check if Invalid channelId
     if (!isValidObjectId(channelId)) {
@@ -27,17 +27,14 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     }
 
     // toggle the subscription
-    const subscription = await Subscription.findOne({ channel: channelId });
+    const subscription = await Subscription.findOne({ channel: channelId, subscriber: userId });
 
     let unSubscribe;
     let subscribe;
 
-    if (subscription?.subscriber?.toString() === userId) {
+    if (subscription) {
         // un-subscribe
-        unSubscribe = await Subscription.findOneAndDelete({
-            subscriber: userId,
-            channel: channelId
-        })
+        unSubscribe = await Subscription.findByIdAndDelete(subscription?._id);
     } else {
         // subscribe
         subscribe = await Subscription.create({
