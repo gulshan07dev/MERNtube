@@ -82,7 +82,7 @@ const likeSlice = createSlice({
       .addCase(getLikedVideo.fulfilled, (state, action) => {
         state.likedVideo = action.payload?.data?.likedVideo;
       })
-      .addCase(getLikedVideo.fulfilled, (state) => {
+      .addCase(getLikedVideo.rejected, (state) => {
         state.likedVideo = [];
       });
   },
