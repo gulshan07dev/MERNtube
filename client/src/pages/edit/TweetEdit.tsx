@@ -33,16 +33,20 @@ export default function TweetEdit() {
   }, [tweetId]);
 
   return tweetFetchError ? (
-    <ErrorDialog
-      errorMessage={tweetFetchError}
-      buttonLabel="Try again"
-      buttonOnClick={() => fetchTweet(tweetId)}
-    />
+    <Layout>
+      <ErrorDialog
+        errorMessage={tweetFetchError}
+        buttonLabel="Try again"
+        buttonOnClick={() => fetchTweet(tweetId)}
+      />
+    </Layout>
   ) : isTweetFetching || appLoading ? (
     <Loader />
   ) : (
     <Layout>
+      <div className="w-full px-3 md:pr-7 md:pt-4 pt-14">
       <TweetCreateForm tweet={tweet} />
+      </div>
     </Layout>
   );
 }

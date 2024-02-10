@@ -61,7 +61,7 @@ export default function TweetCreateForm({ tweet }: { tweet?: Tweet | null }) {
       inputs={
         <TextAreaInput
           label="Content"
-          rows={5}
+          rows={6}
           maxTextSize={300}
           minLength={20}
           value={formData?.content}
