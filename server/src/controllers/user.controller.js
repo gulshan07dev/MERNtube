@@ -1,5 +1,4 @@
 import { User } from "../models/user.model.js";
-import { Subscription } from "../models/subscription.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -213,6 +212,22 @@ const changeAccountDetails = asyncHandler(async (req, res) => {
     if (Object.keys(updateFields).length === 0) {
         throw new ApiError(400,
             "At least one field (username or fullName) is required");
+    }
+
+    // fullName must be at least 3 char and less than 21 char
+    if (fullName && fullName.length < 3) {
+        throw new ApiError(400, "fullName must be least 3 char!");
+    }
+    if (fullName && fullName.length > 20) {
+        throw new ApiError(400, "fullName must be less that 21 char!");
+    }
+
+    // username must be at least 3 char and less than 21 char
+    if (username && username.length < 3) {
+        throw new ApiError(400, "username must be least 3 char!");
+    }
+    if (username && username.length > 20) {
+        throw new ApiError(400, "username must be less that 21 char!");
     }
 
     // check username already exist or not

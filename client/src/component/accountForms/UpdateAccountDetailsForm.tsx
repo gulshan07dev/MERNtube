@@ -41,8 +41,8 @@ const UpdateAccountDetailsForm = () => {
       isLoading={isLoading}
       isButtonDisabled={
         isLoading ||
-        user?.username === formData.username &&
-        user?.fullName === formData.fullName
+        (user?.username === formData.username &&
+          user?.fullName === formData.fullName)
       }
       error={error}
       inputs={
@@ -51,12 +51,16 @@ const UpdateAccountDetailsForm = () => {
             label="Username"
             type="text"
             value={formData?.username}
+            minLength={3}
+            maxTextSize={20}
             onChange={(e) => handleInputChange("username", e.target.value)}
           />
           <Input
             label="Full Name"
             type="text"
             value={formData?.fullName}
+            minLength={3}
+            maxTextSize={20}
             onChange={(e) => handleInputChange("fullName", e.target.value)}
           />
         </>
