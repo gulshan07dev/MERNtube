@@ -32,7 +32,7 @@ export default function Tweets() {
       buttonOnClick={fetchUserTweets}
     />
   ) : (
-    <div className="flex flex-col gap-10 max-lg:items-center min-h-screen py-5">
+    <div className="flex flex-col gap-10 max-lg:items-center min-h-screen pt-5 pb-20">
       {isLoading ? (
         <Skeleton />
       ) : (

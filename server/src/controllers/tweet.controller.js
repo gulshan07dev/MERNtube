@@ -44,7 +44,7 @@ const updateTweet = asyncHandler(async (req, res) => {
 
     // Check if newContent is provided
     if (!content) {
-        throw new ApiError(400, "New content is required!");
+        throw new ApiError(400, "content is required!");
     }
 
     const tweet = await Tweet.findById(tweetId);
@@ -52,7 +52,7 @@ const updateTweet = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Tweet not found!");
     }
 
-    if (tweet.owner.toString() !== userId) {
+    if (tweet.owner.toString() !== userId.toString()) {
         throw new ApiError(403, "You do not have permission to update this tweet!");
     }
 
@@ -76,7 +76,7 @@ const updateTweet = asyncHandler(async (req, res) => {
 // delete tweet
 const deleteTweet = asyncHandler(async (req, res) => {
     const { tweetId } = req.params;
-    const userId = req.user._id;
+    const userId = req.user?._id;
 
     // check if Invalid tweetId
     if (!isValidObjectId(tweetId)) {
@@ -88,7 +88,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Tweet not found!");
     }
 
-    if (tweet.owner.toString() !== userId) {
+    if (tweet?.owner.toString() !== userId.toString()) {
         throw new ApiError(403, "You do not have permission to delete this tweet!");
     }
 
@@ -104,6 +104,27 @@ const deleteTweet = asyncHandler(async (req, res) => {
         {},
         "Tweet deleted successfully"
     ))
+})
+
+// get tweet by tweetId
+const getTweetById = asyncHandler(async (req, res) => {
+    const { tweetId } = req.params;
+
+    // check if invalid tweetId
+    if (!isValidObjectId(tweetId)) {
+        throw new ApiError(400, "Invalid tweetId!");
+    }
+
+    // check if tweet not find
+    const tweet = await Tweet.findById(tweetId);
+    if (!tweet) {
+        throw new ApiError(404, "tweet not found!");
+    }
+
+    return res.status(200).json(new ApiResponse(
+        200,
+        { tweet },
+        "Tweet fetched successfully"))
 })
 
 // get user tweets
@@ -156,6 +177,11 @@ const getUserTweets = asyncHandler(async (req, res) => {
             }
         },
         {
+            $sort: {
+                createdAt: -1
+            }
+        },
+        {
             $project: {
                 content: 1,
                 owner: 1,
@@ -179,5 +205,6 @@ export {
     createTweet,
     getUserTweets,
     updateTweet,
+    getTweetById,
     deleteTweet
 }

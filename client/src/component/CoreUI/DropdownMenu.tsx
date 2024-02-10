@@ -1,12 +1,15 @@
 import { ReactElement, ReactNode, useRef, useState } from "react";
 
 import useClickOutside from "@/hooks/useClickOutside ";
+import { twMerge } from "tailwind-merge";
 
 const DropdownMenu = ({
   button,
+  className,
   children,
 }: {
   button: ReactElement;
+  className?: string;
   children: ReactNode;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +26,7 @@ const DropdownMenu = ({
   useClickOutside({ ref: dropdownRef, callback: handleClose });
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className={twMerge("relative", className)} ref={dropdownRef}>
       <div onClick={handleToggle} className="cursor-pointer">
         {button}
       </div>
@@ -31,7 +34,7 @@ const DropdownMenu = ({
         <div
           className="absolute top-full right-0 mt-1 transition-opacity
         duration-300 opacity-100 py-5 px-4 bg-white shadow-md border rounded-md 
-        flex flex-col gap-2.5"
+        flex flex-col items-start gap-2.5"
         >
           {children}
         </div>

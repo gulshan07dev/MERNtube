@@ -1,17 +1,21 @@
 import { twMerge } from "tailwind-merge";
 
-export default function Avatar({ url, fullName, className = "w-10 h-10" }: {
-  url?: string,
-  fullName?: string,
-  className?: string
+export default function Avatar({
+  url,
+  fullName,
+  onClick = () => {},
+  className = "w-10 h-10",
+}: {
+  url?: string;
+  fullName?: string;
+  onClick?: () => void;
+  className?: string;
 }) {
   return (
     <div
-      className={twMerge(
-        "avatar cursor-pointer rounded-full overflow-hidden",
-        className
-      )}
+      className={twMerge("rounded-full overflow-hidden", className)}
       role="button"
+      onClick={onClick}
     >
       {fullName && !url ? (
         <span

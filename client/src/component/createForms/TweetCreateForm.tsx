@@ -5,18 +5,19 @@ import Form from "@/component/CoreUI/Form";
 import TextAreaInput from "../CoreUI/TextAreaInput";
 import useForm from "@/hooks/useForm";
 import useActionHandler from "@/hooks/useActionHandler";
-import { createTweet } from "@/store/slices/tweetSlice";
+import { Tweet, createTweet, updateTweet } from "@/store/slices/tweetSlice";
 
-export default function TweetCreateForm() {
+export default function TweetCreateForm({ tweet }: { tweet?: Tweet | null }) {
   const { error, isLoading, handleAction } = useActionHandler({
-    action: createTweet,
+    action: tweet ? updateTweet : createTweet,
+    isShowToastMessage: true,
     toastMessages: {
-      loadingMessage: "Creating Tweet",
+      loadingMessage: tweet ? "Updating tweet" : "Creating Tweet",
     },
   });
 
   const initialAccountDetails = {
-    content: "",
+    content: tweet ? tweet?.content : "",
   };
 
   const { formData, handleInputChange, resetForm } = useForm({
@@ -25,23 +26,36 @@ export default function TweetCreateForm() {
 
   const onSubmit = async () => {
     if (!formData.content) {
-      return toast.error("content is required!");
+      return toast.error("Content is required!");
     }
 
-    const { isSuccess } = await handleAction(formData);
+    if (tweet) {
+      await handleAction({ data: formData, tweetId: tweet?._id });
+    } else {
+      const { isSuccess } = await handleAction(formData);
 
-    if (isSuccess) {
-      resetForm();
+      if (isSuccess && !tweet) {
+        resetForm();
+      }
     }
   };
 
   return (
     <Form
-      title="Tweet"
-      description="Craft your tweet in a flash with a concise and clear field for your thoughts. Express yourself with ease!."
-      submitButtonLabel="Create tweet"
+      title={tweet ? "Edit your tweet" : "Tweet"}
+      description={
+        tweet
+          ? "Make changes to your tweet here. Click save when you're done."
+          : "Craft your tweet in a flash with a concise and clear field for your thoughts. Express yourself with ease!."
+      }
+      submitButtonLabel={tweet ? "Save changes" : "Create tweet"}
       submitButtonIcon={<FaTwitter />}
-      isButtonDisabled={isLoading || formData.content.length < 25}
+      isButtonDisabled={Boolean(
+        isLoading ||
+          !formData.content ||
+          formData.content.length < 25 ||
+          (tweet && tweet?.content === formData.content)
+      )}
       isLoading={isLoading}
       error={error}
       inputs={

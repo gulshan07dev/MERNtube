@@ -88,7 +88,7 @@ const Navbar = ({
               <Link to="/setting">Setting</Link>
               <hr />
               {/* logout */}
-              <LogoutBtn />
+              <LogoutBtn className="w-full" />
             </DropdownMenu>
           )
         ) : // If user is not logged in, show login/signup buttons

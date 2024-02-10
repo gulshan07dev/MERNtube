@@ -16,6 +16,7 @@ import Channel from "./pages/channel/Channel";
 import Videos from "./pages/channel/Videos";
 import Tweets from "./pages/channel/Tweets";
 import Create from "./pages/Create";
+import TweetEdit from "./pages/edit/TweetEdit";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -59,6 +60,11 @@ function App() {
 
         {/* create */}
         <Route path="/create" element={<Create />} />
+
+        {/* edit */}
+        <Route path="/edit">
+           <Route path="tweet/:tweetId" element={<TweetEdit />} />
+        </Route>
       </Route>
 
       {/* Authentication routes */}

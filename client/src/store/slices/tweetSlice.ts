@@ -12,10 +12,12 @@ export interface Tweet {
 }
 
 interface initialState {
+  tweet: Tweet | null;
   tweets: Tweet[];
 }
 
 const initialState: initialState = {
+  tweet: null,
   tweets: [],
 };
 
@@ -67,11 +69,26 @@ const deleteTweet = createAsyncThunk(
   }
 );
 
+const getTweetById = createAsyncThunk(
+  "/tweets/tweetId",
+  async (tweetId, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(`/tweets/${tweetId}`);
+      return res.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
 const getUserTweets = createAsyncThunk(
-  "/tweets/userId",
+  "/tweets/user/userId",
   async (userId, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get(`/tweets/${userId}`);
+      const res = await axiosInstance.get(`/tweets/user/${userId}`);
       return res.data;
     } catch (error: any) {
       if (!error.response) {
@@ -88,6 +105,20 @@ const tweetSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(updateTweet.fulfilled, (state, action) => {
+        state.tweet = action.payload?.data?.tweet;
+      })
+
+      .addCase(getTweetById.pending, (state) => {
+        state.tweet = null;
+      })
+      .addCase(getTweetById.fulfilled, (state, action) => {
+        state.tweet = action.payload?.data?.tweet;
+      })
+      .addCase(getTweetById.rejected, (state) => {
+        state.tweet = null;
+      })
+
       .addCase(getUserTweets.pending, (state) => {
         state.tweets = [];
       })
@@ -102,4 +133,4 @@ const tweetSlice = createSlice({
 
 export default tweetSlice.reducer;
 export const {} = tweetSlice.actions;
-export { createTweet, updateTweet, deleteTweet, getUserTweets };
+export { createTweet, updateTweet, deleteTweet, getTweetById, getUserTweets };
