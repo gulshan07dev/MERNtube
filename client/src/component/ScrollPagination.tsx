@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { RotatingLines } from "react-loader-spinner";
-import { twMerge } from "tailwind-merge";
-import Button from "./CoreUI/Button";
 import ErrorDialog from "./error/ErrorDialog";
 
 export interface queryParams {
@@ -13,38 +11,40 @@ export interface queryParams {
   userId?: string;
 }
 
-interface ScrollPaginationProps<T> {
-  fetchData: (queryParams: queryParams) => void;
-  queryParams?: queryParams;
+interface ScrollPaginationProps {
+  next: () => void;
+  refreshHandler: () => void;
+  dataLength: number;
   loading: boolean;
   error: string | null;
-  data: T[];
   currPage: number;
   totalPages: number;
   totalDocs: number;
   hasNextPage: boolean;
-  RenderComponent: React.FC<{ data: T }>;
-  SkeletonComponent?: React.FC;
+  endMessage: React.ReactElement;
+  children?: React.ReactNode;
 }
 
-const ScrollPagination = <T extends any>({
-  fetchData,
-  queryParams = {},
+const ScrollPagination = ({
+  next,
+  refreshHandler,
+  dataLength,
   loading,
   error,
-  data,
   currPage,
   totalDocs,
   totalPages,
   hasNextPage,
-  RenderComponent,
-  SkeletonComponent, 
-}: ScrollPaginationProps<T>) => {
-  const [sortType, setSortType] = useState<"acc" | "desc">("desc");
-
+  endMessage,
+  children,
+}: ScrollPaginationProps) => {
   const handleScroll = () => {
     const container = document.getElementById("main-container");
 
+    if(loading) {
+      return
+    }
+    
     if (currPage >= totalPages || !hasNextPage) {
       return;
     }
@@ -53,13 +53,9 @@ const ScrollPagination = <T extends any>({
       container.scrollTop + container.clientHeight >=
         container.scrollHeight - container.clientHeight
     ) {
-      fetchData({ ...queryParams, page: currPage + 1, sortType });
+      next();
     }
   };
-
-  useEffect(() => {
-    fetchData({ ...queryParams, page: 1, sortType });
-  }, [sortType]);
 
   useEffect(() => {
     const container = document.getElementById("main-container");
@@ -71,35 +67,7 @@ const ScrollPagination = <T extends any>({
         container.removeEventListener("scroll", handleScroll);
       };
     }
-  }, [
-    currPage,
-    loading,
-    hasNextPage,
-    totalPages,
-    queryParams.limit,
-    queryParams.page,
-    queryParams.query,
-    queryParams.sortBy,
-    queryParams.sortType,
-    queryParams.userId,
-  ]);
-
-  const renderSkeletons = () => {
-    const numSkeletons = queryParams?.limit
-      ? totalDocs - data.length < queryParams?.limit &&
-        totalDocs - data.length !== 0
-        ? totalDocs - data.length
-        : queryParams?.limit
-      : 6;
-
-    return Array.from({ length: numSkeletons }).map((_, idx) =>
-      SkeletonComponent ? <SkeletonComponent key={idx} /> : null
-    );
-  };
-
-  const handleSortTypeChange = (type: "acc" | "desc") => {
-    setSortType(type);
-  };
+  }, [currPage, loading, hasNextPage, totalPages]);
 
   return (
     <div className="w-full min-h-screen flex flex-col pb-5 max-md:pb-24">
@@ -107,34 +75,12 @@ const ScrollPagination = <T extends any>({
         <ErrorDialog
           errorMessage={error}
           buttonLabel="Try again"
-          buttonOnClick={() => fetchData({ ...queryParams, page: 1, sortType })}
+          buttonOnClick={refreshHandler}
         />
       ) : (
         <>
-          {/* filter */}
-          <div className="w-full bg-white flex pb-3 pt-2 gap-3 sticky top-0 z-[2]">
-            {["desc", "acc"].map((type) => (
-              <Button
-                key={type}
-                label={type === "desc" ? "Newest" : "Oldest"}
-                isLarge={false}
-                onClick={() => handleSortTypeChange(type as "acc" | "desc")}
-                className={twMerge(
-                  "rounded-lg bg-gray-200 text-sm text-[#0f0f0f] font-roboto border-none",
-                  "hover:opacity-100",
-                  sortType === type
-                    ? ["bg-black text-white"]
-                    : ["hover:bg-gray-300"]
-                )}
-              />
-            ))}
-          </div>
-          <div className="flex flex-grow flex-wrap bg-white items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
-            {data.map((item, index) => (
-              <RenderComponent key={index} data={item} />
-            ))}
-            {loading && SkeletonComponent && renderSkeletons()}
-          </div>
+          {children}
+          {dataLength === totalDocs && totalDocs && endMessage}
           {loading && (
             <div className="w-full flex justify-center mb-5 max-md:mt-3">
               <RotatingLines
