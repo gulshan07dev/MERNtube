@@ -53,15 +53,16 @@ const Home: React.FC = () => {
   return (
     <Layout className="lg:pl-8 max-lg:px-5">
       <ScrollPagination
-        next={() => fetchVideos(currPage + 1)}
+      paginationType="infinite-scroll"
+        loadNextPage={() => fetchVideos(currPage + 1)}
         refreshHandler={() => fetchVideos(1)}
         dataLength={videos.length}
         loading={loading}
         error={error}
-        currPage={currPage}
+        currentPage={currPage}
         hasNextPage={hasNextPage}
         totalPages={totalPages}
-        totalDocs={totalDocs}
+        totalItems={totalDocs}
         endMessage={
           <p className="py-4 text-lg text-gray-800 text-center font-Noto_sans">
             No more videos to fetch !!!

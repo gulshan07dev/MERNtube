@@ -1,8 +1,11 @@
 import React, { useEffect } from "react";
 import { RotatingLines } from "react-loader-spinner";
-import ErrorDialog from "./error/ErrorDialog";
 
-export interface queryParams {
+import { twMerge } from "tailwind-merge";
+import ErrorDialog from "./error/ErrorDialog";
+import Button from "./CoreUI/Button";
+
+export interface QueryParams {
   page?: number;
   limit?: number;
   query?: string;
@@ -12,27 +15,29 @@ export interface queryParams {
 }
 
 interface ScrollPaginationProps {
-  next: () => void;
+  paginationType: "infinite-scroll" | "view-more";
+  loadNextPage: () => void;
   refreshHandler: () => void;
   dataLength: number;
   loading: boolean;
   error: string | null;
-  currPage: number;
+  currentPage: number;
   totalPages: number;
-  totalDocs: number;
+  totalItems: number;
   hasNextPage: boolean;
-  endMessage: React.ReactElement;
+  endMessage: React.ReactNode;
   children?: React.ReactNode;
 }
 
 const ScrollPagination = ({
-  next,
+  paginationType = "infinite-scroll",
+  loadNextPage,
   refreshHandler,
   dataLength,
   loading,
   error,
-  currPage,
-  totalDocs,
+  currentPage,
+  totalItems,
   totalPages,
   hasNextPage,
   endMessage,
@@ -41,36 +46,37 @@ const ScrollPagination = ({
   const handleScroll = () => {
     const container = document.getElementById("main-container");
 
-    if(loading) {
-      return
-    }
-    
-    if (currPage >= totalPages || !hasNextPage) {
+    if (!container || loading || currentPage >= totalPages || !hasNextPage) {
       return;
     }
+
     if (
-      container &&
       container.scrollTop + container.clientHeight >=
-        container.scrollHeight - container.clientHeight
+      container.scrollHeight - container.clientHeight
     ) {
-      next();
+      loadNextPage();
     }
   };
 
   useEffect(() => {
     const container = document.getElementById("main-container");
 
-    if (container) {
+    if (container && paginationType === "infinite-scroll") {
       container.addEventListener("scroll", handleScroll);
 
       return () => {
         container.removeEventListener("scroll", handleScroll);
       };
     }
-  }, [currPage, loading, hasNextPage, totalPages]);
+  }, [currentPage, loading, hasNextPage, totalPages]);
 
   return (
-    <div className="w-full min-h-screen flex flex-col pb-5 max-md:pb-24">
+    <div
+      className={twMerge(
+        "w-full flex flex-col pb-5 max-md:pb-24",
+        paginationType === "infinite-scroll" && "min-h-full"
+      )}
+    >
       {error ? (
         <ErrorDialog
           errorMessage={error}
@@ -80,12 +86,19 @@ const ScrollPagination = ({
       ) : (
         <>
           {children}
-          {dataLength === totalDocs && totalDocs && endMessage}
+          {dataLength === totalItems && totalItems > 0 && endMessage}
+          {dataLength !== totalItems && hasNextPage && !loading && (
+            <Button
+              label="Load More"
+              onClick={loadNextPage}
+              className="mt-2 bg-slate-50 rounded-full text-sm font-hedvig_letters border-slate-300 text-black"
+            />
+          )}
           {loading && (
             <div className="w-full flex justify-center mb-5 max-md:mt-3">
               <RotatingLines
                 visible={true}
-                width="96"
+                width="75"
                 strokeWidth="5"
                 animationDuration="0.75"
                 ariaLabel="rotating-lines-loading"
