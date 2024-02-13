@@ -36,7 +36,7 @@ export default function Tweets() {
       {isLoading ? (
         <Skeleton />
       ) : (
-        tweets?.map((tweet) => <TweetCard data={tweet} />)
+        tweets?.map((tweet) => <TweetCard key={tweet._id} data={tweet} />)
       )}
     </div>
   );

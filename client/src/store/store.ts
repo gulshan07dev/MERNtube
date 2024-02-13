@@ -4,6 +4,7 @@ import subscriptionSlice from "./slices/subscriptionSlice";
 import videoSlice from "./slices/videoSlice";
 import tweetSlice from "./slices/tweetSlice";
 import likeSlice from "./slices/likeSlice";
+import commentSlice from "./slices/commentSlice";
 import appLoadingSlice from "./slices/appLoadingSlice";
 
 const store = configureStore({
@@ -13,6 +14,7 @@ const store = configureStore({
         video: videoSlice,
         tweet: tweetSlice,
         like: likeSlice,
+        comment: commentSlice,
         appLoading: appLoadingSlice
     },
     devTools: import.meta.env.MODE === "development"

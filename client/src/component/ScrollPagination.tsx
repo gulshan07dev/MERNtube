@@ -86,7 +86,7 @@ const ScrollPagination = ({
       ) : (
         <>
           {children}
-          {dataLength === totalItems && totalItems > 0 && endMessage}
+          {dataLength >= totalItems && totalItems > 0 && endMessage}
           {dataLength !== totalItems && hasNextPage && !loading && (
             <Button
               label="Load More"

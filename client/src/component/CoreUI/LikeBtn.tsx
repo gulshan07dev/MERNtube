@@ -50,8 +50,8 @@ const LikeBtn: React.FC<LikeBtnProps> = ({
   return (
     <button
       className={twMerge(
-        "flex items-center space-x-1 text-gray-600 text-lg rounded-full",
-        "px-3 py-1 transition-all hover:bg-slate-100 disabled:opacity-75",
+        "flex items-center gap-1 w-fit text-gray-600 text-lg rounded-full",
+        "px-3 -ml-3 py-1 transition-all hover:bg-slate-100 disabled:opacity-75",
         (isLikedState || isLoading) && ["text-blue-500 bg-slate-100"]
       )}
       onClick={toggleLike}

@@ -13,9 +13,10 @@ interface useActionHandlerProps {
 }
 
 interface handleActionResult {
+  r: any;
   isSuccess: boolean;
   error: string | null;
-  resData: { [key: string]: string | {} };
+  resData: any;
 }
 
 interface ApiResponse {

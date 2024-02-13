@@ -12,10 +12,14 @@ import Button from "../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import { RootState } from "@/store/store";
 import { useState } from "react";
+import Devider from "../Divider";
+import { twMerge } from "tailwind-merge";
+import CommentBox from "../comment/CommentBox";
 
 const TweetCard = ({ data }: { data: Tweet }) => {
   const navigate = useNavigate();
   const [isDeleted, setIsDeleted] = useState(false);
+  const [showCommentSection, setShowCommentSection] = useState(false);
   const { user } = useSelector((state: RootState) => state?.auth);
 
   const { isLoading: isDeleting, handleAction: deleteTweetAction } =
@@ -34,6 +38,10 @@ const TweetCard = ({ data }: { data: Tweet }) => {
     }
   };
 
+  const toggleCommentSection = () => {
+    setShowCommentSection((prev) => !prev);
+  };
+
   if (isDeleted) {
     return <p className="p-2 bg-slate-50">it was deleted !</p>;
   }
@@ -47,12 +55,17 @@ const TweetCard = ({ data }: { data: Tweet }) => {
             <Avatar
               url={data?.owner?.avatar?.url}
               fullName={data?.owner?.fullName}
-              className="h-8 w-8"
+              className="h-10 w-10"
               onClick={() => navigate(`/c/${data?.owner?.username}`)}
             />
-            <h2 className="md:text-[16px] text-sm text-gray-800 font-nunito_sans font-semibold">
-              {data?.owner?.fullName}
-            </h2>
+            <div className="flex flex-col">
+              <h2 className="text-[16.5px] text-gray-800 font-nunito_sans font-semibold">
+                {data?.owner?.fullName}
+              </h2>
+              <h2 className="text-[15px] leading-none text-gray-600 font-nunito_sans font-semibold">
+                {data?.owner?.username}
+              </h2>
+            </div>
           </div>
           <p className="md:text-sm text-xs text-gray-500">
             <TimeAgo date={data.createdAt} />
@@ -101,13 +114,27 @@ const TweetCard = ({ data }: { data: Tweet }) => {
         />
 
         {/* Comment Button */}
-        <button className="flex items-center space-x-1 text-gray-600 text-lg hover:text-blue-500 transition-all rounded-full px-3 py-1 hover:bg-slate-100">
+        <button
+          className={twMerge(
+            "flex items-center space-x-1 text-gray-600 text-lg transition-all rounded-full px-3 py-1",
+            "hover:bg-slate-100  hover:text-blue-500",
+            showCommentSection && "bg-slate-100 text-blue-500"
+          )}
+          onClick={toggleCommentSection}
+        >
           <span className="text-xl">
             <IoIosChatbubbles />
           </span>
           <span>Comment</span>
         </button>
       </div>
+      {showCommentSection && (
+        <>
+          <Devider className="my-3" />
+          {/* comment section */}
+          <CommentBox contentId={data?._id} type="tweet" />
+        </>
+      )}
     </div>
   );
 };
