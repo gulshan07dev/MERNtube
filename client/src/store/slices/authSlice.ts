@@ -31,7 +31,16 @@ const initialState: initialState = {
 
 const registerUser = createAsyncThunk(
   "/users/register",
-  async (data, { rejectWithValue }) => {
+  async (
+    data: {
+      fullName: string;
+      email: string;
+      password: string;
+      avatar?: File;
+      coverImage?: File;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await axiosInstance.post("/users/register", data, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -48,7 +57,10 @@ const registerUser = createAsyncThunk(
 
 const loginUser = createAsyncThunk(
   "/users/login",
-  async (data, { rejectWithValue }) => {
+  async (
+    data: { usernameOrEmail: string; password: string },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await axiosInstance.post("/users/login", data);
       return res?.data;
@@ -93,10 +105,15 @@ const refreshAccessToken = createAsyncThunk(
 
 const changeUserPassword = createAsyncThunk(
   "/users/change-password",
-  async (data, { rejectWithValue }) => {
+  async (
+    data: {
+      oldPassword: string;
+      newPassword: string;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await axiosInstance.patch("/users/change-password", data);
-      console.log(res);
       return res?.data;
     } catch (error: any) {
       if (!error.response) {
@@ -109,7 +126,7 @@ const changeUserPassword = createAsyncThunk(
 
 const changeAccountDetails = createAsyncThunk(
   "/users/change-account",
-  async (data, { rejectWithValue }) => {
+  async (data: {fullName?: string, username?: string}, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.patch("/users/change-account", data);
       return res?.data;
@@ -124,7 +141,7 @@ const changeAccountDetails = createAsyncThunk(
 
 const changeUserAvatar = createAsyncThunk(
   "/users/change-avatar",
-  async (data, { rejectWithValue }) => {
+  async (data: {avatar: File}, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.patch("/users/change-avatar", data, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -141,7 +158,7 @@ const changeUserAvatar = createAsyncThunk(
 
 const changeCoverImage = createAsyncThunk(
   "/users/change-coverImage",
-  async (data, { rejectWithValue }) => {
+  async (data: {coverImage: File}, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.patch("/users/change-coverImage", data, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -173,7 +190,7 @@ const getCurrentUser = createAsyncThunk(
 
 const getChannel = createAsyncThunk(
   "/users/c/username",
-  async (username, { rejectWithValue }) => {
+  async (username: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(`/users/c/${username}`);
       return res?.data;

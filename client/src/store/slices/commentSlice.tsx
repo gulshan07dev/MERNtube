@@ -2,6 +2,11 @@ import axiosInstance from "@/helper/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "./authSlice";
 
+interface QueryParams {
+  page?: number;
+  limit?: number;
+}
+
 export interface Comment {
   _id: string;
   content: string;
@@ -85,7 +90,7 @@ const updateComment = createAsyncThunk(
 
 const deleteComment = createAsyncThunk(
   "/delete-comment/commentId",
-  async (commentId, { rejectWithValue }) => {
+  async (commentId: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.delete(`/comments/${commentId}`);
       return res.data;
@@ -101,12 +106,12 @@ const deleteComment = createAsyncThunk(
 const getVideoComment = createAsyncThunk(
   "/get-comment/video/videoId",
   async (
-    { videoId, page, limit }: { videoId: string; page: number; limit: number },
+    { videoId, queryParams }: { videoId: string; queryParams: QueryParams },
     { rejectWithValue }
   ) => {
     try {
       const res = await axiosInstance.get(`/comments/video/${videoId}`, {
-        params: { page, limit },
+        params: queryParams,
       });
       return res.data;
     } catch (error: any) {
@@ -121,12 +126,12 @@ const getVideoComment = createAsyncThunk(
 const getTweetComment = createAsyncThunk(
   "/get-comment/tweet/tweetId",
   async (
-    { tweetId, page, limit }: { tweetId: string; page: number; limit: number },
+    { tweetId, queryParams }: { tweetId: string; queryParams: QueryParams },
     { rejectWithValue }
   ) => {
     try {
       const res = await axiosInstance.get(`/comments/tweet/${tweetId}`, {
-        params: { page, limit },
+        params: queryParams,
       });
       return res.data;
     } catch (error: any) {

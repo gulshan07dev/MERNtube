@@ -1,7 +1,15 @@
 import axiosInstance from "@/helper/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "./authSlice";
-import { queryParams } from "@/component/ScrollPagination";
+
+interface QueryParams {
+  page?: number;
+  limit?: number;
+  query?: string;
+  sortBy?: string;
+  sortType?: "acc" | "desc";
+  userId?: string;
+}
 
 export interface Video {
   _id: string;
@@ -28,7 +36,7 @@ interface initialState {
 }
 
 const initialState: initialState = {
-  video:  [],
+  video: [],
   videos: [],
   loading: false,
   error: null,
@@ -40,7 +48,16 @@ const initialState: initialState = {
 
 const createVideo = createAsyncThunk(
   "/videos/create",
-  async (data, { rejectWithValue }) => {
+  async (
+    data: {
+      title: string;
+      description: string;
+      videoFile: File | null;
+      thumbnail: File | null;
+      isPublished: boolean;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await axiosInstance.post("/videos", data, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -58,7 +75,13 @@ const createVideo = createAsyncThunk(
 const updateVideo = createAsyncThunk(
   "/videos/update/videoId",
   async (
-    { videoId, data }: { videoId: string; data: {} },
+    {
+      videoId,
+      data,
+    }: {
+      videoId: string;
+      data: { title: string; description: string; thumbnail?: File | null };
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -77,7 +100,7 @@ const updateVideo = createAsyncThunk(
 
 const getVideoByVideoId = createAsyncThunk(
   "/videos/update/videoId",
-  async (videoId, { rejectWithValue }) => {
+  async (videoId: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(`/videos/${videoId}`);
       return res.data;
@@ -92,7 +115,7 @@ const getVideoByVideoId = createAsyncThunk(
 
 const getAllVideos = createAsyncThunk(
   "/videos/getAll",
-  async (queryParams: queryParams | {}, { rejectWithValue }) => {
+  async (queryParams: QueryParams | {}, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get("/videos", {
         params: queryParams,

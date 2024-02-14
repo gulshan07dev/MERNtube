@@ -23,7 +23,7 @@ const initialState: initialState = {
 
 const createTweet = createAsyncThunk(
   "/tweets/add-tweet",
-  async (data, { rejectWithValue }) => {
+  async (data: { content: string }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/tweets", data);
       return res.data;
@@ -56,7 +56,7 @@ const updateTweet = createAsyncThunk(
 
 const deleteTweet = createAsyncThunk(
   "/tweets/delete-tweet/tweetId",
-  async (tweetId, { rejectWithValue }) => {
+  async (tweetId: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.delete(`/tweets/${tweetId}`);
       return res.data;
@@ -71,7 +71,7 @@ const deleteTweet = createAsyncThunk(
 
 const getTweetById = createAsyncThunk(
   "/tweets/tweetId",
-  async (tweetId, { rejectWithValue }) => {
+  async (tweetId: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(`/tweets/${tweetId}`);
       return res.data;
@@ -86,7 +86,7 @@ const getTweetById = createAsyncThunk(
 
 const getUserTweets = createAsyncThunk(
   "/tweets/user/userId",
-  async (userId, { rejectWithValue }) => {
+  async (userId: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(`/tweets/user/${userId}`);
       return res.data;

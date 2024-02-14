@@ -12,7 +12,7 @@ const initialState: initialState = {
 
 const toggleVideoLike = createAsyncThunk(
   "/likes/video/videoId",
-  async (videoId, { rejectWithValue }) => {
+  async (videoId: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post(`/likes/video/${videoId}`);
       return res.data;
@@ -27,7 +27,7 @@ const toggleVideoLike = createAsyncThunk(
 
 const toggleCommentLike = createAsyncThunk(
   "/likes/comment/commentId",
-  async (commentId, { rejectWithValue }) => {
+  async (commentId: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post(`/likes/comment/${commentId}`);
       return res.data;
@@ -42,7 +42,7 @@ const toggleCommentLike = createAsyncThunk(
 
 const toggleTweetLike = createAsyncThunk(
   "/likes/tweet/tweetId",
-  async (tweetId, { rejectWithValue }) => {
+  async (tweetId: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post(`/likes/tweet/${tweetId}`);
       return res.data;

@@ -32,8 +32,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
     const { isSuccess, resData } = await handleAction({
       videoId: contentId,
       tweetId: contentId,
-      page,
-      limit: 2,
+      queryParams: { page, limit: 2 },
     });
 
     if (isSuccess && resData?.result) {

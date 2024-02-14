@@ -1,9 +1,13 @@
+import { AsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import toast from "react-hot-toast";
+import { AppDispatch } from "@/store/store";
 
-interface useActionHandlerProps {
-  action: any;
+interface useActionHandlerProps<
+  T extends AsyncThunk<any, any, any> | PayloadAction<any, string, any>
+> {
+  action: T;
   isShowToastMessage?: boolean;
   toastMessages?: {
     loadingMessage?: string;
@@ -12,34 +16,30 @@ interface useActionHandlerProps {
   };
 }
 
-interface handleActionResult {
-  r: any;
+interface HandleActionResult<T> {
   isSuccess: boolean;
   error: string | null;
-  resData: any;
+  resData: T;
 }
 
-interface ApiResponse {
-  payload: {
-    success: boolean;
-    message?: string;
-    errors?: Record<string, { message: string }>;
-    data?: any;
-  };
-}
-
-const useActionHandler = ({
+const useActionHandler = <
+  T extends AsyncThunk<any, any, any> | PayloadAction<any, string, any>
+>({
   action,
   isShowToastMessage = true,
   toastMessages,
-}: useActionHandlerProps) => {
-  const dispatch = useDispatch();
+}: useActionHandlerProps<T>) => {
+  const dispatch: AppDispatch = useDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleAction = async (
-    data?: string | {}
-  ): Promise<handleActionResult> => {
+    payload?: T extends AsyncThunk<any, infer P, any>
+      ? P
+      : T extends PayloadAction<any, string, infer P>
+      ? P
+      : undefined
+  ): Promise<HandleActionResult<any>> => {
     setIsLoading(true);
     setError(null);
 
@@ -51,39 +51,36 @@ const useActionHandler = ({
         : null;
 
     try {
-      const res: ApiResponse = await dispatch(action(data));
+      let res;
+      if ("payload" in action) {
+        res = { payload: payload || null };
+      } else {
+        res = await dispatch(action(payload));
+      }
 
-      if (res?.payload?.success) {
+      if (res && "payload" in res && "success" in res.payload) {
+        const resData = res.payload.data;
         handleSuccessToast(
           isShowToastMessage,
           successMessage,
           res.payload.message,
           loadingToast
         );
-
-        return {
-          isSuccess: true,
-          error: null,
-          resData: res?.payload?.data || {},
-        };
+        return { isSuccess: true, error: null, resData };
       } else {
         const error = getErrorMessage(
           res?.payload?.errors,
           res?.payload?.message
         );
-
         handleErrorToast(isShowToastMessage, errorMessage, error, loadingToast);
         setError(error || null);
-
-        return { isSuccess: false, error: error || null, resData: {} };
+        return { isSuccess: false, error: error || null, resData: {} as any };
       }
     } catch (err: any) {
       const error = getErrorMessage(null, err?.message);
-
       handleErrorToast(isShowToastMessage, errorMessage, error, loadingToast);
       setError(error);
-
-      return { isSuccess: false, error, resData: {} };
+      return { isSuccess: false, error, resData: {} as any };
     } finally {
       setIsLoading(false);
     }

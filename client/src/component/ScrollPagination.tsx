@@ -5,15 +5,6 @@ import { twMerge } from "tailwind-merge";
 import ErrorDialog from "./error/ErrorDialog";
 import Button from "./CoreUI/Button";
 
-export interface QueryParams {
-  page?: number;
-  limit?: number;
-  query?: string;
-  sortBy?: string;
-  sortType?: "acc" | "desc";
-  userId?: string;
-}
-
 interface ScrollPaginationProps {
   paginationType: "infinite-scroll" | "view-more";
   loadNextPage: () => void;
