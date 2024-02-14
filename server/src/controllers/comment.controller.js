@@ -263,8 +263,8 @@ const getTweetComment = asyncHandler(async (req, res) => {
         {
             $lookup: {
                 from: "likes",
-                localField: "tweet",
-                foreignField: "tweet",
+                localField: "_id",
+                foreignField: "comment",
                 as: "commentLikes"
             }
         },
@@ -278,7 +278,7 @@ const getTweetComment = asyncHandler(async (req, res) => {
                 },
                 isLiked: {
                     $cond: {
-                        if: { $in: [req.user?._id, "$commentLikes"] },
+                        if: { $in: [req.user?._id, "$commentLikes.owner"] },
                         then: true,
                         else: false
                     }
