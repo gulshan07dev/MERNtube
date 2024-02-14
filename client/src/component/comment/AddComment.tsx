@@ -43,8 +43,8 @@ const AddComment: React.FC<AddCommentProps> = ({
 
     const res = await handleAction({
       data: formData,
-      videoId: type === "video" ? contentId : undefined,
-      tweetId: type === "tweet" ? contentId : undefined,
+      videoId: contentId,
+      tweetId: contentId,
     });
 
     if (res.isSuccess) {

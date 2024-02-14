@@ -11,7 +11,7 @@ interface LikeBtnProps {
   isLiked: boolean;
   likeCount: number;
   contentId: string;
-  toggleLikeAction: AsyncThunk<any, void, AsyncThunkConfig>;
+  toggleLikeAction: AsyncThunk<any, any, AsyncThunkConfig>;
 }
 
 const LikeBtn: React.FC<LikeBtnProps> = ({
