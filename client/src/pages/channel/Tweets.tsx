@@ -7,7 +7,6 @@ import { getUserTweets, setTweets } from "@/store/slices/tweetSlice";
 import useActionHandler from "@/hooks/useActionHandler";
 import TweetCard from "@/component/tweet/TweetCard";
 import TweetSkeleton from "@/component/tweet/TweetSkeleton";
-import { twMerge } from "tailwind-merge";
 
 export default function Tweets() {
   const dispatch: AppDispatch = useDispatch();
@@ -75,15 +74,14 @@ export default function Tweets() {
           No more tweets to show !!!
         </p>
       }
-      className={twMerge(
-        "pb-20 lg:w-[75%] w-full min-h-full flex flex-col gap-10 max-lg:items-center max-lg:px-1 py-5",
-        error && "pt-10"
-      )}
+      className={`pb-20 lg:w-[75%] w-full min-h-full ${error ? "pt-10" : ""}`}
     >
-      {tweets?.map((tweet) => (
-        <TweetCard key={tweet?._id} data={tweet} />
-      ))}
-      {!isLoading && renderSkeletons()}
+      <div className="w-full flex flex-col gap-10 max-lg:items-center max-lg:px-1 py-5">
+        {tweets?.map((tweet) => (
+          <TweetCard key={tweet?._id} data={tweet} />
+        ))}
+        {isLoading && renderSkeletons()}
+      </div>
     </ScrollPagination>
   );
 }
