@@ -2,6 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../helper/axiosInstance";
 import { User } from "./authSlice";
 
+interface QueryParams {
+  page?: number;
+  limit?: number;
+}
+
 export interface Tweet {
   _id: string;
   content: string;
@@ -86,9 +91,14 @@ const getTweetById = createAsyncThunk(
 
 const getUserTweets = createAsyncThunk(
   "/tweets/user/userId",
-  async (userId: string, { rejectWithValue }) => {
+  async (
+    { userId, queryParams }: { userId: string; queryParams: QueryParams },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await axiosInstance.get(`/tweets/user/${userId}`);
+      const res = await axiosInstance.get(`/tweets/user/${userId}`, {
+        params: queryParams,
+      });
       return res.data;
     } catch (error: any) {
       if (!error.response) {
@@ -119,15 +129,13 @@ const tweetSlice = createSlice({
         state.tweet = null;
       })
 
-      .addCase(getUserTweets.pending, (state) => {
-        state.tweets = [];
-      })
       .addCase(getUserTweets.fulfilled, (state, action) => {
-        state.tweets = action.payload?.data?.tweets;
+        const newTweets = action.payload?.data?.result?.docs;
+        state.tweets =
+          action.payload?.data?.result?.page === 1
+            ? newTweets
+            : [...state.tweets, ...newTweets];
       })
-      .addCase(getUserTweets.rejected, (state) => {
-        state.tweets = [];
-      });
   },
 });
 

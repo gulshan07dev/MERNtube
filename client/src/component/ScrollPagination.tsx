@@ -18,6 +18,7 @@ interface ScrollPaginationProps {
   hasNextPage: boolean;
   endMessage: React.ReactNode;
   children?: React.ReactNode;
+  className?: string;
 }
 
 const ScrollPagination = ({
@@ -33,6 +34,7 @@ const ScrollPagination = ({
   hasNextPage,
   endMessage,
   children,
+  className,
 }: ScrollPaginationProps) => {
   const handleScroll = () => {
     const container = document.getElementById("main-container");
@@ -65,7 +67,10 @@ const ScrollPagination = ({
     <div
       className={twMerge(
         "w-full flex flex-col",
-        paginationType === "infinite-scroll" && ["min-h-full pb-5 max-md:pb-24"]
+        paginationType === "infinite-scroll" && [
+          "min-h-full pb-5 max-md:pb-24",
+        ],
+        className
       )}
     >
       {error ? (

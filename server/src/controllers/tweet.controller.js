@@ -130,6 +130,7 @@ const getTweetById = asyncHandler(async (req, res) => {
 // get user tweets
 const getUserTweets = asyncHandler(async (req, res) => {
     const { userId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
 
     // check if Invalid userId
     if (!isValidObjectId(userId)) {
@@ -141,7 +142,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not find!");
     }
 
-    const tweets = await Tweet.aggregate([
+    const aggregate = Tweet.aggregate([
         {
             $match: {
                 owner: new Types.ObjectId(userId)
@@ -190,14 +191,19 @@ const getUserTweets = asyncHandler(async (req, res) => {
                 createdAt: 1
             }
         }
-    ]);
+    ])
 
-
-    return res.status(200).json(new ApiResponse(
-        200,
-        { tweets },
-        "Tweets fetched successfully"
-    ))
+    Tweet.aggregatePaginate(aggregate, { page, limit })
+        .then(function (result) {
+            return res.status(200).json(new ApiResponse(
+                200,
+                { result },
+                "Tweets fetched successfully"
+            ));
+        })
+        .catch(function (error) {
+            throw error;
+        });
 })
 
 
