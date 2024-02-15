@@ -20,7 +20,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
         className="h-10 w-10"
         onClick={() => navigate(`/c/${comment?.owner?.username}`)}
       />
-      <div className="flex flex-grow flex-col gap-1">
+      <div className="flex flex-grow w-min flex-col gap-1">
         <div className="flex gap-3 items-start">
           <h2 className="text-[13px] leading-none text-gray-600 font-nunito_sans font-semibold">
             {comment?.owner?.username}
@@ -29,7 +29,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             <TimeAgo date={comment?.createdAt} />
           </p>
         </div>
-        <p className="text-sm text-gray-800 font-roboto  break-all">{comment?.content}</p>
+        <p className="text-sm text-gray-800 font-roboto whitespace-break-spaces">{comment?.content}</p>
         <LikeBtn
           contentId={comment?._id}
           isLiked={comment?.isLiked}

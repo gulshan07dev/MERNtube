@@ -58,7 +58,7 @@ const useActionHandler = <
         res = await dispatch(action(payload));
       }
 
-      if (res && "payload" in res && "success" in res.payload) {
+      if (res?.payload?.success) {
         const resData = res.payload.data;
         handleSuccessToast(
           isShowToastMessage,

@@ -49,7 +49,7 @@ const AddComment: React.FC<AddCommentProps> = ({
 
     if (res.isSuccess) {
       resetForm();
-      setComments((prevComments) => [...prevComments, res.resData?.comment]);
+      setComments((prevComments) => [{...res.resData?.comment}, ...prevComments]);
     }
   };
 

@@ -10,6 +10,7 @@ import Skeleton from "@/component/Skeleton";
 import SubscribeBtn from "@/component/channel/SubscribeBtn";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import ErrorDialog from "@/component/error/ErrorDialog";
 
 export default function ChannelLayout() {
   const { username } = useParams();
@@ -66,9 +67,11 @@ export default function ChannelLayout() {
     <Layout className="md:px-4 px-2 flex flex-col gap-6">
       {error ? (
         // Display error message if there's an error
-        <div>
-          <p>{error}</p>
-        </div>
+        <ErrorDialog
+          errorMessage={error}
+          buttonLabel="Try again"
+          buttonOnClick={fetchChannel}
+        />
       ) : (
         // Render channel details if no error
         <div className="w-full flex flex-col gap-8">

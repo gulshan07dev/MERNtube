@@ -104,7 +104,7 @@ const TweetCard = ({ data }: { data: Tweet }) => {
       </div>
 
       {/* Bottom Section */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center pl-3">
         {/* Like Button */}
         <LikeBtn
           isLiked={data?.isLiked}

@@ -5,6 +5,8 @@ import { User } from "./authSlice";
 interface QueryParams {
   page?: number;
   limit?: number;
+  sortBy?: string;
+  sortType?: "acc" | "desc"
 }
 
 export interface Comment {
