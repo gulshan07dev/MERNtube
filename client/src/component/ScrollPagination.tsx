@@ -68,19 +68,17 @@ const ScrollPagination = ({
       className={twMerge(
         "w-full flex flex-col",
         paginationType === "infinite-scroll" && [
-          "min-h-full pb-5 max-md:pb-24",
+          "min-h-screen pb-5 max-md:pb-24",
         ],
         className
       )}
     >
       {error ? (
-        <div className="mt-8">
-          <ErrorDialog
-            errorMessage={error}
-            buttonLabel="Try again"
-            buttonOnClick={refreshHandler}
-          />
-        </div>
+        <ErrorDialog
+          errorMessage={error}
+          buttonLabel="Try again"
+          buttonOnClick={refreshHandler}
+        />
       ) : (
         <>
           {children}

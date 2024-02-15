@@ -84,6 +84,7 @@ const Home: React.FC = () => {
           No more videos to fetch !!!
         </p>
       }
+      className={twMerge("min-h-full", error && "pt-10")}
     >
       <div className="w-full bg-white flex pb-3 pt-2 gap-3 sticky -top-1 z-[2]">
         {["desc", "acc"].map((type) => (
