@@ -6,41 +6,97 @@ import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
 import asyncHandler from "../utils/asyncHandler.js"
 
-// add comment to video
-const addCommentToVideo = asyncHandler(async (req, res) => {
-    const { videoId } = req.params;
-    const { content } = req.body;
-    const userId = req.user._id;
+const fetchComments = async (req, res, idType, id, page, limit, sortBy, sortType) => {
+    // Define aggregation pipeline stages
+    const pipeline = [];
 
-    if (!content) {
-        throw new ApiError(400, "Comment content is required");
-    }
-
-    if (!isValidObjectId(videoId)) {
-        throw new ApiError(400, "Invalid videoId!");
-    }
-
-    const video = await Video.findById(videoId);
-    if (!video) {
-        throw new ApiError(404, "Video not found!");
-    }
-
-    const comment = await Comment.create({
-        content,
-        video: videoId,
-        owner: userId
+    // Match comments with the specified ID
+    pipeline.push({
+        $match: {
+            [idType]: new Types.ObjectId(id)
+        }
     });
 
-    res.status(201).json(new ApiResponse(
-        201,
-        { comment },
-        "Comment added successfully"
-    ));
-});
+    // Populate owner field with user information
+    pipeline.push({
+        $lookup: {
+            from: "users",
+            localField: "owner",
+            foreignField: "_id",
+            as: "owner",
+            pipeline: [
+                {
+                    $project: {
+                        fullName: 1,
+                        username: 1,
+                        avatar: 1
+                    }
+                }
+            ]
+        }
+    });
 
-// add comment to tweet
-const addCommentToTweet = asyncHandler(async (req, res) => {
-    const { tweetId } = req.params;
+    // Populate commentLikes field with likes associated with each comment
+    pipeline.push({
+        $lookup: {
+            from: "likes",
+            localField: "_id",
+            foreignField: "comment",
+            as: "commentLikes"
+        }
+    });
+
+    // Sort comments if sortBy and sortType are provided
+    if (sortBy && sortType) {
+        const sortDirection = sortType === "acc" ? 1 : -1;
+        pipeline.push({
+            $sort: {
+                [sortBy]: sortDirection
+            }
+        });
+    }
+
+    // Add additional fields to each comment document
+    pipeline.push({
+        $addFields: {
+            owner: { $first: "$owner" },
+            commentLikesCount: { $size: "$commentLikes" },
+            isLiked: {
+                $in: [req.user?._id, "$commentLikes.owner"]
+            }
+        }
+    });
+
+    // Project only required fields
+    pipeline.push({
+        $project: {
+            content: 1,
+            [idType]: 1,
+            owner: 1,
+            isLiked: 1,
+            commentLikesCount: 1,
+            createdAt: 1
+        }
+    });
+
+    // Perform aggregation
+    const aggregate = Comment.aggregate(pipeline);
+
+    // Paginate aggregated results
+    return Comment.aggregatePaginate(aggregate, { page, limit })
+        .then(function (result) {
+            return res.status(200).json(new ApiResponse(
+                200,
+                { result },
+                `${idType.charAt(0).toUpperCase() + idType.slice(1)} comments fetched successfully`
+            ));
+        })
+        .catch(function (error) {
+            throw error;
+        });
+};
+
+const addComment = async (req, res, id, idType) => {
     const { content } = req.body;
     const userId = req.user._id;
 
@@ -48,27 +104,91 @@ const addCommentToTweet = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Content is required");
     }
 
-    if (!isValidObjectId(tweetId)) {
-        throw new ApiError(400, "Invalid tweetId!");
+    if (!isValidObjectId(id)) {
+        throw new ApiError(400, `Invalid ${idType}Id!`);
     }
 
-    const tweet = await Tweet.findById(tweetId);
-    if (!tweet) {
-        throw new ApiError(404, "Tweet not found!");
+    const Model = idType === 'video' ? Video : Tweet;
+    const document = await Model.findById(id);
+    if (!document) {
+        throw new ApiError(404, `${idType.charAt(0).toUpperCase() + idType.slice(1)} not found!`);
     }
 
     const comment = await Comment.create({
         content,
-        tweet: tweetId,
+        [idType]: id,
         owner: userId
     });
 
+    if (!comment) {
+        throw new ApiError(500, "Something went wrong while adding comment!")
+    }
+
+    const commentType = idType.charAt(0).toUpperCase() + idType.slice(1);
+
+    const commentData = await Comment.aggregate([
+        {
+            $match: {
+                _id: comment?._id
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $project: {
+                            fullName: 1,
+                            username: 1,
+                            avatar: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                owner: {
+                    $first: "$owner"
+                },
+                commentLikesCount: 0,
+                isLiked: false
+            }
+        },
+        {
+            $project: {
+                content: 1,
+                [idType]: 1,
+                owner: 1,
+                isLiked: 1,
+                commentLikesCount: 1,
+                createdAt: 1
+            }
+        }
+    ]);
+
     res.status(201).json(new ApiResponse(
         201,
-        { comment },
-        "Comment added successfully"
+        { comment: commentData[0] },
+        `Comment added to ${commentType} successfully`
     ));
-})
+};
+
+// add comment to video
+const addCommentToVideo = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
+    await addComment(req, res, videoId, 'video');
+});
+
+// add comment to tweet
+const addCommentToTweet = asyncHandler(async (req, res) => {
+    const { tweetId } = req.params;
+    await addComment(req, res, tweetId, "tweet");
+});
+
 
 // update comment by commentId
 const updateComment = asyncHandler(async (req, res) => {
@@ -146,169 +266,42 @@ const deleteComment = asyncHandler(async (req, res) => {
 
 // get video comment
 const getVideoComment = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
-    const { page = 1, limit = 10 } = req.query
+    const { videoId } = req.params;
+    const { page = 1, limit = 10, sortBy, sortType } = req.query;
 
     // check if Invalid videoId
     if (!isValidObjectId(videoId)) {
         throw new ApiError(400, "Invalid videoId!");
     }
 
-    const aggregate = Comment.aggregate([
-        {
-            $match: {
-                video: new Types.ObjectId(videoId)
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "owner",
-                foreignField: "_id",
-                as: "owner",
-                pipeline: [
-                    {
-                        $project: {
-                            fullName: 1,
-                            username: 1,
-                            avatar: 1
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            $lookup: {
-                from: "likes",
-                localField: "video",
-                foreignField: "video",
-                as: "commentLikes"
-            }
-        },
-        {
-            $addFields: {
-                owner: {
-                    $first: "$owner"
-                },
-                commentLikesCount: {
-                    $size: "$commentLikes"
-                },
-                isLiked: {
-                    $cond: {
-                        if: { $in: [req.user?._id, "$commentLikes"] },
-                        then: true,
-                        else: false
-                    }
-                }
-            }
-        },
-        {
-            $project: {
-                content: 1,
-                video: 1,
-                owner: 1,
-                isLiked: 1,
-                commentLikesCount: 1,
-                createdAt: 1
-            }
-        }
-    ])
+    // Check if video with given videoId exists
+    const video = await Video.findById(videoId);
+    if (!video) {
+        throw new ApiError(404, "Video not found!");
+    }
 
-    Comment.aggregatePaginate(aggregate, { page, limit })
-        .then(function (result) {
-            return res.status(200).json(new ApiResponse(
-                200,
-                { result },
-                "Video Comment fetched successfully"
-            ))
-        })
-        .catch(function (error) {
-            throw error
-        })
-})
+    await fetchComments(req, res, "video", videoId, page, limit, sortBy, sortType);
+});
 
 // get tweet comment
 const getTweetComment = asyncHandler(async (req, res) => {
-    const { tweetId } = req.params
-    const { page = 1, limit = 10 } = req.query
+    const { tweetId } = req.params;
+    const { page = 1, limit = 10, sortBy, sortType } = req.query;
 
     // check if Invalid tweetId
     if (!isValidObjectId(tweetId)) {
         throw new ApiError(400, "Invalid tweetId!");
     }
 
-    const aggregate = Comment.aggregate([
-        {
-            $match: {
-                tweet: new Types.ObjectId(tweetId)
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "owner",
-                foreignField: "_id",
-                as: "owner",
-                pipeline: [
-                    {
-                        $project: {
-                            fullName: 1,
-                            username: 1,
-                            avatar: 1
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            $lookup: {
-                from: "likes",
-                localField: "_id",
-                foreignField: "comment",
-                as: "commentLikes"
-            }
-        },
-        {
-            $addFields: {
-                owner: {
-                    $first: "$owner"
-                },
-                commentLikesCount: {
-                    $size: "$commentLikes"
-                },
-                isLiked: {
-                    $cond: {
-                        if: { $in: [req.user?._id, "$commentLikes.owner"] },
-                        then: true,
-                        else: false
-                    }
-                }
-            }
-        },
-        {
-            $project: {
-                content: 1,
-                tweet: 1,
-                owner: 1,
-                isLiked: 1,
-                commentLikesCount: 1,
-                createdAt: 1
-            }
-        }
-    ])
+    // Check if tweet with given tweetId exists
+    const tweet = await Tweet.findById(tweetId);
+    if (!tweet) {
+        throw new ApiError(404, "Tweet not found!");
+    }
 
-    Comment.aggregatePaginate(aggregate, { page, limit })
-        .then(function (result) {
-            return res.status(200).json(new ApiResponse(
-                200,
-                { result },
-                "Tweet Comment fetched successfully"
-            ))
-        })
-        .catch(function (error) {
-            throw error
-        })
-})
+    await fetchComments(req, res, "tweet", tweetId, page, limit, sortBy, sortType);
+});
+
 
 
 export {
