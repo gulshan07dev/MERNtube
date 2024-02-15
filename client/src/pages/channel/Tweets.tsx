@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { RootState } from "@/store/store";
+import { AppDispatch, RootState } from "@/store/store";
 import ScrollPagination from "@/component/ScrollPagination";
-import { getUserTweets } from "@/store/slices/tweetSlice";
+import { getUserTweets, setTweets } from "@/store/slices/tweetSlice";
 import useActionHandler from "@/hooks/useActionHandler";
-import Skeleton from "@/component/Skeleton";
 import TweetCard from "@/component/tweet/TweetCard";
+import TweetSkeleton from "@/component/tweet/TweetSkeleton";
 
 export default function Tweets() {
+  const dispatch: AppDispatch = useDispatch();
   const { channel } = useSelector((state: RootState) => state?.auth);
   const { tweets } = useSelector((state: RootState) => state?.tweet);
   const [currPage, setCurrPage] = useState(1);
+  const limit = 5;
   const [totalPages, setTotalPages] = useState(0);
   const [totalDocs, setTotalDocs] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
@@ -24,9 +26,12 @@ export default function Tweets() {
   const fetchUserTweets = async (page: number) => {
     if (!channel?._id) return;
 
+    if (page === 1) {
+      dispatch(setTweets([]));
+    }
     const { isSuccess, resData } = await handleAction({
       userId: channel?._id,
-      queryParams: { page, limit: 5 },
+      queryParams: { page, limit },
     });
 
     if (isSuccess && resData?.result) {
@@ -35,6 +40,16 @@ export default function Tweets() {
       setTotalDocs(resData.result.totalDocs);
       setHasNextPage(resData.result.hasNextPage);
     }
+  };
+
+  const renderSkeletons = () => {
+    const numSkeletons =
+      limit && tweets.length !== 0
+        ? Math.min(limit, totalDocs - tweets.length)
+        : limit;
+    return Array.from({ length: numSkeletons }, (_, idx) => (
+      <TweetSkeleton key={idx} />
+    ));
   };
 
   // fetch initial tweets
@@ -59,15 +74,12 @@ export default function Tweets() {
           No more tweets to show !!!
         </p>
       }
-      className="pb-20"
+      className="pb-20 lg:w-[75%] w-full min-h-screen flex flex-col gap-10 max-lg:items-center max-lg:px-1 py-5"
     >
-      <div className="flex flex-col gap-10 max-lg:items-center min-h-full py-5">
-        {isLoading ? (
-          <Skeleton className="h-[100px] w-full" />
-        ) : (
-          tweets?.map((tweet) => <TweetCard key={tweet?._id} data={tweet} />)
-        )}
-      </div>
+      {tweets?.map((tweet) => (
+        <TweetCard key={tweet?._id} data={tweet} />
+      ))}
+      {!isLoading && renderSkeletons()}
     </ScrollPagination>
   );
 }

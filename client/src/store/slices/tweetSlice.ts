@@ -112,7 +112,11 @@ const getUserTweets = createAsyncThunk(
 const tweetSlice = createSlice({
   name: "tweet",
   initialState,
-  reducers: {},
+  reducers: {
+    setTweets: (state, action) => {
+      state.tweets = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(updateTweet.fulfilled, (state, action) => {
@@ -136,9 +140,12 @@ const tweetSlice = createSlice({
             ? newTweets
             : [...state.tweets, ...newTweets];
       })
+      .addCase(getUserTweets.rejected, (state) => {
+        state.tweets = [];
+      });
   },
 });
 
 export default tweetSlice.reducer;
-export const {} = tweetSlice.actions;
+export const {setTweets} = tweetSlice.actions;
 export { createTweet, updateTweet, deleteTweet, getTweetById, getUserTweets };
