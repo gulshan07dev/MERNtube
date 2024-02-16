@@ -120,7 +120,7 @@ const Sidebar = ({ isHidden }: {isHidden: boolean}) => {
       <aside
         id="sidebar"
         className={twMerge(
-          "h-full bg-white px-2 top-0 overflow-y-scroll z-50 max-md:fixed transition-all duration-500 delay-0",
+          "h-full bg-white dark:bg-dark_bg px-2 top-0 overflow-y-scroll z-50 max-md:fixed transition-[left] duration-500 delay-0",
           isOpen ? "left-0" : isHidden ? "left-[-100%]" : "max-md:left-[-100%]",
           isHidden ? ["fixed"] : ["md:sticky md:left-0"]
         )}
@@ -133,7 +133,7 @@ const Sidebar = ({ isHidden }: {isHidden: boolean}) => {
           }`}
         >
           <div
-            className={`sticky top-0 mb-2 bg-white items-center ${
+            className={`sticky top-0 mb-2 bg-white dark:bg-dark_bg items-center ${
               isHidden ? "flex" : "md:hidden flex"
             }`}
           >
@@ -145,7 +145,7 @@ const Sidebar = ({ isHidden }: {isHidden: boolean}) => {
           <div
             className={twMerge(
               "md:px-2 md:pb-2 flex md:flex-col md:gap-2",
-              "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white max-md:border max-md:items-center max-md:transition-all",
+              "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white dark:max-md:bg-dark_bg max-md:border dark:max-md:border-[#121212] max-md:items-center max-md:transition-all",
               isOpen && "max-md:-bottom-[60px]"
             )}
           >
@@ -178,7 +178,7 @@ const Sidebar = ({ isHidden }: {isHidden: boolean}) => {
           <Divider />
 
           <div className="px-3 pb-3">
-            <p className="text-sm font-hedvig_letters text-gray-700 leading-none">
+            <p className="text-sm font-hedvig_letters text-gray-700 dark:text-white leading-none">
               Made With <span className="text-lg text-red-600">❤</span>
               <br /> <span className="pl-3 font-Noto_sans">By Gulshan</span>
             </p>

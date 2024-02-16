@@ -99,17 +99,17 @@ export default function ChannelLayout() {
                 <div className="flex flex-col gap-1">
                   {/* Channel name */}
                   <h1
-                    className="md:text-4xl text-xl font-bold"
+                    className="md:text-4xl text-xl text-black dark:text-white font-bold"
                     title={channel?.fullName}
                   >
                     {channel?.fullName}
                   </h1>
 
                   {/* Username and subscriber/video count */}
-                  <p className="md:text-lg text-sm text-zinc-600 font-semibold leading-tight">
+                  <p className="md:text-lg text-sm text-zinc-600 dark:text-[#AAAAAA] font-semibold leading-tight">
                     {channel?.username}
                   </p>
-                  <p className="md:text-lg text-sm text-zinc-600 font-semibold leading-loose">
+                  <p className="md:text-lg text-sm text-zinc-600 dark:text-[#AAAAAA] font-semibold leading-loose">
                     {channel?.subscriberCount}{" "}
                     {channel?.subscriberCount || 0 <= 1
                       ? "Subscriber"
@@ -129,16 +129,16 @@ export default function ChannelLayout() {
           )}
 
           {/* Channel tabs */}
-          <div className="flex md:gap-10 gap-7 relative after:absolute after:-bottom-2 after:w-full after:h-[1px] after:bg-gray-300">
+          <div className="flex md:gap-10 gap-7 relative after:absolute after:-bottom-2 after:w-full after:h-[1px] after:bg-gray-300 dark:after:bg-gray-600">
             {channelTabsLink.map(({ label, slug }) => (
               // Render channel tabs with appropriate styles
               <Link
                 to={slug}
                 key={slug}
                 className={twMerge(
-                  "text-base text-zinc-500 font-semibold font-poppins transition-all",
+                  "text-base text-zinc-500 dark:text-[#AAAAAA] font-semibold font-poppins transition-all",
                   location.pathname === slug &&
-                    "text-black relative after:content-[''] after:absolute after:z-[2] after:-bottom-2 after:left-0 after:w-full after:h-[2px] after:bg-black"
+                    "text-black dark:text-white relative after:content-[''] after:absolute after:z-[2] after:-bottom-2 after:left-0 after:w-full after:h-[2px] after:bg-black dark:after:bg-white"
                 )}
               >
                 <button

@@ -24,7 +24,7 @@ export default function MenuLink({
         <button
           className={twMerge(
             "flex gap-6 items-center font-Noto_sans px-4 py-1.5 rounded-lg w-full",
-            isActive ? "bg-[#edf4ff] text-[#000000]" : "text-[#202427]",
+            isActive ? "bg-[#edf4ff] dark:bg-[#272727] text-[#000000] dark:text-white" : "text-[#202427] dark:text-slate-50",
             className
           )}
         >
@@ -37,7 +37,7 @@ export default function MenuLink({
           </span>
           <span
             className={`text-[15px] font-roboto font-[500] truncate ${
-              isActive ? "text-zinc-950" : "text-zinc-700"
+              isActive ? "text-zinc-950 dark:text-white" : "text-zinc-700 dark:text-slate-50"
             } ${className}`}
           >
             {label}

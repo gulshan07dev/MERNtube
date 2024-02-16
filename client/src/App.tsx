@@ -17,6 +17,7 @@ import Videos from "./pages/channel/Videos";
 import Tweets from "./pages/channel/Tweets";
 import Create from "./pages/Create";
 import TweetEdit from "./pages/edit/TweetEdit";
+import Settings from "./pages/Settings";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -41,10 +42,20 @@ function App() {
     })();
   }, []);
 
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    if (theme) {
+      document.body.classList.add(theme);
+    }
+  }, []);
+
   return (
     <Routes>
       {/* home page */}
       <Route path="/" element={<Home />} />
+
+      {/* settings */}
+      <Route path="/settings" element={<Settings />} />
 
       {/* ....protected routes.... */}
       <Route element={<AuthRequired />}>
@@ -63,7 +74,7 @@ function App() {
 
         {/* edit */}
         <Route path="/edit">
-           <Route path="tweet/:tweetId" element={<TweetEdit />} />
+          <Route path="tweet/:tweetId" element={<TweetEdit />} />
         </Route>
       </Route>
 

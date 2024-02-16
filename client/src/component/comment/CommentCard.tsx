@@ -22,14 +22,14 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
       />
       <div className="flex flex-grow w-min flex-col gap-1">
         <div className="flex gap-3 items-start">
-          <h2 className="text-[13px] leading-none text-gray-600 font-nunito_sans font-semibold">
+          <h2 className="text-[13px] leading-none text-gray-600 dark:text-[#AAAAAA] font-nunito_sans font-semibold">
             {comment?.owner?.username}
           </h2>
-          <p className="text-xs leading-none text-gray-500">
+          <p className="text-xs leading-none text-gray-500 dark:text-[#AAAAAA]">
             <TimeAgo date={comment?.createdAt} />
           </p>
         </div>
-        <p className="text-sm text-gray-800 font-roboto whitespace-break-spaces">{comment?.content}</p>
+        <p className="text-sm text-gray-800 dark:text-slate-50 font-roboto whitespace-break-spaces">{comment?.content}</p>
         <LikeBtn
           contentId={comment?._id}
           isLiked={comment?.isLiked}

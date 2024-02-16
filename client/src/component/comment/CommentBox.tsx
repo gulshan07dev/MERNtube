@@ -88,7 +88,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
         />
         {/* Filter */}
         <select
-          className="w-min px-4 py-2 bg-slate-50 hover:bg-slate-200 rounded-full text-sm text-gray-700"
+          className="w-min px-4 py-2 bg-slate-50 dark:bg-[#171717] hover:bg-slate-200 dark:hover:bg-[#202020] rounded-full text-sm text-gray-700 dark:text-white"
           value={sortType}
           onChange={handleSortChange}
         >

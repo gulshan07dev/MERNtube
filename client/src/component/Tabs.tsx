@@ -18,14 +18,14 @@ const Tabs = ({ tabs, className = "" }: TabsProps) => {
         className
       )}
     >
-      <div className="bg-slate-100 rounded-lg p-3 flex items-center justify-center">
+      <div className="bg-slate-100 dark:bg-[#202020] rounded-lg p-3 flex items-center justify-center">
         {tabs.map((tab) => (
           <Button
             key={tab.label}
             className={`w-1/2 rounded-xl text-base border-none hover:opacity-80 ${
               selectedTab === tab.label
-                ? "bg-[#000000cb] text-white"
-                : "bg-transparent text-black"
+                ? "bg-[#000000cb] dark:bg-[#454545] text-white"
+                : "bg-transparent text-black dark:text-white"
             }`}
             onClick={() => setSelectedTab(tab.label)}
             label={tab.label}

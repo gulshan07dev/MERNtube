@@ -38,7 +38,7 @@ export default function Login() {
   return (
     <Layout
       showNavigationBar={false}
-      className="bg-slate-50 flex justify-center md:pt-24 pt-14 pb-7"
+      className="bg-slate-50 dark:bg-dark_bg flex justify-center md:pt-24 pt-14 pb-7"
     >
       <AuthForm
         type={AuthFormType.LOGIN}

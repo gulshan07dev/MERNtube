@@ -17,7 +17,7 @@ const ErrorDialog = ({
       <span className="-mt-16 text-7xl text-red-600 shadow-md rounded-full">
         {icon}
       </span>
-      <p className="font-bold md:text-3xl text-2xl font-poppins -mt-5">
+      <p className="font-bold md:text-3xl text-2xl text-black dark:text-white font-poppins -mt-5">
         {errorMessage}
       </p>
       <Button

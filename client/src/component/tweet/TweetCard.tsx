@@ -47,7 +47,7 @@ const TweetCard = ({ data }: { data: Tweet }) => {
   }
 
   return (
-    <div className="w-full relative border border-slate-300 lg:p-5 p-3 group">
+    <div className="w-full relative border border-slate-300 dark:border-[#252525] lg:p-5 p-3 group">
       {/* Top Section */}
       <div className="flex justify-between items-center mb-3">
         <div className="flex gap-3">
@@ -59,15 +59,15 @@ const TweetCard = ({ data }: { data: Tweet }) => {
               onClick={() => navigate(`/c/${data?.owner?.username}`)}
             />
             <div className="flex flex-col">
-              <h2 className="text-[16.5px] text-gray-800 font-nunito_sans font-semibold">
+              <h2 className="text-[16.5px] text-gray-800 dark:text-white font-nunito_sans font-semibold">
                 {data?.owner?.fullName}
               </h2>
-              <h2 className="text-[15px] leading-none text-gray-600 font-nunito_sans font-semibold">
+              <h2 className="text-[15px] leading-none text-gray-600 dark:text-[#AAAAAA] font-nunito_sans font-semibold">
                 {data?.owner?.username}
               </h2>
             </div>
           </div>
-          <p className="md:text-sm text-xs text-gray-500">
+          <p className="md:text-sm text-xs text-gray-500 dark:text-[#AAAAAA]">
             <TimeAgo date={data.createdAt} />
           </p>
         </div>
@@ -76,7 +76,7 @@ const TweetCard = ({ data }: { data: Tweet }) => {
           <DropdownMenu
             className="absolute top-3 right-3"
             button={
-              <button className="p-3 text-lg rounded-full hover:bg-slate-100 hidden focus-within:block group-hover:block max-md:block">
+              <button className="p-3 text-lg rounded-full text-black dark:text-white hover:bg-slate-100 dark:hover:bg-[#171717] hidden focus-within:block group-hover:block max-md:block">
                 <IoIosMore />
               </button>
             }
@@ -97,8 +97,8 @@ const TweetCard = ({ data }: { data: Tweet }) => {
       </div>
 
       {/* Content */}
-      <div className="bg-gray-100 p-3 rounded-lg mb-3">
-        <p className="text-lg text-gray-800 font-poppins font-medium">
+      <div className="bg-gray-100 dark:bg-[#121212] p-3 rounded-lg mb-3">
+        <p className="text-lg text-gray-800 dark:text-slate-100 font-poppins font-medium">
           {data?.content}
         </p>
       </div>
@@ -116,9 +116,10 @@ const TweetCard = ({ data }: { data: Tweet }) => {
         {/* Comment Button */}
         <button
           className={twMerge(
-            "flex items-center space-x-1 text-gray-600 text-lg transition-all rounded-full px-3 py-1",
-            "hover:bg-slate-100  hover:text-blue-500",
-            showCommentSection && "bg-slate-100 text-blue-500"
+            "flex items-center space-x-1 text-gray-600 dark:text-slate-300 text-lg transition-all rounded-full px-3 py-1",
+            "hover:bg-slate-100 dark:hover:bg-[#171717] hover:text-blue-500",
+            showCommentSection &&
+              "bg-slate-100 dark:bg-[#171717] text-blue-500"
           )}
           onClick={toggleCommentSection}
         >

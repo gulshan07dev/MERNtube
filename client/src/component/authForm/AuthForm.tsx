@@ -70,11 +70,11 @@ export default function AuthForm({
 
       <form
         onSubmit={handleFormSubmit}
-        className="w-full shadow-3xl bg-white border border-slate-300 rounded-xl md:py-8 py-7 pb-12 md:px-5 px-3.5 flex flex-col gap-7"
+        className="w-full shadow-3xl bg-white dark:bg-[#121212] border border-slate-300 dark:border-[#252525] rounded-xl md:py-8 py-7 pb-12 md:px-5 px-3.5 flex flex-col gap-7"
       >
         <div className="flex flex-col gap-1 items-center mb-5">
           <Logo className="md:w-32" />
-          <h1 className="text-xl font-medium text-gray-700 font-poppins">
+          <h1 className="text-xl font-medium text-gray-700 dark:text-white font-hedvig_letters">
             {title}
           </h1>
         </div>

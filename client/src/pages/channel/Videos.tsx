@@ -80,13 +80,13 @@ const Home: React.FC = () => {
       totalPages={totalPages}
       totalItems={totalDocs}
       endMessage={
-        <p className="py-4 text-lg text-gray-800 text-center font-Noto_sans">
+        <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
           No more videos to fetch !!!
         </p>
       }
       className={twMerge("min-h-full", error && "pt-10")}
     >
-      <div className="w-full bg-white flex pb-3 pt-2 gap-3 sticky -top-1 z-[2]">
+      <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3 sticky -top-1 z-[2]">
         {["desc", "acc"].map((type) => (
           <Button
             key={type}
@@ -94,11 +94,11 @@ const Home: React.FC = () => {
             isLarge={false}
             onClick={() => handleSortTypeChange(type as "acc" | "desc")}
             className={twMerge(
-              "rounded-lg bg-gray-200 text-sm text-[#0f0f0f] font-roboto border-none",
+              "rounded-lg bg-gray-200 dark:bg-[#171717] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
               "hover:opacity-100",
               sortType === type && sortBy === "createdAt"
-                ? ["bg-black text-white"]
-                : ["hover:bg-gray-300"]
+                ? ["bg-black text-white dark:bg-white dark:text-black"]
+                : ["hover:bg-gray-300 dark:hover:bg-[#252525]"]
             )}
           />
         ))}
@@ -107,13 +107,15 @@ const Home: React.FC = () => {
           isLarge={false}
           onClick={() => handleSortBy("views")}
           className={twMerge(
-            "rounded-lg bg-gray-200 text-sm text-[#0f0f0f] font-roboto border-none",
+            "rounded-lg bg-gray-200 dark:bg-[#171717] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
             "hover:opacity-100",
-            sortBy === "views" ? ["bg-black text-white"] : ["hover:bg-gray-300"]
+            sortBy === "views"
+              ? ["bg-black text-white dark:bg-white dark:text-black"]
+              : ["hover:bg-gray-300 dark:hover:bg-[#252525]"]
           )}
         />
       </div>
-      <div className="flex flex-grow flex-wrap bg-white items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
+      <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
         {videos?.map((item, index) => (
           <VideoCard key={index} data={item} />
         ))}

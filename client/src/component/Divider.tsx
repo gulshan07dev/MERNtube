@@ -10,7 +10,7 @@ export default function Devider({
   return (
     <div
       className={twMerge(
-        "bg-[#00000015] m-1",
+        "bg-[#00000015] dark:bg-gray-800 m-1",
         type === "horizontal" ? ["w-full h-[1.5px]"] : ["w-[1.5px] h-full"],
         className
       )}

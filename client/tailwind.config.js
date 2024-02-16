@@ -13,6 +13,9 @@ export default {
         roboto: ['Roboto', 'sans-serif'],
         hedvig_letters: ['"Hedvig Letters Serif"', 'serif'],
         Noto_sans: ['"Noto Sans"', 'sans-serif']
+      },
+      colors: {
+        dark_bg: "#0f0f0f"
       }
     },
   },

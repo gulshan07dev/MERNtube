@@ -21,13 +21,13 @@ export default function VideoCard({ data }: { data: Video }) {
             className="h-8 w-8"
           />
           <div className="flex flex-col gap-[1px]">
-            <h1 className="text-[16px] font-roboto font-medium text-[#0f0f0f] line-clamp-2">
+            <h1 className="text-[16px] font-roboto font-medium text-[#0f0f0f] dark:text-[#f1f1f1] line-clamp-2">
               {data?.title}
             </h1>
-            <p className="text-sm text-[#606060] font-roboto font-normal leading-tight">
+            <p className="text-sm text-[#606060] dark:text-[#AAAAAA] font-roboto font-normal leading-tight">
               {data?.owner?.fullName}
             </p>
-            <p className="text-sm text-[#606060] font-roboto font-normal leading-none">
+            <p className="text-sm text-[#606060] dark:text-[#AAAAAA] font-roboto font-normal leading-none">
               {abbreviateNumber(data?.views, 1)} views{" · "}
               <TimeAgo date={data?.createdAt} />
             </p>

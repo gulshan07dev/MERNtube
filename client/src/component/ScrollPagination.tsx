@@ -83,13 +83,16 @@ const ScrollPagination = ({
         <>
           {children}
           {dataLength >= totalItems && totalItems > 0 && endMessage}
-          {dataLength !== totalItems && hasNextPage && !loading && (
-            <Button
-              label="Load More"
-              onClick={loadNextPage}
-              className="mt-2 bg-slate-50 rounded-full text-sm font-hedvig_letters border-slate-300 text-black"
-            />
-          )}
+          {paginationType === "view-more" &&
+            dataLength !== totalItems &&
+            hasNextPage &&
+            !loading && (
+              <Button
+                label="Load More"
+                onClick={loadNextPage}
+                className="mt-2 bg-slate-50 dark:bg-[#171717] rounded-full text-sm font-hedvig_letters border-slate-300 dark:border-[#202020] text-black dark:text-white"
+              />
+            )}
           {loading && (
             <div className="w-full flex justify-center mb-5 max-md:mt-3">
               <RotatingLines
