@@ -45,7 +45,7 @@ export default function TweetEdit() {
   ) : (
     <Layout>
       <div className="w-full px-3 md:pr-7 md:pt-4 pt-14">
-      <TweetCreateForm tweet={tweet} />
+        <TweetCreateForm tweet={tweet} />
       </div>
     </Layout>
   );

@@ -94,11 +94,11 @@ const Home: React.FC = () => {
             isLarge={false}
             onClick={() => handleSortTypeChange(type as "acc" | "desc")}
             className={twMerge(
-              "rounded-lg bg-gray-200 dark:bg-[#171717] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
+              "rounded-lg bg-gray-200 dark:bg-[#272727] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
               "hover:opacity-100",
               sortType === type && sortBy === "createdAt"
                 ? ["bg-black text-white dark:bg-white dark:text-black"]
-                : ["hover:bg-gray-300 dark:hover:bg-[#252525]"]
+                : ["hover:bg-gray-300 dark:hover:bg-[#353535]"]
             )}
           />
         ))}
@@ -107,11 +107,11 @@ const Home: React.FC = () => {
           isLarge={false}
           onClick={() => handleSortBy("views")}
           className={twMerge(
-            "rounded-lg bg-gray-200 dark:bg-[#171717] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
+            "rounded-lg bg-gray-200 dark:bg-[#272727] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
             "hover:opacity-100",
             sortBy === "views"
               ? ["bg-black text-white dark:bg-white dark:text-black"]
-              : ["hover:bg-gray-300 dark:hover:bg-[#252525]"]
+              : ["hover:bg-gray-300 dark:hover:bg-[#353535]"]
           )}
         />
       </div>

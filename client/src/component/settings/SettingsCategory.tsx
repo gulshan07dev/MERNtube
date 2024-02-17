@@ -12,7 +12,7 @@ const SettingsCategory = ({
   children,
 }: SettingsCategoryProps) => {
   return (
-    <div className="py-5 md:px-5 px-3 flex flex-col gap-4 bg-slate-100 dark:bg-[#171717] rounded">
+    <div className="py-5 md:px-5 px-3 flex flex-col gap-4 bg-slate-100 dark:bg-[#191919] rounded">
       <div
         className="flex justify-between items-center cursor-pointer"
         onClick={onToggle}

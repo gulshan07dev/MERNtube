@@ -6,7 +6,7 @@ import Layout from "@/layout/Layout";
 export default function DeniedAccess() {
   return (
     <Layout className="min-h-screen flex justify-center items-center">
-      <div className="w-[500px] max-w-[92%] flex flex-col gap-8 md:py-14 md:px-8 px-4 py-16 bg-white dark:bg-[#171717] border-[1px] border-slate-300 dark:border-[#181818] shadow-sm rounded-xl">
+      <div className="w-[500px] max-w-[92%] flex flex-col gap-8 md:py-14 md:px-8 px-4 py-16 bg-white dark:bg-[#171717] border-[1px] border-slate-300 dark:border-[#272727] shadow-sm rounded-xl">
         <div className="flex items-center justify-center gap-2 text-red-500">
           <FaExclamationCircle className="text-3xl" />
           <h1 className="text-2xl font-bold font-hedvig_letters">
