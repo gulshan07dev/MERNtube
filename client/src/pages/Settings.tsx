@@ -1,21 +1,40 @@
+import { useState } from "react";
 import Layout from "@/layout/Layout";
 import ToggleDarkMode from "@/component/settings/ToggleDarkModeBtn";
+import SettingsCategory from "@/component/settings/SettingsCategory";
 
 const Settings = () => {
+  const [openCategory, setOpenCategory] = useState("Preferences");
+
+  const handleToggleCategory = (categoryTitle: string) => {
+    setOpenCategory(openCategory === categoryTitle ? "" : categoryTitle);
+  };
+
   return (
-    <Layout className="flex flex-col gap-10 md:px-8 px-2 pt-4">
+    <Layout className="flex flex-col gap-10 md:px-8 px-3 pt-4">
       <h1 className="text-3xl text-black dark:text-white font-bold font-hedvig_letters">
         Settings
       </h1>
-      <div className="flex flex-col gap-4">
-        {/* prefrences setting */}
-        <div className="py-5 px-3 bg-slate-100 dark:bg-[#171717] rounded">
-          <h2 className="text-xl text-gray-800 dark:text-slate-100 font-semibold mb-2">
-            Preferences
-          </h2>
+      <div className="flex flex-col gap-5">
+        {/* Preferences setting */}
+        <SettingsCategory
+          title="Preferences"
+          isOpen={openCategory === "Preferences"}
+          onToggle={() => handleToggleCategory("Preferences")}
+        >
           <ToggleDarkMode />
-          {/* Add more preference settings here */}
-        </div>
+        </SettingsCategory>
+
+        {/* another category for fun */}
+        <SettingsCategory
+          title="Another Category"
+          isOpen={openCategory === "Another Category"}
+          onToggle={() => handleToggleCategory("Another Category")}
+        >
+          <p className="text-gray-700 dark:text-slate-300 font-nunito font-semibold text-lg">
+            Thank you 😊
+          </p>
+        </SettingsCategory>
       </div>
     </Layout>
   );
