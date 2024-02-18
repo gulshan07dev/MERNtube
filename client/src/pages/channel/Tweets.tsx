@@ -7,6 +7,7 @@ import { getUserTweets, setTweets } from "@/store/slices/tweetSlice";
 import useActionHandler from "@/hooks/useActionHandler";
 import TweetCard from "@/component/tweet/TweetCard";
 import TweetSkeleton from "@/component/tweet/TweetSkeleton";
+import EmptyMessage from "@/component/EmptyMessage";
 
 export default function Tweets() {
   const dispatch: AppDispatch = useDispatch();
@@ -79,9 +80,15 @@ export default function Tweets() {
       }`}
     >
       <div className="w-full flex flex-col gap-10 max-lg:items-center max-lg:px-1 py-5">
-        {tweets?.map((tweet) => (
-          <TweetCard key={tweet?._id} data={tweet} />
-        ))}
+        {!tweets.length && totalDocs === 0 && !isLoading ? (
+          <EmptyMessage
+            message="empty tweets"
+            buttonText="fetch again"
+            onRefresh={() => fetchUserTweets(1)}
+          />
+        ) : (
+          tweets?.map((tweet) => <TweetCard key={tweet?._id} data={tweet} />)
+        )}
         {isLoading && renderSkeletons()}
       </div>
     </ScrollPagination>

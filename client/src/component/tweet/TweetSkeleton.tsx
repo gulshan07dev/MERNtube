@@ -2,7 +2,7 @@ import Skeleton from "../Skeleton";
 
 export default function TweetSkeleton() {
   return (
-    <div className="w-full flex flex-col gap-3 relative border border-slate-300 dark:border-[#252525] lg:p-5 p-3">
+    <div className="w-full flex flex-col gap-3 relative border border-slate-300 dark:border-[#404040] lg:p-5 p-3">
       {/* Top Section */}
       <div className="flex gap-2">
         <Skeleton className="w-10 h-10 rounded-full" />

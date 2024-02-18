@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import VideoCard from "@/component/video/VideoCard";
 import VideoSkeleton from "@/component/video/VideoSkeleton";
 import Button from "@/component/CoreUI/Button";
+import EmptyMessage from "@/component/EmptyMessage";
 
 const Home: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -116,9 +117,15 @@ const Home: React.FC = () => {
         />
       </div>
       <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
-        {videos?.map((item, index) => (
-          <VideoCard key={index} data={item} />
-        ))}
+        {!videos.length && totalDocs === 0 && !loading ? (
+          <EmptyMessage
+            message="empty videos"
+            buttonText="fetch again"
+            onRefresh={() => fetchVideos(1)}
+          />
+        ) : (
+          videos?.map((item, index) => <VideoCard key={index} data={item} />)
+        )}
         {loading && renderSkeletons()}
       </div>
     </ScrollPagination>

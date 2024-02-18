@@ -51,7 +51,7 @@ const TweetCard = ({ data }: { data: Tweet }) => {
   }
 
   return (
-    <div className="w-full relative border border-slate-300 dark:border-[#252525] lg:p-5 p-3 group">
+    <div className="w-full relative border border-slate-300 dark:border-[#404040] lg:p-5 p-3 group">
       {/* Top Section */}
       <div className="flex justify-between items-center mb-3">
         <div className="flex gap-3">
