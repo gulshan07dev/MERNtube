@@ -70,11 +70,13 @@ export default function Tweets() {
       totalPages={totalPages}
       hasNextPage={hasNextPage}
       endMessage={
-        <p className="py-4 text-lg text-gray-800 text-center font-Noto_sans">
+        <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
           No more tweets to show !!!
         </p>
       }
-      className={`pb-20 lg:w-[75%] w-full min-h-full ${error ? "pt-10" : ""}`}
+      className={`pb-20 lg:w-[75%] w-full min-h-screen ${
+        error ? "min-h-full pt-10" : ""
+      }`}
     >
       <div className="w-full flex flex-col gap-10 max-lg:items-center max-lg:px-1 py-5">
         {tweets?.map((tweet) => (

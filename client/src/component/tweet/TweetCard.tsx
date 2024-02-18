@@ -43,7 +43,11 @@ const TweetCard = ({ data }: { data: Tweet }) => {
   };
 
   if (isDeleted) {
-    return <p className="p-2 bg-slate-50">it was deleted !</p>;
+    return (
+      <p className="p-2 bg-slate-50 dark:bg-[#252525] text-black dark:text-white">
+        it was deleted !
+      </p>
+    );
   }
 
   return (

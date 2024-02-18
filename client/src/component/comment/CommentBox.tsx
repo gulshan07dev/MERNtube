@@ -75,7 +75,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
       totalPages={totalPages}
       hasNextPage={hasNextPage}
       endMessage={
-        <p className="py-4 text-lg text-gray-800 text-center font-Noto_sans">
+        <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
           No more comments to fetch !!!
         </p>
       }
@@ -94,7 +94,6 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
         >
           <option value="recent">Recent</option>
           <option value="oldest">Oldest</option>{" "}
-          {/* Changed "Popular" to "Oldest" */}
         </select>
         {/* Render comments */}
         {comments.map((comment) => (

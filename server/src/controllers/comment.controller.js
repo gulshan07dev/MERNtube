@@ -1,4 +1,5 @@
 import { Comment } from "../models/comment.model.js";
+import { Like } from "../models/like.model.js";
 import { Tweet } from "../models/tweet.model.js";
 import { Video } from "../models/video.model.js";
 import { Types, isValidObjectId } from "mongoose";
@@ -189,11 +190,10 @@ const addCommentToTweet = asyncHandler(async (req, res) => {
     await addComment(req, res, tweetId, "tweet");
 });
 
-
 // update comment by commentId
 const updateComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
-    const { newContent } = req.body;
+    const { content } = req.body;
     const userId = req.user._id;
 
     // check if invalid commentId
@@ -201,8 +201,8 @@ const updateComment = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid commentId!");
     }
 
-    if (!newContent) {
-        throw new ApiError(400, "New Content is required!");
+    if (!content) {
+        throw new ApiError(400, "Content is required!");
     }
 
     const comment = await Comment.findById(commentId);
@@ -210,14 +210,14 @@ const updateComment = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Comment not found!");
     }
 
-    if (comment.owner.toString() !== userId) {
+    if (comment.owner.toString() !== userId.toString()) {
         throw new ApiError(403, "You do not have permission to update this comment!");
     }
 
     // update comment with new content
     const updatedComment = await Comment.findByIdAndUpdate(commentId, {
         $set: {
-            content: newContent
+            content
         }
     }, { new: true })
 
@@ -236,7 +236,7 @@ const updateComment = asyncHandler(async (req, res) => {
 const deleteComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
 
-    // check if invalid commentId
+    // Check if invalid commentId
     if (!isValidObjectId(commentId)) {
         throw new ApiError(400, "Invalid commentId!");
     }
@@ -246,11 +246,15 @@ const deleteComment = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Comment not found!");
     }
 
-    if (comment.owner.toString() !== userId) {
-        throw new ApiError(403, "You do not have permission to update this comment!");
+    // Check if the user has permission to delete the comment
+    if (comment.owner.toString() !== req.user?._id?.toString()) {
+        throw new ApiError(403, "You do not have permission to delete this comment!");
     }
 
-    // delete the comment
+    // Delete the likes associated with this comment
+    await Like.deleteMany({ comment: commentId });
+
+    // Delete the comment
     const deletedComment = await Comment.findByIdAndDelete(commentId);
 
     if (!deletedComment) {
@@ -261,8 +265,9 @@ const deleteComment = asyncHandler(async (req, res) => {
         200,
         {},
         "Comment deleted successfully"
-    ))
-})
+    ));
+});
+
 
 // get video comment
 const getVideoComment = asyncHandler(async (req, res) => {
