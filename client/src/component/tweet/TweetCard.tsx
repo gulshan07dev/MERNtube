@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import TimeAgo from "react-timeago";
@@ -11,14 +12,15 @@ import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import { RootState } from "@/store/store";
-import { useState } from "react";
 import Devider from "../Divider";
-import { twMerge } from "tailwind-merge";
+import ConfirmationDialog from "../ConfirmationDialog";
 import CommentBox from "../comment/CommentBox";
+import { twMerge } from "tailwind-merge";
 
 const TweetCard = ({ data }: { data: Tweet }) => {
   const navigate = useNavigate();
   const [isDeleted, setIsDeleted] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showCommentSection, setShowCommentSection] = useState(false);
   const { user } = useSelector((state: RootState) => state?.auth);
 
@@ -40,6 +42,10 @@ const TweetCard = ({ data }: { data: Tweet }) => {
 
   const toggleCommentSection = () => {
     setShowCommentSection((prev) => !prev);
+  };
+
+  const toggleDeleteConfirmation = () => {
+    setShowDeleteConfirmation((prev) => !prev);
   };
 
   if (isDeleted) {
@@ -76,7 +82,7 @@ const TweetCard = ({ data }: { data: Tweet }) => {
           </p>
         </div>
         {/* more option menu for edit and delete, only for owner */}
-        {user?._id === data?.owner?._id && (
+        {user?._id === data?.owner?._id && !isDeleted && (
           <DropdownMenu
             className="absolute top-3 right-3"
             button={
@@ -90,11 +96,22 @@ const TweetCard = ({ data }: { data: Tweet }) => {
               className="w-full py-1.5 px-7 bg-blue-500 border-none"
               onClick={() => navigate(`/edit/tweet/${data?._id}`)}
             />
-            <Button
-              label={isDeleting ? "deleting..." : "delete"}
-              className="w-full py-1.5 px-7 bg-red-600 border-none"
-              disabled={isDeleting}
-              onClick={() => handleDeleteTweet(data._id)}
+            <ConfirmationDialog
+              title="Delete Tweet"
+              description="Are you sure you want to delete the tweet?"
+              submitLabel="Delete"
+              isLoading={isDeleting}
+              isShowDialog={showDeleteConfirmation}
+              onCancel={toggleDeleteConfirmation}
+              onSubmit={() => handleDeleteTweet(data?._id)}
+              triggerButton={
+                <Button
+                  label={isDeleting ? "deleting..." : "delete"}
+                  className="w-full py-1.5 px-7 bg-red-600 border-none"
+                  disabled={isDeleting}
+                  onClick={toggleDeleteConfirmation}
+                />
+              }
             />
           </DropdownMenu>
         )}
@@ -122,8 +139,7 @@ const TweetCard = ({ data }: { data: Tweet }) => {
           className={twMerge(
             "flex items-center space-x-1 text-gray-600 dark:text-slate-300 text-lg transition-all rounded-full px-3 py-1",
             "hover:bg-slate-100 dark:hover:bg-[#171717] hover:text-blue-500",
-            showCommentSection &&
-              "bg-slate-100 dark:bg-[#171717] text-blue-500"
+            showCommentSection && "bg-slate-100 dark:bg-[#171717] text-blue-500"
           )}
           onClick={toggleCommentSection}
         >
