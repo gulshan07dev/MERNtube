@@ -80,7 +80,7 @@ export default function Tweets() {
       }`}
     >
       <div className="w-full flex flex-col gap-10 max-lg:items-center max-lg:px-1 py-5">
-        {!tweets.length && totalDocs === 0 && !isLoading ? (
+        {!tweets.length && totalDocs === 0  && totalPages === 1 && !isLoading ? (
           <EmptyMessage
             message="empty tweets"
             buttonText="fetch again"

@@ -100,13 +100,16 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
         {comments.map((comment) => (
           <CommentCard key={comment._id} comment={comment} />
         ))}
-        {!comments.length && totalDocs === 0 && !isLoading && (
-          <EmptyMessage
-            message="empty comments"
-            buttonText="fetch again"
-            onRefresh={() => fetchComments(1)}
-          />
-        )}
+        {!comments.length &&
+          totalDocs === 0 &&
+          totalPages === 1 &&
+          !isLoading && (
+            <EmptyMessage
+              message="empty comments"
+              buttonText="fetch again"
+              onRefresh={() => fetchComments(1)}
+            />
+          )}
       </div>
     </ScrollPagination>
   );

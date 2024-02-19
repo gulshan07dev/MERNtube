@@ -88,7 +88,7 @@ const Home: React.FC = () => {
           ))}
         </div>
         <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
-          {!videos.length && totalDocs === 0 && !loading ? (
+          {!videos.length && totalDocs === 0 && totalPages === 1 && !loading ? (
             <EmptyMessage
               message="empty videos"
               buttonText="fetch again"

@@ -85,7 +85,7 @@ const Home: React.FC = () => {
           No more videos to fetch !!!
         </p>
       }
-      className={twMerge("min-h-full", error && "pt-10")}
+      className={twMerge("min-h-screen", error && "min-h-full pt-10")}
     >
       <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3 sticky -top-1 z-[2]">
         {["desc", "acc"].map((type) => (
@@ -117,7 +117,7 @@ const Home: React.FC = () => {
         />
       </div>
       <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
-        {!videos.length && totalDocs === 0 && !loading ? (
+        {!videos.length && totalDocs === 0 && totalPages === 1 && !loading ? (
           <EmptyMessage
             message="empty videos"
             buttonText="fetch again"
