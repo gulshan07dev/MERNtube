@@ -15,7 +15,7 @@ const Home: React.FC = () => {
   const { channel } = useSelector((state: RootState) => state?.auth);
   const [sortBy, setSortBy] = useState<"createdAt" | "views">("createdAt");
   const [sortType, setSortType] = useState<"desc" | "acc" | null>("desc");
-  const limit = 3;
+  const limit = 6;
 
   const {
     loading,
@@ -117,7 +117,7 @@ const Home: React.FC = () => {
         />
       </div>
       <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
-        {!videos.length && totalDocs === 0 && totalPages === 1 && !loading ? (
+        {!videos && totalDocs === 0 && totalPages === 1 && !loading ? (
           <EmptyMessage
             message="empty videos"
             buttonText="fetch again"
@@ -126,7 +126,7 @@ const Home: React.FC = () => {
         ) : (
           videos?.map((item, index) => <VideoCard key={index} data={item} />)
         )}
-        {loading && renderSkeletons()}
+        {(loading || !channel?._id) && renderSkeletons()}
       </div>
     </ScrollPagination>
   );

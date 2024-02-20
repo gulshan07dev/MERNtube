@@ -184,7 +184,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 // get all videos
 const getAllVideos = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
+    const { page = 1, limit = 10, query, sortBy, sortType, userId, includePrivateVideo } = req.query;
 
     const pipeline = [];
 
@@ -200,13 +200,31 @@ const getAllVideos = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User Not available witht this userId!");
     }
 
-    if (userId) {
+    if (includePrivateVideo && userId === req.user?._id?.toString()) {
         pipeline.push({
             $match: {
                 owner: new Types.ObjectId(userId)
             }
         })
     }
+    if (!includePrivateVideo && userId) {
+        pipeline.push({
+            $match: {
+                $and: [
+                    { owner: new Types.ObjectId(userId) },
+                    { isPublished: true },
+                ]
+            }
+        })
+    }
+    if (!includePrivateVideo && !userId) {
+        pipeline.push({
+            $match: {
+                isPublished: true
+            }
+        })
+    }
+
 
     // Match stage for based on text query
     if (query) {
