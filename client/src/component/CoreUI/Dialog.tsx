@@ -62,12 +62,14 @@ const Dialog: React.FC<DialogProps> = ({
                 onClick={onCancel}
                 disabled={isLoading}
               />
-              <Button
-                label={submitLabel || "Okay"}
-                onClick={onSubmit}
-                disabled={isLoading}
-                className="border-none dark:bg-[#333333] dark:border-[#505050] dark:text-white"
-              />
+              {submitLabel && onSubmit && (
+                <Button
+                  label={submitLabel}
+                  onClick={onSubmit}
+                  disabled={isLoading}
+                  className="border-none dark:bg-[#333333] dark:border-[#505050] dark:text-white"
+                />
+              )}
             </div>
           </div>
         </div>
