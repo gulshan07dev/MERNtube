@@ -17,7 +17,7 @@ import LikeBtn from "../CoreUI/LikeBtn";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
 import EditableTextarea from "../CoreUI/EditableTextarea";
-import ConfirmationDialog from "../ConfirmationDialog";
+import Dialog from "../CoreUI/Dialog";
 
 interface CommentCardProps {
   comment: Comment;
@@ -27,7 +27,6 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [commentContent, setCommentContent] = useState(comment?.content);
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment?.content);
@@ -53,10 +52,6 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
     if (!error && isSuccess) {
       setIsDeleted(true);
     }
-  };
-
-  const toggleDeleteConfirmation = () => {
-    setShowDeleteConfirmation((prev) => !prev);
   };
 
   const handleEdit = () => {
@@ -151,19 +146,16 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             onClick={handleEdit}
             className="w-full py-1.5 px-7 bg-blue-500 border-none"
           />
-          <ConfirmationDialog
+          <Dialog
             title="Delete Comment"
             description="Are you sure you want to delete the comment?"
-            submitLabel="Delete"
+            submitLabel={isDeleting ? "deleting..." : "Delete"}
             isLoading={isDeleting}
-            isShowDialog={showDeleteConfirmation}
-            onCancel={toggleDeleteConfirmation}
             onSubmit={() => handleDeleteComment(comment?._id)}
             triggerButton={
               <Button
                 label={isDeleting ? "Deleting..." : "Delete"}
                 className="w-full py-1.5 px-7 bg-red-600 border-none"
-                onClick={toggleDeleteConfirmation}
               />
             }
           />

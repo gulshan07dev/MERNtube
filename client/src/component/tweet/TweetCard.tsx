@@ -13,14 +13,13 @@ import Button from "../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import { RootState } from "@/store/store";
 import Devider from "../Divider";
-import ConfirmationDialog from "../ConfirmationDialog";
+import Dialog from "../CoreUI/Dialog";
 import CommentBox from "../comment/CommentBox";
 import { twMerge } from "tailwind-merge";
 
 const TweetCard = ({ data }: { data: Tweet }) => {
   const navigate = useNavigate();
   const [isDeleted, setIsDeleted] = useState(false);
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showCommentSection, setShowCommentSection] = useState(false);
   const { user } = useSelector((state: RootState) => state?.auth);
 
@@ -42,10 +41,6 @@ const TweetCard = ({ data }: { data: Tweet }) => {
 
   const toggleCommentSection = () => {
     setShowCommentSection((prev) => !prev);
-  };
-
-  const toggleDeleteConfirmation = () => {
-    setShowDeleteConfirmation((prev) => !prev);
   };
 
   if (isDeleted) {
@@ -96,20 +91,17 @@ const TweetCard = ({ data }: { data: Tweet }) => {
               className="w-full py-1.5 px-7 bg-blue-500 border-none"
               onClick={() => navigate(`/edit/tweet/${data?._id}`)}
             />
-            <ConfirmationDialog
+            <Dialog
               title="Delete Tweet"
               description="Are you sure you want to delete the tweet?"
-              submitLabel="Delete"
+              submitLabel={isDeleting ? "deleting..." : "Delete"}
               isLoading={isDeleting}
-              isShowDialog={showDeleteConfirmation}
-              onCancel={toggleDeleteConfirmation}
               onSubmit={() => handleDeleteTweet(data?._id)}
               triggerButton={
                 <Button
                   label={isDeleting ? "deleting..." : "delete"}
                   className="w-full py-1.5 px-7 bg-red-600 border-none"
                   disabled={isDeleting}
-                  onClick={toggleDeleteConfirmation}
                 />
               }
             />
