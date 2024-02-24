@@ -34,15 +34,32 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
-#sidebar::-webkit-scrollbar {
-  width: 5px;
+.thin-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
 
-#sidebar::-webkit-scrollbar-track {
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: #adadadaf;
+  border-radius: 5px;
+}
+
+body.dark .thin-scrollbar::-webkit-scrollbar-thumb {
+  background: #b4b4b4;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
   background: transparent;
 }
 
-#sidebar::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: #adadadaf;
-  border-radius: 7px;
+}
+
+body.dark ::-webkit-scrollbar-thumb {
+  background: #b8b8b8;
 }

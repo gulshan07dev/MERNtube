@@ -1,0 +1,174 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axiosInstance from "@/helper/axiosInstance";
+import { User } from "./authSlice";
+
+interface QueryParams {
+  page?: number;
+  limit?: number;
+  videoId?: string
+}
+
+export interface Playlist {
+  _id: string;
+  name: string;
+  description: string;
+  owner?: User;
+  isPrivate: boolean;
+  playlistThumbnail: { key: string; url: string };
+  isVideoAddedToPlaylist?: boolean
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+interface initialState {
+  playlist: Playlist | null;
+}
+
+const initialState: initialState = {
+  playlist: null,
+};
+
+const createPlaylist = createAsyncThunk(
+  "/playlists/create",
+  async (data: { name: string; description: string }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post("/playlists", data);
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+const getUserPlaylists = createAsyncThunk(
+  "/playlists/get/user/userId",
+  async (
+    { userId, queryParams }: { userId: string; queryParams: QueryParams },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axiosInstance.get(`/playlists/user/${userId}`, {
+        params: queryParams,
+      });
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+const getPlaylist = createAsyncThunk(
+  "/playlists/get/playlistId",
+  async (playlistId: string, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(`/playlists/${playlistId}`);
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+const addVideoToPlaylist = createAsyncThunk(
+  "/playlists/add/playlistId/videoId",
+  async (
+    { playlistId, videoId }: { playlistId: string; videoId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axiosInstance.post(
+        `/playlists/${playlistId}/${videoId}`
+      );
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+const removeVideoFromPlaylist = createAsyncThunk(
+  "/playlists/remove/playlistId/videoId",
+  async (
+    { playlistId, videoId }: { playlistId: string; videoId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axiosInstance.delete(
+        `/playlists/${playlistId}/${videoId}`
+      );
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+const deletePlaylist = createAsyncThunk(
+  "/playlists/delete/playlistId",
+  async (playlistId: string, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.delete(`/playlists/${playlistId}`);
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+const updatePlaylist = createAsyncThunk(
+  "/playlists/update/playlistId",
+  async (
+    {
+      playlistId,
+      data,
+    }: { playlistId: string; data: { name: string; description: string } },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axiosInstance.patch(`/playlists/${playlistId}`, data);
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+const playlistSlice = createSlice({
+  name: "playlist",
+  initialState,
+  reducers: {},
+  extraReducers: (_builder) => {},
+});
+
+export default playlistSlice.reducer;
+export const {} = playlistSlice.actions;
+export {
+  createPlaylist,
+  getUserPlaylists,
+  getPlaylist,
+  addVideoToPlaylist,
+  removeVideoFromPlaylist,
+  deletePlaylist,
+  updatePlaylist,
+};

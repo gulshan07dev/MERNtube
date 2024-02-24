@@ -11,6 +11,7 @@ import Avatar from "../CoreUI/Avatar";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
 import ShareDialog from "../ShareDialog";
+import AddVideoToPlaylistDialog from "./AddVideoToPlaylistDialog";
 
 export default function VideoCard({ data }: { data: Video }) {
   return (
@@ -57,10 +58,15 @@ export default function VideoCard({ data }: { data: Video }) {
                 icon={<AiOutlineClockCircle />}
                 className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
               />
-              <Button
-                label="Save to Playlist"
-                icon={<BiSolidPlaylist />}
-                className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
+              <AddVideoToPlaylistDialog
+                videoId={data?._id}
+                triggerButton={
+                  <Button
+                    label="Save to Playlist"
+                    icon={<BiSolidPlaylist />}
+                    className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
+                  />
+                }
               />
               <ShareDialog
                 url={`${document.baseURI}watch/${data?._id}`}

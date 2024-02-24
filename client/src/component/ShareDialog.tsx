@@ -1,4 +1,4 @@
-import { ReactElement, useRef, useState } from "react";
+import { ReactElement, useRef } from "react";
 import { toast } from "react-hot-toast";
 
 import {
@@ -21,7 +21,6 @@ const ShareDialog = ({
   triggerButton?: ReactElement;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [scrollLeft, setScrollLeft] = useState(0);
   const shareOptions = [
     {
       name: "Facebook",
@@ -31,7 +30,7 @@ const ShareDialog = ({
     {
       name: "LinkedIn",
       icon: FaLinkedinIn,
-      link: `https://www.linkedin.com/shareArticle?mini=true&url=${url}`,
+      link: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
     },
     {
       name: "WhatsApp",
@@ -41,7 +40,7 @@ const ShareDialog = ({
     {
       name: "Twitter",
       icon: FaTwitter,
-      link: `https://twitter.com/intent/tweet?url=${url}`,
+      link: `http://www.twitter.com/share?url=${url}`,
     },
   ];
 
@@ -56,7 +55,6 @@ const ShareDialog = ({
     const container = document.getElementById("share-icons-container");
     if (container) {
       container.scrollLeft -= 200;
-      setScrollLeft(container.scrollLeft);
     }
   };
 
@@ -64,7 +62,6 @@ const ShareDialog = ({
     const container = document.getElementById("share-icons-container");
     if (container) {
       container.scrollLeft += 200;
-      setScrollLeft(container.scrollLeft);
     }
   };
 

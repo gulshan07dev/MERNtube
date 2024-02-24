@@ -11,20 +11,21 @@ import {
 } from "../controllers/playlist.controller.js";
 
 const router = Router();
+router.use(verifyJwt)
 
 router.route("/")
-    .post(verifyJwt, createPlaylist)
+    .post(createPlaylist)
 
 router.route("/user/:userId")
     .get(getUserPlaylists)
 
 router.route("/:playlistId")
     .get(getPlaylistById)
-    .delete(verifyJwt, deletePlaylist)
-    .patch(verifyJwt, updatePlaylist)
+    .delete(deletePlaylist)
+    .patch(updatePlaylist)
 
 router.route("/:playlistId/:videoId")
-    .post(verifyJwt, addVideoToPlaylist)
-    .delete(verifyJwt, removeVideoFromPlaylist)
+    .post(addVideoToPlaylist)
+    .delete(removeVideoFromPlaylist)
 
 export default router;

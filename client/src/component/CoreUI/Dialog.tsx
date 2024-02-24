@@ -13,6 +13,7 @@ interface DialogProps {
   isLoading?: boolean;
   className?: string;
   triggerButton: React.ReactElement;
+  onOpen?: () => void;
 }
 
 const Dialog: React.FC<DialogProps> = ({
@@ -24,29 +25,36 @@ const Dialog: React.FC<DialogProps> = ({
   isLoading,
   className = "",
   triggerButton,
+  onOpen
 }) => {
   const [isShowDialog, setIsShowDialog] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  const onOpen = () => {
+  const handleOpen = () => {
     setIsShowDialog(true);
+    if (onOpen) {
+      onOpen();
+    }
   };
-  const onCancel = () => {
+
+  const handleClose = () => {
     setIsShowDialog(false);
   };
+
   useClickOutside({
     ref: dialogRef,
-    callback: onCancel,
+    callback: handleClose,
   });
+
   return (
     <>
-      {React.cloneElement(triggerButton, { onClick: onOpen })}
+      {React.cloneElement(triggerButton, { onClick: handleOpen })}
       {isShowDialog && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div
             ref={dialogRef}
             className={twMerge(
-              "bg-white dark:bg-[#121212] dark:border dark:border-[#434343] rounded-md p-8 max-w-md w-[95%] flex flex-col gap-3",
+              "bg-white dark:bg-[#121212] dark:border dark:border-[#434343] rounded-md p-8 max-w-md w-[95%] max-h-[95%] overflow-y-scroll flex flex-col gap-3",
               className
             )}
           >
@@ -54,12 +62,14 @@ const Dialog: React.FC<DialogProps> = ({
               {title}
             </h2>
             <p className="text-gray-700 dark:text-gray-300">{description}</p>
-            {children && children}
+            {children && (
+              <div className="overflow-y-scroll no-scrollbar">{children}</div>
+            )}
             <div className="flex gap-3 justify-end mt-3">
               <Button
                 label="Cancel"
                 className="bg-red-500 text-white border-none"
-                onClick={onCancel}
+                onClick={handleClose}
                 disabled={isLoading}
               />
               {submitLabel && onSubmit && (

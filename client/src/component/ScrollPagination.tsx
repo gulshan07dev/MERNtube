@@ -16,7 +16,7 @@ interface ScrollPaginationProps {
   totalPages: number;
   totalItems: number;
   hasNextPage: boolean;
-  endMessage: React.ReactNode;
+  endMessage?: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
 }
@@ -82,7 +82,10 @@ const ScrollPagination = ({
       ) : (
         <>
           {children}
-          {dataLength >= totalItems && totalItems > 0 && endMessage}
+          {dataLength >= totalItems &&
+            totalItems > 0 &&
+            endMessage &&
+            endMessage}
           {paginationType === "view-more" &&
             dataLength !== totalItems &&
             hasNextPage &&

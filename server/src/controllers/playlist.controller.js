@@ -10,7 +10,7 @@ import asyncHandler from "../utils/asyncHandler.js"
 // create playlist
 const createPlaylist = asyncHandler(async (req, res) => {
     const { name, description } = req.body;
-    const userId = req.user._id;
+    const userId = req.user?._id;
 
     // check if any field is empty
     if (!name || !description) {
@@ -37,10 +37,16 @@ const createPlaylist = asyncHandler(async (req, res) => {
 // get user playlists by userId
 const getUserPlaylists = asyncHandler(async (req, res) => {
     const { userId } = req.params;
+    const { page = 1, limit = 10, videoId } = req.query;
 
     // check if Invalid userId
     if (!isValidObjectId(userId)) {
         throw new ApiError(400, "Invalid userId!");
+    }
+
+    // check if Invalid videoId
+    if (videoId && !isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid videoId!");
     }
 
     // check if user not exist
@@ -48,8 +54,16 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(404, "User not found!");
     }
+    // check if video not exist
+    let video
+    if (videoId) {
+        video = await Video.findById(videoId);
+        if (!video) {
+            throw new ApiError(404, "Video not found!");
+        }
+    }
 
-    const playlists = await Playlist.aggregate([
+    const aggregate = Playlist.aggregate([
         {
             $match: {
                 owner: new Types.ObjectId(userId),
@@ -85,22 +99,37 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
                         else: null,
                     },
                 },
+                isVideoAddedToPlaylist: {
+                    $cond: {
+                        if: { $in: [videoId ? video?._id : null, "$videos._id"] },
+                        then: true,
+                        else: null,
+                    },
+                }
             },
         },
         {
             $project: {
                 name: 1,
                 description: 1,
-                playlistThumbnail: 1
+                isPrivate: 1,
+                playlistThumbnail: 1,
+                isVideoAddedToPlaylist: 1
             }
         }
     ]);
 
-    return res.status(200).json(new ApiResponse(
-        200,
-        { playlists },
-        "Playlists fetched successfully"
-    ));
+    Playlist.aggregatePaginate(aggregate, { page, limit })
+        .then(function (result) {
+            return res.status(200).json(new ApiResponse(
+                200,
+                { result },
+                "Playlists fetched successfully"
+            ));
+        })
+        .catch(function (error) {
+            throw error;
+        });
 });
 
 // get playlist by playlistId
@@ -263,7 +292,7 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(
         200,
-        { },
+        {},
         "Video removed from playlist successfully"
     ));
 });
@@ -271,21 +300,21 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
 // delete playlist by playlistId
 const deletePlaylist = asyncHandler(async (req, res) => {
     const { playlistId } = req.params
-    
+
     // check if Invalid playlistId
-    if(!isValidObjectId(playlistId)) {
+    if (!isValidObjectId(playlistId)) {
         throw new ApiError(400, "Invalid playlistId!");
     }
 
     // check if playlist not exist
     const playlist = await Playlist.findById(playlistId);
-    if(!playlist) {
+    if (!playlist) {
         throw new ApiError(404, "Playlist not found!");
     }
 
     const deletedPlaylist = await Playlist.findByIdAndDelete(playlistId);
 
-    if(!deletedPlaylist) {
+    if (!deletedPlaylist) {
         throw new ApiError(500, "Something went wrong while deleting playlist!");
     }
 
@@ -300,14 +329,14 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 const updatePlaylist = asyncHandler(async (req, res) => {
     const { playlistId } = req.params
     const { name, description } = req.body
-     
+
     // check if Invalid playlistId
     if (!isValidObjectId(playlistId)) {
         throw new ApiError(400, "Invalid playlistId!");
     }
 
     // check if any field is empty
-    if(!name || !description) {
+    if (!name || !description) {
         throw new ApiError(400, "All fields are required!");
     }
 
