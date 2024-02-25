@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "@/helper/axiosInstance";
 import { User } from "./authSlice";
+import { Video } from "./videoSlice";
 
 interface QueryParams {
   page?: number;
   limit?: number;
-  videoId?: string
+  videoId?: string;
 }
 
 export interface Playlist {
@@ -13,9 +14,10 @@ export interface Playlist {
   name: string;
   description: string;
   owner?: User;
+  videos?: Video[]
   isPrivate: boolean;
   playlistThumbnail: { key: string; url: string };
-  isVideoAddedToPlaylist?: boolean
+  isVideoAddedToPlaylist?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -158,7 +160,18 @@ const playlistSlice = createSlice({
   name: "playlist",
   initialState,
   reducers: {},
-  extraReducers: (_builder) => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getPlaylist.pending, (state) => {
+        state.playlist = null;
+      })
+      .addCase(getPlaylist.fulfilled, (state, action) => {
+        state.playlist = action.payload?.data?.playlist;
+      })
+      .addCase(getPlaylist.rejected, (state) => {
+        state.playlist = null;
+      });
+  },
 });
 
 export default playlistSlice.reducer;
