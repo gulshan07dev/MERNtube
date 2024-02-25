@@ -54,7 +54,7 @@ const Dialog: React.FC<DialogProps> = ({
           <div
             ref={dialogRef}
             className={twMerge(
-              "bg-white dark:bg-[#121212] dark:border dark:border-[#434343] rounded-md p-8 max-w-md w-[95%] max-h-[95%] overflow-y-scroll flex flex-col gap-3",
+              "bg-white dark:bg-[#121212] dark:border dark:border-[#434343] rounded-md p-8 max-sm:px-4 max-w-md w-[95%] max-h-[95%] overflow-x-hidden overflow-y-scroll flex flex-col gap-3",
               className
             )}
           >

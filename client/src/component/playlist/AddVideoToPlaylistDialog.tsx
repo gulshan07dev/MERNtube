@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import Dialog from "../CoreUI/Dialog";
 import {
@@ -22,12 +23,13 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
   videoId,
   triggerButton,
 }) => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
+  const { user, isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [currPage, setCurrPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const limit = 7;
   const [totalPages, setTotalPages] = useState(0);
-  const [totalDocs, setTotalDocs] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
 
   const {
@@ -42,6 +44,10 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
   const handleFetchPlaylists = async (page: number) => {
     if (!user?._id) return;
 
+    if (page === 1) {
+      setPlaylists([]);
+    }
+
     const { isSuccess, resData } = await fetchPlaylists({
       userId: user?._id,
       queryParams: { page, limit, videoId },
@@ -52,9 +58,9 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
       setPlaylists((prevPlaylists) =>
         page === 1 ? newPlaylists : [...prevPlaylists, ...newPlaylists]
       );
-      setCurrPage(resData.result.page);
+      setCurrentPage(resData.result.page);
       setTotalPages(resData.result.totalPages);
-      setTotalDocs(resData.result.totalDocs);
+      setTotalItems(resData.result.totalItems);
       setHasNextPage(resData.result.hasNextPage);
     }
   };
@@ -87,34 +93,43 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
   return (
     <Dialog
       title="Add to Playlist"
-      description="Select a playlist to add the video"
+      description={
+        isLoggedIn
+          ? "Select a playlist to add or remove the video"
+          : "Please log in or sign up to add the video to your playlist"
+      }
+      submitLabel={!isLoggedIn ? "Log In or Sign Up" : undefined}
+      onSubmit={!isLoggedIn ? () => navigate("/auth/login") : undefined}
       triggerButton={triggerButton}
       onOpen={() => handleFetchPlaylists(1)}
     >
-      <ScrollPagination
-        paginationType="view-more"
-        loadNextPage={() => handleFetchPlaylists(currPage + 1)}
-        refreshHandler={() => handleFetchPlaylists(1)}
-        dataLength={playlists.length}
-        loading={isFetchingPlaylists}
-        error={error}
-        currentPage={currPage}
-        totalItems={totalDocs}
-        totalPages={totalPages}
-        hasNextPage={hasNextPage}
-      >
-        <div className="flex flex-col gap-3">
-          {playlists.map((playlist) => (
-            <PlaylistCard
-              key={playlist._id}
-              playlist={playlist}
-              isAddingToPlaylist={isAddingToPlaylist}
-              isRemovingToPlaylist={isRemovingToPlaylist}
-              handleTogglePlaylist={handleTogglePlaylist}
-            />
-          ))}
-        </div>
-      </ScrollPagination>
+      {isLoggedIn && (
+        <ScrollPagination
+          paginationType="view-more"
+          loadNextPage={() => handleFetchPlaylists(currentPage + 1)}
+          refreshHandler={() => handleFetchPlaylists(1)}
+          dataLength={playlists.length}
+          loading={isFetchingPlaylists}
+          error={error}
+          currentPage={currentPage}
+          totalItems={totalItems}
+          totalPages={totalPages}
+          hasNextPage={hasNextPage}
+          className={error ? "pt-10" : ""}
+        >
+          <div className="flex flex-col gap-3">
+            {playlists.map((playlist) => (
+              <PlaylistCard
+                key={playlist._id}
+                playlist={playlist}
+                isAddingToPlaylist={isAddingToPlaylist}
+                isRemovingToPlaylist={isRemovingToPlaylist}
+                handleTogglePlaylist={handleTogglePlaylist}
+              />
+            ))}
+          </div>
+        </ScrollPagination>
+      )}
     </Dialog>
   );
 };

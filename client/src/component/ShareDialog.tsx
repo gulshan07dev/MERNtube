@@ -8,8 +8,6 @@ import {
   FaWhatsapp,
   FaCopy,
   FaShare,
-  FaArrowLeft,
-  FaArrowRight,
 } from "react-icons/fa";
 import Dialog from "./CoreUI/Dialog";
 
@@ -51,20 +49,6 @@ const ShareDialog = ({
     });
   };
 
-  const scrollLeftHandler = () => {
-    const container = document.getElementById("share-icons-container");
-    if (container) {
-      container.scrollLeft -= 200;
-    }
-  };
-
-  const scrollRightHandler = () => {
-    const container = document.getElementById("share-icons-container");
-    if (container) {
-      container.scrollLeft += 200;
-    }
-  };
-
   return (
     <Dialog
       title="Share"
@@ -83,7 +67,7 @@ const ShareDialog = ({
         <div className="relative w-full">
           <div
             id="share-icons-container"
-            className="w-full flex gap-4 px-4 overflow-x-scroll no-scrollbar transition-all"
+            className="w-full flex flex-wrap md:gap-x-10 gap-x-5 gap-y-2 md:px-4 justify-center"
           >
             {shareOptions.map((option) => (
               <a
@@ -91,25 +75,13 @@ const ShareDialog = ({
                 href={option.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center space-x-2 text-black dark:text-white bg-gray-200 dark:bg-gray-800 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                title={option.name}
+                className="flex items-center justify-center text-black dark:text-white bg-slate-200 dark:bg-gray-800 p-4 rounded-full hover:bg-gray-300 dark:hover:bg-gray-700 transition"
               >
                 <option.icon className="text-xl" />
-                <span>{option.name}</span>
               </a>
             ))}
           </div>
-          <button
-            onClick={scrollLeftHandler}
-            className="absolute -left-8 top-0 size-10 grid place-items-center text-base text-black dark:text-white bg-white shadow-lg dark:bg-[#212121] rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-          >
-            <FaArrowLeft />
-          </button>
-          <button
-            onClick={scrollRightHandler}
-            className="absolute -right-8 top-0 size-10 grid place-items-center text-base text-black dark:text-white bg-white shadow-lg dark:bg-[#212121] rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-          >
-            <FaArrowRight />
-          </button>
         </div>
         <div className="w-full border border-gray-300 p-2 bg-transparent dark:border-[#212121] dark:bg-black flex gap-3">
           <input

@@ -11,7 +11,7 @@ import Avatar from "../CoreUI/Avatar";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
 import ShareDialog from "../ShareDialog";
-import AddVideoToPlaylistDialog from "./AddVideoToPlaylistDialog";
+import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 
 export default function VideoCard({ data }: { data: Video }) {
   return (
