@@ -115,6 +115,7 @@ const Navbar = ({
               label="Login"
               type="button"
               isLarge={false}
+              isGradientBg={true}
               className="h-8 w-16 rounded-md"
               onClick={() => navigate("/auth/login")}
             />

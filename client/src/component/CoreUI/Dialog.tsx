@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
+import { AiOutlineClose } from "react-icons/ai";
 
 import useClickOutside from "@/hooks/useClickOutside ";
 import Button from "./Button";
@@ -25,7 +26,7 @@ const Dialog: React.FC<DialogProps> = ({
   isLoading,
   className = "",
   triggerButton,
-  onOpen
+  onOpen,
 }) => {
   const [isShowDialog, setIsShowDialog] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -50,11 +51,11 @@ const Dialog: React.FC<DialogProps> = ({
     <>
       {React.cloneElement(triggerButton, { onClick: handleOpen })}
       {isShowDialog && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
           <div
             ref={dialogRef}
             className={twMerge(
-              "bg-white dark:bg-[#121212] dark:border dark:border-[#434343] rounded-md p-8 max-sm:px-4 max-w-md w-[95%] max-h-[95%] overflow-x-hidden overflow-y-scroll flex flex-col gap-3",
+              "relative bg-white dark:bg-[#121212] dark:border dark:border-[#525252] rounded-md p-8 max-sm:px-4 max-w-md w-[95%] max-h-[95%] overflow-x-hidden overflow-y-scroll flex flex-col gap-3",
               className
             )}
           >
@@ -66,18 +67,20 @@ const Dialog: React.FC<DialogProps> = ({
               <div className="overflow-y-scroll no-scrollbar">{children}</div>
             )}
             <div className="flex gap-3 justify-end mt-3">
-              <Button
-                label="Cancel"
-                className="bg-red-500 text-white border-none"
+              <button
+                className="p-2 rounded-full text-2xl text-black dark:text-white absolute top-4 right-1 bg-red-50 hover:bg-red-500 hover:text-white dark:bg-[#242424] dark:hover:bg-[#505050] transition-[color_background]"
                 onClick={handleClose}
                 disabled={isLoading}
-              />
+              >
+                <AiOutlineClose />
+              </button>
               {submitLabel && onSubmit && (
                 <Button
                   label={submitLabel}
                   onClick={onSubmit}
                   disabled={isLoading}
-                  className="border-none dark:bg-[#333333] dark:border-[#505050] dark:text-white"
+                  isGradientBg={true}
+                  className="border-none dark:text-white"
                 />
               )}
             </div>
