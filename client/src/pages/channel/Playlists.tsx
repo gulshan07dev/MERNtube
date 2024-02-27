@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { twMerge } from "tailwind-merge";
+import { BiPlusCircle } from "react-icons/bi";
 
 import { RootState } from "@/store/store";
 import ScrollPagination from "@/component/ScrollPagination";
@@ -8,10 +10,11 @@ import useActionHandler from "@/hooks/useActionHandler";
 import EmptyMessage from "@/component/EmptyMessage";
 import PlaylistSkeleton from "@/component/playlist/PlaylistSkeleton";
 import PlaylistCard from "@/component/playlist/PlaylistCard";
-import { twMerge } from "tailwind-merge";
+import CreatePlaylistDialog from "@/component/playlist/CreatePlaylistDialog";
+import Button from "@/component/CoreUI/Button";
 
 export default function Playlists() {
-  const { channel } = useSelector((state: RootState) => state?.auth);
+  const { user, channel } = useSelector((state: RootState) => state?.auth);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [currPage, setCurrPage] = useState(1);
   const limit = 15;
@@ -70,13 +73,31 @@ export default function Playlists() {
       totalPages={totalPages}
       hasNextPage={hasNextPage}
       endMessage={
-        <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
+        <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
           No more playlists to show !!!
         </p>
       }
-      className={twMerge("min-h-screen", error && "min-h-full pt-10")}
+      className={twMerge("min-h-[55vh]", error && "min-h-full pt-10")}
     >
-      <div className="w-full flex flex-wrap md:gap-10 max-md:justify-center gap-6 max-lg:px-1 py-5">
+      <div className="flex justify-between max-md:pb-3 px-3">
+        <h2 className="max-md:self-end text-lg font-semibold text-zinc-800 dark:text-slate-200 font-Noto_sans">
+          Created Playlist
+        </h2>
+        {channel?._id === user?._id && (
+          <CreatePlaylistDialog
+            triggerButton={
+              <Button
+                label="Create Playlist"
+                icon={<BiPlusCircle />}
+                isLarge={false}
+                isGradientBg={true}
+                className="text-base py-2"
+              />
+            }
+          />
+        )}
+      </div>
+      <div className="w-full flex flex-wrap md:gap-10 gap-x-4 gap-y-5 max-lg:px-1 py-5">
         {!playlists.length &&
         totalDocs === 0 &&
         totalPages === 1 &&

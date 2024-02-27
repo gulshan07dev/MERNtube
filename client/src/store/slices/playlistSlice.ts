@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "@/helper/axiosInstance";
 import { User } from "./authSlice";
-import { Video } from "./videoSlice";
 
 interface QueryParams {
   page?: number;
@@ -14,7 +13,8 @@ export interface Playlist {
   name: string;
   description: string;
   owner?: User;
-  videos?: Video[]
+  videosCount?: number;
+  totalViews?: number
   isPrivate: boolean;
   playlistThumbnail: { key: string; url: string };
   isVideoAddedToPlaylist?: boolean;
@@ -32,7 +32,10 @@ const initialState: initialState = {
 
 const createPlaylist = createAsyncThunk(
   "/playlists/create",
-  async (data: { name: string; description: string }, { rejectWithValue }) => {
+  async (
+    data: { name: string; description: string; isPrivate: boolean },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await axiosInstance.post("/playlists", data);
       return res?.data;
@@ -141,7 +144,10 @@ const updatePlaylist = createAsyncThunk(
     {
       playlistId,
       data,
-    }: { playlistId: string; data: { name: string; description: string } },
+    }: {
+      playlistId: string;
+      data: { name: string; description: string; isPrivate: boolean };
+    },
     { rejectWithValue }
   ) => {
     try {
