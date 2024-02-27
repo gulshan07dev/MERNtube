@@ -9,8 +9,7 @@ const playlistSchema = new Schema({
     },
     description: {
         type: String,
-        required: true,
-        maxLimit: [200, "Playlist name must be less than 200 character!"]
+        maxLimit: [150, "Playlist name must be less than 150 character!"]
     },
     videos: [
         {
