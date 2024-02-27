@@ -47,7 +47,7 @@ export default function VideoCard({ data }: { data: Video }) {
           {/* more option btn */}
           <DropdownMenu
             button={
-              <button className="md:p-3 text-lg rotate-90 rounded-full text-black dark:text-white hover:bg-slate-100 dark:hover:bg-[#171717] focus-within:block hidden group-hover/item:block max-md:block">
+              <button className="p-3 text-lg rotate-90 rounded-full text-black dark:text-white hover:bg-slate-100 focus-within:bg-slate-100 dark:hover:bg-[#171717] focus-within:dark:bg-[#171717] focus-within:block hidden group-hover/item:block max-md:block">
                 <IoIosMore />
               </button>
             }

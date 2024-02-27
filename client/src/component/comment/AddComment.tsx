@@ -67,7 +67,7 @@ const AddComment: React.FC<AddCommentProps> = ({
           autoComplete="off"
           value={formData.content}
           onChange={(e) => handleInputChange("content", e.target.value)}
-          className="peer flex-grow border-b border-slate-200 dark:border-slate-500 pb-1 placeholder-slate-500 text-gray-700 dark:text-white text-lg font-roboto focus:border-b-black dark:focus:border-b-white bg-transparent transition-[border] duration-100"
+          className="peer flex-grow pb-2 border-b border-slate-200 dark:border-slate-500 placeholder-slate-500 text-gray-700 dark:text-white text-lg font-roboto focus:border-b-black dark:focus:border-b-white bg-transparent transition-[border] duration-100 break-all"
         />
       </div>
       <Button

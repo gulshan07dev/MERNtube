@@ -1,4 +1,5 @@
 import { useEffect, useRef, TextareaHTMLAttributes, ChangeEvent } from "react";
+import { twMerge } from "tailwind-merge";
 
 interface EditableTextareaProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -6,7 +7,12 @@ interface EditableTextareaProps
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-const EditableTextarea = ({ value, onChange }: EditableTextareaProps) => {
+const EditableTextarea = ({
+  value,
+  onChange,
+  className,
+  ...props
+}: EditableTextareaProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -28,10 +34,14 @@ const EditableTextarea = ({ value, onChange }: EditableTextareaProps) => {
   return (
     <textarea
       ref={textareaRef}
-      className="text-sm text-gray-800 bg-transparent dark:text-slate-200 font-roboto font-normal outline outline-0 focus:outline-0 disabled:opacity-60 border-2 border-gray-200 dark:border-gray-600  p-2 overflow-hidden resize-none rounded-sm focus:border-gray-900 dark:focus:border-white whitespace-break-spaces"
+      className={twMerge(
+        "text-sm text-gray-800 bg-transparent dark:text-slate-200 font-roboto font-normal outline outline-0 focus:outline-0 disabled:opacity-60 border-2 border-gray-200 dark:border-gray-600  p-2 overflow-hidden resize-none rounded-sm focus:border-gray-900 dark:focus:border-white whitespace-break-spaces",
+        className
+      )}
       value={value}
       style={{ height: "auto" }}
       onChange={handleInputChange}
+      {...props}
     />
   );
 };

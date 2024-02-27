@@ -35,21 +35,21 @@ body {
 }
 
 .thin-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .thin-scrollbar::-webkit-scrollbar-thumb {
   background: #adadadaf;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 body.dark .thin-scrollbar::-webkit-scrollbar-thumb {
   background: #b4b4b4;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -57,7 +57,7 @@ body.dark .thin-scrollbar::-webkit-scrollbar-thumb {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #adadadaf;
+  background: #cc02ff;
 }
 
 body.dark ::-webkit-scrollbar-thumb {

@@ -121,7 +121,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
                 <TimeAgo date={comment?.createdAt} />
               </p>
             </div>
-            <p className="text-sm text-gray-800 dark:text-slate-50 font-roboto whitespace-break-spaces">
+            <p className="text-sm text-gray-800 dark:text-slate-50 font-roboto whitespace-break-spaces break-all">
               {commentContent}
             </p>
             <LikeBtn
