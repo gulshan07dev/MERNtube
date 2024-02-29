@@ -51,7 +51,7 @@ const Dialog: React.FC<DialogProps> = ({
     <>
       {React.cloneElement(triggerButton, { onClick: handleOpen })}
       {isShowDialog && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-[999]">
           <div
             ref={dialogRef}
             className={twMerge(

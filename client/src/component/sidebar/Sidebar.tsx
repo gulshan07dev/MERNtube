@@ -21,7 +21,7 @@ import Avatar from "../CoreUI/Avatar";
 
 import { RootState } from "@/store/store";
 
-const Sidebar = ({ isHidden }: {isHidden: boolean}) => {
+const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
   const { user, isLoggedIn } = useSelector((state: RootState) => state?.auth);
   const { isOpen, onClose } = useSidebar();
 
@@ -120,7 +120,7 @@ const Sidebar = ({ isHidden }: {isHidden: boolean}) => {
       <aside
         id="sidebar"
         className={twMerge(
-          "h-full bg-white dark:bg-dark_bg px-2 top-0 overflow-y-scroll thin-scrollbar z-50 max-md:fixed transition-[left] duration-500 delay-0",
+          "h-full bg-white dark:bg-dark_bg px-2 top-0 overflow-y-scroll thin-scrollbar max-md:fixed transition-[left] duration-500 delay-0",
           isOpen ? "left-0" : isHidden ? "left-[-100%]" : "max-md:left-[-100%]",
           isHidden ? ["fixed"] : ["md:sticky md:left-0"]
         )}

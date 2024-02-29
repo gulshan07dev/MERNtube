@@ -26,7 +26,7 @@ const Navbar = ({
 
   return (
     <nav
-      className={`w-full bg-white dark:bg-dark_bg flex justify-between items-center md:px-7 px-3 sticky top-0 z-[48]`}
+      className={`w-full bg-white dark:bg-dark_bg flex justify-between items-center md:px-7 px-3`}
       style={{ height: navHeight }}
       role="navigation"
       aria-label="Primary Navigation"

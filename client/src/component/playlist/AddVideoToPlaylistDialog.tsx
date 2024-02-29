@@ -13,6 +13,8 @@ import useActionHandler from "@/hooks/useActionHandler";
 import { RootState } from "@/store/store";
 import ScrollPagination from "../ScrollPagination";
 import CheckBox from "../CoreUI/CheckBox";
+import CreatePlaylistDialog from "./CreatePlaylistDialog";
+import Button from "../CoreUI/Button";
 
 interface AddVideoToPlaylistDialogProps {
   videoId: string;
@@ -127,6 +129,11 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
                 handleTogglePlaylist={handleTogglePlaylist}
               />
             ))}
+            {!isFetchingPlaylists && (
+              <CreatePlaylistDialog
+                triggerButton={<Button label="create new playlist" />}
+              />
+            )}
           </div>
         </ScrollPagination>
       )}

@@ -80,7 +80,7 @@ export default function Playlists() {
       className={twMerge("min-h-[55vh]", error && "min-h-full pt-10")}
     >
       <div className="flex justify-between max-md:pb-3 px-3">
-        <h2 className="max-md:self-end text-lg font-semibold text-zinc-800 dark:text-slate-200 font-Noto_sans">
+        <h2 className="max-md:self-center md:text-lg text-base font-semibold text-zinc-800 dark:text-slate-200 font-Noto_sans">
           Created Playlist
         </h2>
         {channel?._id === user?._id && (
@@ -91,13 +91,13 @@ export default function Playlists() {
                 icon={<BiPlusCircle />}
                 isLarge={false}
                 isGradientBg={true}
-                className="text-base py-2"
+                className="md:text-base text-sm py-2"
               />
             }
           />
         )}
       </div>
-      <div className="w-full flex flex-wrap md:gap-10 gap-x-4 gap-y-5 max-lg:px-1 py-5">
+      <div className="w-full flex flex-wrap md:gap-10 gap-x-4 gap-y-5 max-lg:px-1 py-5 max-md:pb-12">
         {!playlists.length &&
         totalDocs === 0 &&
         totalPages === 1 &&

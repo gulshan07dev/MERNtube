@@ -87,7 +87,7 @@ const Home: React.FC = () => {
       }
       className={twMerge("min-h-screen", error && "min-h-full pt-10")}
     >
-      <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3 sticky -top-1 z-[2]">
+      <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3">
         {["desc", "acc"].map((type) => (
           <Button
             key={type}

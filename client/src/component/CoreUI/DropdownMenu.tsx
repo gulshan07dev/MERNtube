@@ -32,8 +32,8 @@ const DropdownMenu = ({
       </div>
       {isOpen && (
         <div
-          className="absolute right-0 mt-1 transition-opacity
-        duration-300 opacity-100 py-5 px-4 bg-white dark:bg-dark_bg shadow-md border dark:border-[#434343] rounded-md 
+          className="absolute z-50 right-0 mt-1 transition-opacity
+        duration-300 opacity-100 py-5 px-4 bg-white dark:bg-dark_bg shadow-lg border dark:border-[#434343] rounded-md 
         flex flex-col items-start gap-2.5"
         >
           {children}

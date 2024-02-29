@@ -70,7 +70,7 @@ const Home: React.FC = () => {
           </p>
         }
       >
-        <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3 sticky top-0 z-[2]">
+        <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3">
           {["desc", "acc"].map((type) => (
             <Button
               key={type}

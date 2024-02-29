@@ -1,23 +1,40 @@
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { abbreviateNumber } from "js-abbreviation-number";
+import { twMerge } from "tailwind-merge";
 import { FaPencilAlt } from "react-icons/fa";
 import { IoIosMore } from "react-icons/io";
 
 import Layout from "@/layout/Layout";
 import { RootState } from "@/store/store";
-import { getPlaylist } from "@/store/slices/playlistSlice";
+import { deletePlaylist, getPlaylist } from "@/store/slices/playlistSlice";
 import useActionHandler from "@/hooks/useActionHandler";
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
 import Skeleton from "@/component/Skeleton";
 import ErrorDialog from "@/component/error/ErrorDialog";
-import { twMerge } from "tailwind-merge";
 import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import Button from "@/component/CoreUI/Button";
+import DeletePlaylistDialogButton from "@/component/playlist/DeletePlaylistDialogButton";
 
 export default function PlaylistVideos() {
+  const navigate = useNavigate();
   const { playlistId } = useParams();
   const { playlist } = useSelector((state: RootState) => state?.playlist);
+
+  const { isLoading: isDeleting, handleAction: deletePlaylistAction } =
+    useActionHandler({
+      action: deletePlaylist,
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "deleting playlist..." },
+    });
+
+  const handleDeletePlaylist = async () => {
+    const { error, isSuccess } = await deletePlaylistAction(playlistId);
+
+    if (!error && isSuccess) {
+      navigate(-1);
+    }
+  };
 
   const { isLoading, error, handleAction } = useActionHandler({
     action: getPlaylist,
@@ -33,7 +50,7 @@ export default function PlaylistVideos() {
     console.log(playlist);
   }, [playlistId]);
   return (
-    <Layout className="flex max-lg:flex-col max-lg:gap-7 lg:h-full lg:overflow-y-scroll gap-3 py-5">
+    <Layout className="w-full flex max-lg:flex-col max-lg:gap-7 lg:h-full lg:overflow-y-scroll gap-3 py-5">
       {/* playlist details */}
       {isLoading ? (
         <Skeleton className="lg:w-[30%] w-full lg:h-full h-[500px] lg:sticky lg:top-0 rounded-lg" />
@@ -47,11 +64,11 @@ export default function PlaylistVideos() {
         <>
           <div
             className={twMerge(
-              "lg:w-[30%] w-full lg:h-full flex lg:flex-col md:flex-row md:gap-5 lg:justify-start md:justify-center flex-col gap-y-4 p-5 lg:sticky lg:top-0 lg:overflow-y-scroll rounded-lg",
+              "lg:w-[30%] w-full lg:h-full flex lg:flex-col md:flex-row md:gap-5 lg:justify-start md:justify-center flex-col gap-y-4 p-5 lg:top-0 lg:sticky lg:overflow-y-scroll rounded-lg",
               !playlist?.playlistThumbnail
                 ? "bg-none"
                 : [
-                    "bg-gradient-to-b from-violet-400 from-[30%] to-dark_bg to-[20%] via-violet-500 dark:via-[#161616] via-[100%] backdrop-blur-2xl dark:bg-[#505050]",
+                    "bg-gradient-to-b from-violet-400 from-[30%] to-dark_bg to-[20%] via-violet-500 dark:via-[#161616] via-[100%]",
                   ]
             )}
           >
@@ -111,9 +128,9 @@ export default function PlaylistVideos() {
                     label="Edit"
                     className="w-full py-1.5 px-7 bg-blue-500 border-none"
                   />
-                  <Button
-                    label="Delete"
-                    className="w-full py-1.5 px-7 bg-red-600 border-none"
+                  <DeletePlaylistDialogButton
+                    isDeleting={isDeleting}
+                    onDelete={handleDeletePlaylist}
                   />
                 </DropdownMenu>
               </div>
@@ -126,8 +143,9 @@ export default function PlaylistVideos() {
           </div>
 
           {/* playlist videos */}
-          <div className="lg:w-[70%] w-full bg-slate-300 dark:bg-gray-500 flex flex-col gap-2 px-1 pb-10">
+          <div className="lg:w-[70%] w-full h-screen bg-slate-300 dark:bg-gray-500 flex flex-col gap-2 px-1 pb-10">
             {/* TODO */}
+            hey
           </div>
         </>
       )}
