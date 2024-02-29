@@ -120,7 +120,7 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
       <aside
         id="sidebar"
         className={twMerge(
-          "h-full bg-white dark:bg-dark_bg px-2 top-0 overflow-y-scroll thin-scrollbar max-md:fixed transition-[left] duration-500 delay-0",
+          "h-full bg-white dark:bg-dark_bg px-2 top-0 z-50 overflow-y-scroll thin-scrollbar max-md:fixed transition-[left] duration-500 delay-0",
           isOpen ? "left-0" : isHidden ? "left-[-100%]" : "max-md:left-[-100%]",
           isHidden ? ["fixed"] : ["md:sticky md:left-0"]
         )}

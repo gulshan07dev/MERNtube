@@ -17,8 +17,15 @@ const DeletePlaylistDialogButton = ({
     onSubmit={onDelete}
     triggerButton={
       <Button
-      icon={<MdDelete />}
+        icon={<MdDelete />}
         label={isDeleting ? "Deleting..." : "Delete"}
+        className="w-full py-1.5 px-7 bg-red-600 border-none"
+        disabled={isDeleting}
+      />
+    }
+    closeButton={
+      <Button 
+        label="Cancel"
         className="w-full py-1.5 px-7 bg-red-600 border-none"
         disabled={isDeleting}
       />

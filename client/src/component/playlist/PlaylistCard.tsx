@@ -41,7 +41,7 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
     <div className="group/item w-[210px] flex flex-col gap-1 max-md:w-full max-md:flex-row max-md:gap-4">
       <Link
         to={`/playlists/${playlist?._id}`}
-        className="relative h-[115px] w-full max-md:w-[45%] max-md:min-h-[100px] rounded-md max-md:rounded-lg overflow-hidden"
+        className="relative h-[115px] w-full max-md:w-[45%] max-sm:min-h-[70px] max-sm:max-h-[10px] rounded-md max-md:rounded-lg overflow-hidden"
       >
         {playlist?.playlistThumbnail ? (
           <img
@@ -61,18 +61,18 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
           {playlist?.videosCount || 0 > 1 ? "videos" : "video"}
         </span>
       </Link>
-      <div className="flex flex-grow justify-between">
-        <div className="flex-grow">
-          <h1 className="text-[16px] max-md:text-lg line-clamp-2 font-roboto font-[500] text-gray-800 dark:text-[#f1f1f1]">
+      <div className="flex flex-grow max-md:w-[50%]">
+        <div className="flex-grow flex-col gap-1">
+          <h1 className="text-[16px] line-clamp-2 font-roboto font-[500] text-gray-800 dark:text-[#f1f1f1]">
             {playlist?.name}
           </h1>
-          <p className="text-sm text-zinc-700 dark:text-slate-300 md:leading-6 leading-8 font-roboto">
+          <p className="text-sm max-sm:text-xs text-zinc-700 dark:text-slate-300 md:leading-6 leading-8 font-roboto">
             {playlist?.isPrivate ? (
-              <span className="flex items-center gap-x-1 px-1 rounded-sm bg-slate-200 dark:bg-[#282828] w-fit">
+              <span className="flex items-center gap-x-1 px-1.5 py-0 max-sm:py-1 rounded-sm bg-slate-200 dark:bg-[#282828] w-fit">
                 private <MdLock />
               </span>
             ) : (
-              <span className="flex items-center gap-x-1 px-1 rounded-sm bg-slate-200 dark:bg-[#282828] w-fit">
+              <span className="flex items-center gap-x-1 px-1.5 py-0 max-sm:py-1 rounded-sm bg-slate-200 dark:bg-[#282828] w-fit">
                 public <FaGlobe />
               </span>
             )}

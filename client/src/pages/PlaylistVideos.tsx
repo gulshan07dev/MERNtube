@@ -88,11 +88,12 @@ export default function PlaylistVideos() {
                 !playlist?.playlistThumbnail && ["text-[#0F0F0F] md:px-4"]
               )}
             >
-              <div className="flex">
-                <h1 className="flex-grow text-[28px] font-semibold capitalize">
+              <div className="w-full flex gap-2 justify-between">
+                <h1 className="md:text-[28px] text-2xl leading-10 font-semibold capitalize  ">
                   {playlist?.name}
                 </h1>
-                <button className="size-10 grid place-items-center rounded-full text-black dark:text-white bg-slate-200 hover:bg-slate-300 dark:bg-[#222222] dark:hover:bg-[#474747]">
+
+                <button className="size-10 grid place-items-center rounded-full text-sm text-white bg-black">
                   <FaPencilAlt />
                 </button>
               </div>
