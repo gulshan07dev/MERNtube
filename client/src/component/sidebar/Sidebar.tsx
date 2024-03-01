@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineHome } from "react-icons/ai";
 import { TfiVideoClapper } from "react-icons/tfi";
@@ -11,19 +11,19 @@ import { CiSettings } from "react-icons/ci";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { MdCloudUpload } from "react-icons/md";
 
+import { RootState } from "@/store/store";
+import { onClose } from "@/store/slices/sidebarSlice";
 import { sidebarWidth } from "@/constant";
-import useSidebar from "@/hooks/useSidebar";
 import MenuLink from "./MenuLink";
 import Divider from "../Divider";
 import SidebarToggleBtn from "../navbar/SidebarToggleBtn";
 import Logo from "../CoreUI/Logo";
 import Avatar from "../CoreUI/Avatar";
 
-import { RootState } from "@/store/store";
-
 const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
+  const dispatch = useDispatch();
   const { user, isLoggedIn } = useSelector((state: RootState) => state?.auth);
-  const { isOpen, onClose } = useSidebar();
+  const { isOpen } = useSelector((state: RootState) => state.sidebar);
 
   const menuItems = useMemo(
     () => [
@@ -195,7 +195,7 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
             ? ["max-md:bg-white max-md:opacity-30 md:hidden"]
             : "hidden"
         )}
-        onClick={onClose}
+        onClick={() => dispatch(onClose())}
       ></div>
     </>
   );

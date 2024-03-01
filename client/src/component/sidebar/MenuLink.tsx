@@ -1,8 +1,9 @@
+import React from "react";
+import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import useSidebar from "@/hooks/useSidebar";
-import React from "react";
+import { onClose } from "@/store/slices/sidebarSlice";
 
 interface MenuLinkProps {
   label: string;
@@ -17,14 +18,16 @@ export default function MenuLink({
   slug,
   className,
 }: MenuLinkProps) {
-  const { onClose } = useSidebar();
+  const dispatch = useDispatch();
   return (
-    <NavLink to={`${slug}`} onClick={onClose}>
+    <NavLink to={`${slug}`} onClick={() => dispatch(onClose())}>
       {({ isActive }) => (
         <button
           className={twMerge(
             "flex gap-6 items-center font-Noto_sans px-4 py-1.5 rounded-lg w-full",
-            isActive ? "bg-[#edf4ff] dark:bg-[#272727] text-[#000000] dark:text-white" : "text-[#202427] dark:text-slate-50",
+            isActive
+              ? "bg-[#edf4ff] dark:bg-[#272727] text-[#000000] dark:text-white"
+              : "text-[#202427] dark:text-slate-50",
             className
           )}
         >
@@ -37,7 +40,9 @@ export default function MenuLink({
           </span>
           <span
             className={`text-[15px] font-roboto font-[500] truncate ${
-              isActive ? "text-zinc-950 dark:text-white" : "text-zinc-700 dark:text-slate-50"
+              isActive
+                ? "text-zinc-950 dark:text-white"
+                : "text-zinc-700 dark:text-slate-50"
             } ${className}`}
           >
             {label}
