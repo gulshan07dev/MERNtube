@@ -13,19 +13,17 @@ import useActionHandler from "@/hooks/useActionHandler";
 import { RootState } from "@/store/store";
 import ScrollPagination from "../ScrollPagination";
 import CheckBox from "../CoreUI/CheckBox";
-import CreatePlaylistDialog from "./CreatePlaylistDialog";
-import Button from "../CoreUI/Button";
 
 interface AddVideoToPlaylistDialogProps {
   videoId: string;
   open: boolean;
-  handleClose: () => void
+  handleClose: () => void;
 }
 
 const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
   videoId,
   open,
-  handleClose
+  handleClose,
 }) => {
   const navigate = useNavigate();
   const { user, isLoggedIn } = useSelector((state: RootState) => state.auth);
@@ -96,8 +94,8 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
 
   return (
     <Modal
-    open={open}
-    handleClose={handleClose}
+      open={open}
+      handleClose={handleClose}
       title="Add to Playlist"
       description={
         isLoggedIn
@@ -132,11 +130,6 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
                 handleTogglePlaylist={handleTogglePlaylist}
               />
             ))}
-            {!isFetchingPlaylists && (
-              <CreatePlaylistDialog
-                triggerButton={<Button>create new playlist</Button>}
-              />
-            )}
           </div>
         </ScrollPagination>
       )}
