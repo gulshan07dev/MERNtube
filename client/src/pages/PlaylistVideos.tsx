@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { abbreviateNumber } from "js-abbreviation-number";
 import { twMerge } from "tailwind-merge";
 import { FaPencilAlt } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 
 import Layout from "@/layout/Layout";
@@ -19,6 +20,10 @@ import DeletePlaylistDialogButton from "@/component/playlist/DeletePlaylistDialo
 export default function PlaylistVideos() {
   const navigate = useNavigate();
   const { playlistId } = useParams();
+  const [
+    isShowDeletePlaylistConfirmDialog,
+    setIsShowDeletePlaylistConfirmDialog,
+  ] = useState(false);
   const { playlist } = useSelector((state: RootState) => state?.playlist);
 
   const { isLoading: isDeleting, handleAction: deletePlaylistAction } =
@@ -32,6 +37,7 @@ export default function PlaylistVideos() {
     const { error, isSuccess } = await deletePlaylistAction(playlistId);
 
     if (!error && isSuccess) {
+      setIsShowDeletePlaylistConfirmDialog(false);
       navigate(-1);
     }
   };
@@ -128,11 +134,25 @@ export default function PlaylistVideos() {
                   <Button className="w-full py-1.5 px-7 bg-blue-500 border-none">
                     Edit
                   </Button>
-                  <DeletePlaylistDialogButton
-                    isDeleting={isDeleting}
-                    onDelete={handleDeletePlaylist}
-                  />
+                  <Button
+                    icon={<MdDelete />}
+                    className="w-full py-1.5 px-7 bg-red-600 border-none"
+                    onClick={() =>
+                      setIsShowDeletePlaylistConfirmDialog((prev) => !prev)
+                    }
+                    disabled={isDeleting}
+                  >
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </Button>
                 </DropdownMenu>
+                <DeletePlaylistDialogButton
+                  open={isShowDeletePlaylistConfirmDialog}
+                  handleClose={() =>
+                    setIsShowDeletePlaylistConfirmDialog(false)
+                  }
+                  isDeleting={isDeleting}
+                  onDelete={() => handleDeletePlaylist()}
+                />
               </div>
               <p className="text-sm -mt-1 font-nunito_sans">
                 {playlist?.description

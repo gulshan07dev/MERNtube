@@ -33,15 +33,14 @@ export default function SubscribeBtn({
 
   return user?._id !== channelId ? (
     <Button
-      label={
-        isLoading ? "subscribing..." : subscribed ? "Un subscribe" : "subscribe"
-      }
       icon={FaUserPlus}
       isLarge={false}
       disabled={isLoading}
       className="text-base text-white bg-[#f10b64] px-4 rounded-full mt-2"
       onClick={handleSubscribe}
-    />
+    >
+      {isLoading ? "subscribing..." : subscribed ? "Un subscribe" : "subscribe"}
+    </Button>
   ) : (
     <></>
   );

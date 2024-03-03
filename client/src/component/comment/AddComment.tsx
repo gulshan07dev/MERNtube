@@ -71,7 +71,6 @@ const AddComment: React.FC<AddCommentProps> = ({
         />
       </div>
       <Button
-        label={isLoading ? "Adding comment..." : "Comment"}
         type="submit"
         isLarge={false}
         className={twMerge(
@@ -80,7 +79,9 @@ const AddComment: React.FC<AddCommentProps> = ({
           formData.content.length > 0 && "block"
         )}
         disabled={isLoading}
-      />
+      >
+        {isLoading ? "Adding comment..." : "Comment"}
+      </Button>
     </form>
   );
 };

@@ -22,6 +22,9 @@ export default function Playlists() {
   const [totalDocs, setTotalDocs] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
 
+  const [isShowCreatePlaylistDialog, setIsShowCreatePlaylistDialog] =
+    useState(false);
+
   const { error, isLoading, handleAction } = useActionHandler({
     action: getUserPlaylists,
     isShowToastMessage: false,
@@ -84,18 +87,21 @@ export default function Playlists() {
           Created Playlist
         </h2>
         {channel?._id === user?._id && (
-          <CreatePlaylistDialog
-            triggerButton={
-              <Button
-                icon={<BiPlusCircle />}
-                isLarge={false}
-                isGradientBg={true}
-                className="md:text-base text-sm py-2"
-              >
-                Create Playlist
-              </Button>
-            }
-          />
+          <>
+            <Button
+              icon={<BiPlusCircle />}
+              isLarge={false}
+              isGradientBg={true}
+              className="md:text-base text-sm py-2"
+              onClick={() => setIsShowCreatePlaylistDialog((prev) => !prev)}
+            >
+              Create Playlist
+            </Button>
+            <CreatePlaylistDialog
+              open={isShowCreatePlaylistDialog}
+              handleClose={() => setIsShowCreatePlaylistDialog(false)}
+            />
+          </>
         )}
       </div>
       <div className="w-full flex flex-wrap md:gap-10 gap-x-4 gap-y-5 max-lg:px-1 py-5 max-md:pb-12">

@@ -19,6 +19,8 @@ import { twMerge } from "tailwind-merge";
 
 const TweetCard = ({ data }: { data: Tweet }) => {
   const navigate = useNavigate();
+  const [isShowDeleteConfirmDialog, setIsShowDeleteConfirmDialog] =
+    useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [showCommentSection, setShowCommentSection] = useState(false);
   const { user } = useSelector((state: RootState) => state?.auth);
@@ -78,37 +80,40 @@ const TweetCard = ({ data }: { data: Tweet }) => {
         </div>
         {/* more option menu for edit and delete, only for owner */}
         {user?._id === data?.owner?._id && !isDeleted && (
-          <DropdownMenu
-            className="absolute top-3 right-3"
-            triggerButton={
-              <Button
-                btnType="icon-btn"
-                className="hidden focus-within:block group-hover:block max-md:block"
-              >
-                <IoIosMore size={20} />
-              </Button>
-            }
-          >
-            <Button
-              className="w-full py-1.5 px-7 bg-blue-500 border-none"
-              onClick={() => navigate(`/edit/tweet/${data?._id}`)}
+          <>
+            <DropdownMenu
+              className="absolute top-3 right-3"
+              triggerButton={
+                <Button
+                  btnType="icon-btn"
+                  className="hidden focus-within:block group-hover:block max-md:block"
+                >
+                  <IoIosMore size={20} />
+                </Button>
+              }
             >
-              edit
-            </Button>
+              <Button
+                className="w-full py-1.5 px-7 bg-blue-500 border-none"
+                onClick={() => navigate(`/edit/tweet/${data?._id}`)}
+              >
+                edit
+              </Button>
+              <Button
+                onClick={() => setIsShowDeleteConfirmDialog((prev) => !prev)}
+                className="w-full py-1.5 px-7 bg-red-600 border-none"
+                disabled={isDeleting}
+              >
+                {isDeleting ? "deleting..." : "delete"}
+              </Button>
+            </DropdownMenu>
             <Modal
+              open={isShowDeleteConfirmDialog}
+              handleClose={() => setIsShowDeleteConfirmDialog(false)}
               title="Delete Tweet"
               description="Are you sure you want to delete the tweet?"
               submitLabel={isDeleting ? "deleting..." : "Delete"}
               isLoading={isDeleting}
               onSubmit={() => handleDeleteTweet(data?._id)}
-              triggerButton={
-                <Button
-                  className="w-full py-1.5 px-7 bg-red-600 border-none"
-                  disabled={isDeleting}
-                >
-                  {isDeleting ? "deleting..." : "delete"}
-                </Button>
-              }
               closeButton={
                 <Button
                   className="w-full py-1.5 px-7 bg-red-600 border-none"
@@ -118,7 +123,7 @@ const TweetCard = ({ data }: { data: Tweet }) => {
                 </Button>
               }
             />
-          </DropdownMenu>
+          </>
         )}
       </div>
 

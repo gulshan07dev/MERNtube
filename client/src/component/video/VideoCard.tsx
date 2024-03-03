@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { abbreviateNumber } from "js-abbreviation-number";
 import TimeAgo from "react-timeago";
@@ -9,11 +10,15 @@ import { FaShare } from "react-icons/fa";
 import { Video } from "@/store/slices/videoSlice";
 import Avatar from "../CoreUI/Avatar";
 import DropdownMenu from "../CoreUI/DropdownMenu";
+import Button from "../CoreUI/Button";
 import ShareDialog from "../ShareDialog";
 import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
-import Button from "../CoreUI/Button";
 
-export default function VideoCard({ data }: { data: Video }) {
+const VideoCard = ({ data }: { data: Video }) => {
+  const [isShowAddVideoToPlaylistDialog, setIsShowAddVideoToPlaylistDialog] =
+    useState(false);
+  const [isShowShareDialog, setIsShowShareDialog] = useState(false);
+
   return (
     <div className="group/item rounded-md w-[315px] max-lg:w-[415px] max-sm:w-full">
       <div className="flex flex-col gap-2">
@@ -44,7 +49,6 @@ export default function VideoCard({ data }: { data: Video }) {
               </p>
             </div>
           </div>
-          {/* more option btn */}
           <DropdownMenu
             triggerButton={
               <Button btnType="icon-btn">
@@ -59,32 +63,40 @@ export default function VideoCard({ data }: { data: Video }) {
               >
                 Save to Watch Later
               </Button>
-              <AddVideoToPlaylistDialog
-                videoId={data?._id}
-                triggerButton={
-                  <Button
-                    icon={<BiSolidPlaylist />}
-                    className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
-                  >
-                    Save to Playlist
-                  </Button>
+
+              <Button
+                icon={<BiSolidPlaylist />}
+                className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
+                onClick={() =>
+                  setIsShowAddVideoToPlaylistDialog((prev) => !prev)
                 }
-              />
-              <ShareDialog
-                url={`${document.baseURI}watch/${data?._id}`}
-                triggerButton={
-                  <Button
-                    icon={<FaShare />}
-                    className="bg-white border-gray-500 dark:border-none text-sm text-black font-roboto hover:opacity-75 w-full py-2"
-                  >
-                    Share
-                  </Button>
-                }
-              />
+              >
+                Save to Playlist
+              </Button>
+
+              <Button
+                icon={<FaShare />}
+                className="bg-white border-gray-500 dark:border-none text-sm text-black font-roboto hover:opacity-75 w-full py-2"
+                onClick={() => setIsShowShareDialog((prev) => !prev)}
+              >
+                Share
+              </Button>
             </div>
           </DropdownMenu>
+          <AddVideoToPlaylistDialog
+            videoId={data?._id}
+            open={isShowAddVideoToPlaylistDialog}
+            handleClose={() => setIsShowAddVideoToPlaylistDialog(false)}
+          />
+          <ShareDialog
+            url={`${document.baseURI}watch/${data?._id}`}
+            open={isShowShareDialog}
+            handleClose={() => setIsShowShareDialog(false)}
+          />
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default VideoCard;

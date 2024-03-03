@@ -27,6 +27,8 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [commentContent, setCommentContent] = useState(comment?.content);
+  const [isShowDeleteConfirmDialog, setIsShowDeleteConfirmDialog] =
+    useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment?.content);
@@ -133,33 +135,38 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
         )}
       </div>
       {user?._id === comment.owner._id && !isEditing && (
-        <DropdownMenu
-          triggerButton={
-            <Button
-              btnType="icon-btn"
-              className="focus-within:block hidden group-hover/item:block max-md:block"
-            >
-              <FiMoreVertical size={15} />
-            </Button>
-          }
-        >
-          <Button
-            onClick={handleEdit}
-            className="w-full py-1.5 px-7 bg-blue-500 border-none"
+        <>
+          <DropdownMenu
+            triggerButton={
+              <Button
+                btnType="icon-btn"
+                className="focus-within:block hidden group-hover/item:block max-md:block"
+              >
+                <FiMoreVertical size={15} />
+              </Button>
+            }
           >
-            Edit
-          </Button>
+            <Button
+              onClick={handleEdit}
+              className="w-full py-1.5 px-7 bg-blue-500 border-none"
+            >
+              Edit
+            </Button>
+            <Button
+              className="w-full py-1.5 px-7 bg-red-600 border-none"
+              onClick={() => setIsShowDeleteConfirmDialog((prev) => !prev)}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </DropdownMenu>
           <Modal
+            open={isShowDeleteConfirmDialog}
+            handleClose={() => setIsShowDeleteConfirmDialog(false)}
             title="Delete Comment"
             description="Are you sure you want to delete the comment?"
             submitLabel={isDeleting ? "deleting..." : "Delete"}
             isLoading={isDeleting}
             onSubmit={() => handleDeleteComment(comment?._id)}
-            triggerButton={
-              <Button className="w-full py-1.5 px-7 bg-red-600 border-none">
-                {isDeleting ? "Deleting..." : "Delete"}
-              </Button>
-            }
             closeButton={
               <Button
                 className="w-full py-1.5 px-7 bg-red-600 border-none"
@@ -169,7 +176,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
               </Button>
             }
           />
-        </DropdownMenu>
+        </>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineClose } from "react-icons/ai";
 import { createPortal } from "react-dom";
@@ -7,6 +7,8 @@ import useClickOutside from "@/hooks/useClickOutside";
 import Button from "./Button";
 
 interface ModalProps {
+  open: boolean;
+  handleClose: () => void;
   title: string;
   description: string;
   children?: React.ReactNode;
@@ -14,12 +16,13 @@ interface ModalProps {
   onSubmit?: () => void;
   isLoading?: boolean;
   className?: string;
-  triggerButton: React.ReactElement;
   closeButton?: React.ReactElement;
   onOpen?: () => void;
 }
 
 const Modal: React.FC<ModalProps> = ({
+  open,
+  handleClose,
   title,
   description,
   children,
@@ -27,33 +30,26 @@ const Modal: React.FC<ModalProps> = ({
   onSubmit,
   isLoading,
   className = "",
-  triggerButton,
   closeButton,
   onOpen,
 }) => {
-  const [isShowModal, setIsShowModal] = useState(false);
   const ModalRef = useRef<HTMLDivElement>(null);
 
-  const handleOpen = () => {
-    setIsShowModal(true);
-    if (onOpen) {
-      onOpen();
-    }
-  };
+  if (!closeButton) {
+    useClickOutside({
+      ref: ModalRef,
+      callback: handleClose,
+    });
+  }
 
-  const handleClose = () => {
-    setIsShowModal(false);
-  };
-
-  useClickOutside({
-    ref: ModalRef,
-    callback: handleClose,
-  });
+  useEffect(() => {
+    if (onOpen && open) onOpen();
+    return;
+  }, [open]);
 
   return (
     <>
-      {React.cloneElement(triggerButton, { onClick: handleOpen })}
-      {isShowModal &&
+      {open &&
         createPortal(
           <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-70">
             <div
@@ -70,18 +66,25 @@ const Modal: React.FC<ModalProps> = ({
               {children && (
                 <div className="overflow-y-scroll no-scrollbar">{children}</div>
               )}
-              <div className="flex gap-3 justify-end mt-3">
-                <button
-                  className="p-2 rounded-full text-2xl text-black dark:text-white absolute top-4 right-1 bg-red-50 hover:bg-red-500 hover:text-white dark:bg-[#242424] dark:hover:bg-[#505050] transition-[color_background]"
-                  onClick={handleClose}
-                  disabled={isLoading}
-                >
-                  <AiOutlineClose />
-                </button>
-                <div className="flex gap-3">
-                  {closeButton &&
-                    React.cloneElement(closeButton, { onClick: handleClose })}
-                </div>
+              <div className="flex gap-4 justify-end mt-3">
+                {!closeButton ? (
+                  <button
+                    className="p-2 rounded-full text-2xl text-black dark:text-white absolute top-4 right-1 bg-red-50 hover:bg-red-500 hover:text-white dark:bg-[#242424] dark:hover:bg-[#505050] transition-[color_background]"
+                    onClick={handleClose}
+                    disabled={isLoading}
+                  >
+                    <AiOutlineClose />
+                  </button>
+                ) : (
+                  closeButton && (
+                    <div className="flex gap-1">
+                      {React.cloneElement(closeButton, {
+                        onClick: handleClose,
+                      })}
+                    </div>
+                  )
+                )}
+
                 {submitLabel && onSubmit && (
                   <Button
                     onClick={onSubmit}

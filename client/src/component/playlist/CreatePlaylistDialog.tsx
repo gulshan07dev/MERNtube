@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import toast from "react-hot-toast";
 
 import Modal from "../CoreUI/Modal";
@@ -10,11 +9,13 @@ import useActionHandler from "@/hooks/useActionHandler";
 import { createPlaylist } from "@/store/slices/playlistSlice";
 
 interface CreatePlaylistDialogProps {
-  triggerButton: ReactElement;
+  open: boolean;
+  handleClose: () => void;
 }
 
 export default function CreatePlaylistDialog({
-  triggerButton,
+  open,
+  handleClose,
 }: CreatePlaylistDialogProps) {
   const playlistDetails = {
     name: "",
@@ -39,13 +40,15 @@ export default function CreatePlaylistDialog({
     const { isSuccess } = await handleAction(formData);
     if (isSuccess && !error) {
       resetForm();
+      handleClose()
     }
   };
   return (
     <Modal
+      open={open}
+      handleClose={handleClose}
       title="Create Playlist"
       description="create your playlist by providing name and description"
-      triggerButton={triggerButton}
       submitLabel={isLoading ? "loading..." : "Create Playlist"}
       onSubmit={handleSubmitForm}
       isLoading={isLoading}

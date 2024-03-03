@@ -18,12 +18,14 @@ import Button from "../CoreUI/Button";
 
 interface AddVideoToPlaylistDialogProps {
   videoId: string;
-  triggerButton: React.ReactElement;
+  open: boolean;
+  handleClose: () => void
 }
 
 const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
   videoId,
-  triggerButton,
+  open,
+  handleClose
 }) => {
   const navigate = useNavigate();
   const { user, isLoggedIn } = useSelector((state: RootState) => state.auth);
@@ -94,6 +96,8 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
 
   return (
     <Modal
+    open={open}
+    handleClose={handleClose}
       title="Add to Playlist"
       description={
         isLoggedIn
@@ -102,7 +106,6 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
       }
       submitLabel={!isLoggedIn ? "Log In or Sign Up" : undefined}
       onSubmit={!isLoggedIn ? () => navigate("/auth/login") : undefined}
-      triggerButton={triggerButton}
       onOpen={() => handleFetchPlaylists(1)}
     >
       {isLoggedIn && (

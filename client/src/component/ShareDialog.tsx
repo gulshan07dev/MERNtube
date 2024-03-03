@@ -1,22 +1,23 @@
-import { ReactElement, useRef } from "react";
+import { useRef } from "react";
 import { toast } from "react-hot-toast";
-
 import {
   FaFacebookF,
   FaLinkedinIn,
   FaTwitter,
   FaWhatsapp,
   FaCopy,
-  FaShare,
 } from "react-icons/fa";
+
 import Modal from "./CoreUI/Modal";
 
 const ShareDialog = ({
   url,
-  triggerButton,
+  open,
+  handleClose,
 }: {
   url: string;
-  triggerButton?: ReactElement;
+  open: boolean;
+  handleClose: () => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const shareOptions = [
@@ -51,17 +52,10 @@ const ShareDialog = ({
 
   return (
     <Modal
+      open={open}
+      handleClose={handleClose}
       title="Share"
       description="share your video"
-      triggerButton={
-        triggerButton ? (
-          triggerButton
-        ) : (
-          <button className="size-10 rounded-full grid place-items-center bg-slate-200 text-lg text-zinc-800 dark:text-white hover:bg-slate-300 dark:bg-[#272727] dark:hover:bg-[474747]">
-            <FaShare />
-          </button>
-        )
-      }
     >
       <div className="flex flex-col items-center gap-4">
         <div className="relative w-full">

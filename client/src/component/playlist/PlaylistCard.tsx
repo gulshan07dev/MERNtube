@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { IoIosMore } from "react-icons/io";
-import { MdLock } from "react-icons/md";
+import { MdDelete, MdLock } from "react-icons/md";
 import { FaGlobe } from "react-icons/fa";
 
 import { Playlist, deletePlaylist } from "@/store/slices/playlistSlice";
@@ -11,6 +11,10 @@ import useActionHandler from "@/hooks/useActionHandler";
 import DeletePlaylistDialogButton from "./DeletePlaylistDialogButton";
 
 export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
+  const [
+    isShowDeletePlaylistConfirmDialog,
+    setIsShowDeletePlaylistConfirmDialog,
+  ] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
 
   const { isLoading: isDeleting, handleAction: deletePlaylistAction } =
@@ -25,6 +29,7 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
     const { error, isSuccess } = await deletePlaylistAction(playlistId);
 
     if (!error && isSuccess) {
+      setIsShowDeletePlaylistConfirmDialog(false)
       setIsDeleted(true);
     }
   };
@@ -58,7 +63,9 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
         )}
         <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-sm bg-gray-600 dark:bg-[#202020] text-white text-xs">
           {playlist?.videosCount}{" "}
-          {playlist?.videosCount || 0 > 1 ? "videos" : "video"}
+          {playlist?.videosCount && playlist?.videosCount > 1
+            ? "videos"
+            : "video"}
         </span>
       </Link>
       <div className="flex flex-grow max-md:w-[50%]">
@@ -85,14 +92,26 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
             </button>
           }
         >
-          <Button 
-            className="w-full py-1.5 px-7 bg-blue-500 border-none"
-          >Edit</Button>
-          <DeletePlaylistDialogButton
-            isDeleting={isDeleting}
-            onDelete={() => handleDeletePlaylist(playlist?._id)}
-          />
+          <Button className="w-full py-1.5 px-7 bg-blue-500 border-none">
+            Edit
+          </Button>
+          <Button
+            icon={<MdDelete />}
+            className="w-full py-1.5 px-7 bg-red-600 border-none"
+            onClick={() =>
+              setIsShowDeletePlaylistConfirmDialog((prev) => !prev)
+            }
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </Button>
         </DropdownMenu>
+        <DeletePlaylistDialogButton
+          open={isShowDeletePlaylistConfirmDialog}
+          handleClose={() => setIsShowDeletePlaylistConfirmDialog(false)}
+          isDeleting={isDeleting}
+          onDelete={() => handleDeletePlaylist(playlist?._id)}
+        />
       </div>
     </div>
   );
