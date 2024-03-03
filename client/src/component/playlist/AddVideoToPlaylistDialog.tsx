@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import Dialog from "../CoreUI/Dialog";
+import Modal from "../CoreUI/Modal";
 import {
   addVideoToPlaylist,
   getUserPlaylists,
@@ -93,7 +93,7 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
   };
 
   return (
-    <Dialog
+    <Modal
       title="Add to Playlist"
       description={
         isLoggedIn
@@ -131,13 +131,13 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
             ))}
             {!isFetchingPlaylists && (
               <CreatePlaylistDialog
-                triggerButton={<Button label="create new playlist" />}
+                triggerButton={<Button>create new playlist</Button>}
               />
             )}
           </div>
         </ScrollPagination>
       )}
-    </Dialog>
+    </Modal>
   );
 };
 

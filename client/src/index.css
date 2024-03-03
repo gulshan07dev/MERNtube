@@ -61,5 +61,5 @@ body.dark .thin-scrollbar::-webkit-scrollbar-thumb {
 }
 
 body.dark ::-webkit-scrollbar-thumb {
-  background: #b8b8b8;
+  background: #b8b8b8; 
 }

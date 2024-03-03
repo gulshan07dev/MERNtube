@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineClose } from "react-icons/ai";
 import { createPortal } from "react-dom";
 
-import useClickOutside from "@/hooks/useClickOutside ";
+import useClickOutside from "@/hooks/useClickOutside";
 import Button from "./Button";
 
-interface DialogProps {
+interface ModalProps {
   title: string;
   description: string;
   children?: React.ReactNode;
@@ -19,21 +19,7 @@ interface DialogProps {
   onOpen?: () => void;
 }
 
-const ModalPortal: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const modalRoot = document.getElementById("modal-root");
-  const el = document.createElement("div");
-
-  useEffect(() => {
-    modalRoot?.appendChild(el);
-    return () => {
-      modalRoot?.removeChild(el);
-    };
-  }, [el, modalRoot]);
-
-  return createPortal(children, el);
-};
-
-const Dialog: React.FC<DialogProps> = ({
+const Modal: React.FC<ModalProps> = ({
   title,
   description,
   children,
@@ -45,33 +31,33 @@ const Dialog: React.FC<DialogProps> = ({
   closeButton,
   onOpen,
 }) => {
-  const [isShowDialog, setIsShowDialog] = useState(false);
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const [isShowModal, setIsShowModal] = useState(false);
+  const ModalRef = useRef<HTMLDivElement>(null);
 
   const handleOpen = () => {
-    setIsShowDialog(true);
+    setIsShowModal(true);
     if (onOpen) {
       onOpen();
     }
   };
 
   const handleClose = () => {
-    setIsShowDialog(false);
+    setIsShowModal(false);
   };
 
   useClickOutside({
-    ref: dialogRef,
+    ref: ModalRef,
     callback: handleClose,
   });
 
   return (
     <>
       {React.cloneElement(triggerButton, { onClick: handleOpen })}
-      {isShowDialog && (
-        <ModalPortal>
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-[999]">
+      {isShowModal &&
+        createPortal(
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-70">
             <div
-              ref={dialogRef}
+              ref={ModalRef}
               className={twMerge(
                 "relative bg-white dark:bg-[#121212] dark:border dark:border-[#525252] rounded-md p-8 max-sm:px-4 max-w-md w-[95%] max-h-[95%] overflow-x-hidden overflow-y-scroll flex flex-col gap-3",
                 className
@@ -94,24 +80,25 @@ const Dialog: React.FC<DialogProps> = ({
                 </button>
                 <div className="flex gap-3">
                   {closeButton &&
-                    React.cloneElement(closeButton, { onClick: onclose })}
+                    React.cloneElement(closeButton, { onClick: handleClose })}
                 </div>
                 {submitLabel && onSubmit && (
                   <Button
-                    label={submitLabel}
                     onClick={onSubmit}
                     disabled={isLoading}
                     isGradientBg={true}
                     className="border-none dark:text-white"
-                  />
+                  >
+                    {submitLabel}
+                  </Button>
                 )}
               </div>
             </div>
-          </div>
-        </ModalPortal>
-      )}
+          </div>,
+          document.getElementById("portal") as HTMLElement
+        )}
     </>
   );
 };
 
-export default Dialog;
+export default Modal;

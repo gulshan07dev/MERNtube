@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import toast from "react-hot-toast";
 
-import Dialog from "../CoreUI/Dialog";
+import Modal from "../CoreUI/Modal";
 import Input from "../CoreUI/Input";
 import TextAreaInput from "../CoreUI/TextAreaInput";
 import CheckBox from "../CoreUI/CheckBox";
@@ -42,7 +42,7 @@ export default function CreatePlaylistDialog({
     }
   };
   return (
-    <Dialog
+    <Modal
       title="Create Playlist"
       description="create your playlist by providing name and description"
       triggerButton={triggerButton}
@@ -78,6 +78,6 @@ export default function CreatePlaylistDialog({
           onChange={(e) => handleInputChange("isPrivate", e.target.checked)}
         />
       </form>
-    </Dialog>
+    </Modal>
   );
 }
