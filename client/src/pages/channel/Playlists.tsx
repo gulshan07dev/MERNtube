@@ -87,12 +87,13 @@ export default function Playlists() {
           <CreatePlaylistDialog
             triggerButton={
               <Button
-                label="Create Playlist"
                 icon={<BiPlusCircle />}
                 isLarge={false}
                 isGradientBg={true}
                 className="md:text-base text-sm py-2"
-              />
+              >
+                Create Playlist
+              </Button>
             }
           />
         )}

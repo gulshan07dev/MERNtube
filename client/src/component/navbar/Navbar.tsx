@@ -53,7 +53,7 @@ const Navbar = ({
             <Skeleton className="w-10 h-10 rounded-full" />
           ) : (
             <DropdownMenu
-              button={
+              triggerButton={
                 <Avatar
                   url={user?.avatar?.url || ""}
                   fullName={user?.fullName || ""}
@@ -111,21 +111,19 @@ const Navbar = ({
           </div>
         ) : (
           <div className="flex gap-2 items-center">
-            <Button
-              label="Login"
+            <Button 
               type="button"
               isLarge={false}
               isGradientBg={true}
               className="h-8 w-16 rounded-md"
               onClick={() => navigate("/auth/login")}
-            />
-            <Button
-              label="Signup"
+            >Login</Button>
+            <Button 
               type="button"
               isLarge={false}
               className="h-10 w-16 rounded-md bg-slate-50 dark:bg-[#202020] text-violet-600 dark:text-white border-slate-300  dark:border-gray-600"
               onClick={() => navigate("/auth/signup")}
-            />
+            >Signup</Button>
           </div>
         )}
       </div>

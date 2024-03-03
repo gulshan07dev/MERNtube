@@ -119,16 +119,15 @@ export default function PlaylistVideos() {
                   </p>
                 </div>
                 <DropdownMenu
-                  button={
+                  triggerButton={
                     <button className="size-10 grid place-items-center rounded-full text-black dark:text-white bg-slate-200 hover:bg-slate-300 dark:bg-[#222222] dark:hover:bg-[#474747]">
                       <IoIosMore />
                     </button>
                   }
                 >
-                  <Button
-                    label="Edit"
-                    className="w-full py-1.5 px-7 bg-blue-500 border-none"
-                  />
+                  <Button className="w-full py-1.5 px-7 bg-blue-500 border-none">
+                    Edit
+                  </Button>
                   <DeletePlaylistDialogButton
                     isDeleting={isDeleting}
                     onDelete={handleDeletePlaylist}

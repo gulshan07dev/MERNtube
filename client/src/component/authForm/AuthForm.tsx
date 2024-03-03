@@ -184,20 +184,19 @@ export default function AuthForm({
           <Devider type="vertical" className="bg-zinc-300" />
 
           <Button
-            label={
-              type === AuthFormType.LOGIN
-                ? isLoading
-                  ? "Processing..."
-                  : "Login your account"
-                : isLoading
-                ? "Processing..."
-                : "Create your account"
-            }
             type="submit"
             disabled={isLoading}
             className="rounded-md md:w-[45%] w-1/2 max-sm:text-[13px]"
             isGradientBg={true}
-          />
+          >
+            {type === AuthFormType.LOGIN
+              ? isLoading
+                ? "Processing..."
+                : "Login your account"
+              : isLoading
+              ? "Processing..."
+              : "Create your account"}
+          </Button>
         </div>
       </form>
     </div>

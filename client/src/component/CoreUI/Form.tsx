@@ -45,7 +45,6 @@ export default function Form({
       {error && <ErrorMessage errorMessage={error} />}
       {inputs}
       <Button
-        label={isLoading ? "Loading..." : submitButtonLabel}
         type="submit"
         icon={submitButtonIcon}
         disabled={isButtonDisabled}
@@ -53,7 +52,9 @@ export default function Form({
         className={`w-fit px-8 text-base ${
           isSubmitButtonPositionLeft ? "self-start" : "self-end"
         }`}
-      />
+      >
+        {isLoading ? "Loading..." : submitButtonLabel}
+      </Button>
     </form>
   );
 }

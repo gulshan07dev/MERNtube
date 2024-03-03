@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import TimeAgo from "react-timeago";
-import { IoIosMore } from "react-icons/io";
 
 import { RootState } from "@/store/store";
 import useActionHandler from "@/hooks/useActionHandler";
@@ -17,7 +16,8 @@ import LikeBtn from "../CoreUI/LikeBtn";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
 import EditableTextarea from "../CoreUI/EditableTextarea";
-import Dialog from "../CoreUI/Dialog";
+import Modal from "../CoreUI/Modal";
+import { FiMoreVertical } from "react-icons/fi";
 
 interface CommentCardProps {
   comment: Comment;
@@ -99,16 +99,15 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             />
             <div className="flex gap-2 self-end">
               <Button
-                label="Cancel"
                 onClick={handleCancelEdit}
                 className="bg-gray-500 text-white"
                 disabled={isUpdating}
-              />
-              <Button
-                label={isUpdating ? "updating..." : "Update"}
-                onClick={handleUpdateComment}
-                disabled={isUpdating}
-              />
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleUpdateComment} disabled={isUpdating}>
+                {isUpdating ? "updating..." : "Update"}
+              </Button>
             </div>
           </div>
         ) : (
@@ -135,35 +134,39 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
       </div>
       {user?._id === comment.owner._id && !isEditing && (
         <DropdownMenu
-          button={
-            <button className="md:p-3 text-lg rotate-90 rounded-full text-black dark:text-white hover:bg-slate-100 dark:hover:bg-[#171717] focus-within:block hidden group-hover/item:block max-md:block">
-              <IoIosMore />
-            </button>
+          triggerButton={
+            <Button
+              btnType="icon-btn"
+              className="focus-within:block hidden group-hover/item:block max-md:block"
+            >
+              <FiMoreVertical size={15} />
+            </Button>
           }
         >
           <Button
-            label="Edit"
             onClick={handleEdit}
             className="w-full py-1.5 px-7 bg-blue-500 border-none"
-          />
-          <Dialog
+          >
+            Edit
+          </Button>
+          <Modal
             title="Delete Comment"
             description="Are you sure you want to delete the comment?"
             submitLabel={isDeleting ? "deleting..." : "Delete"}
             isLoading={isDeleting}
             onSubmit={() => handleDeleteComment(comment?._id)}
             triggerButton={
-              <Button
-                label={isDeleting ? "Deleting..." : "Delete"}
-                className="w-full py-1.5 px-7 bg-red-600 border-none"
-              />
+              <Button className="w-full py-1.5 px-7 bg-red-600 border-none">
+                {isDeleting ? "Deleting..." : "Delete"}
+              </Button>
             }
             closeButton={
               <Button
-                label="Cancel"
                 className="w-full py-1.5 px-7 bg-red-600 border-none"
                 disabled={isDeleting}
-              />
+              >
+                Cancel
+              </Button>
             }
           />
         </DropdownMenu>

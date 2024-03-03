@@ -9,7 +9,7 @@ import {
   FaCopy,
   FaShare,
 } from "react-icons/fa";
-import Dialog from "./CoreUI/Dialog";
+import Modal from "./CoreUI/Modal";
 
 const ShareDialog = ({
   url,
@@ -50,7 +50,7 @@ const ShareDialog = ({
   };
 
   return (
-    <Dialog
+    <Modal
       title="Share"
       description="share your video"
       triggerButton={
@@ -101,7 +101,7 @@ const ShareDialog = ({
           </button>
         </div>
       </div>
-    </Dialog>
+    </Modal>
   );
 };
 

@@ -20,12 +20,11 @@ const ErrorDialog = ({
       <p className="font-bold md:text-3xl text-2xl text-black dark:text-white font-poppins -mt-5">
         {errorMessage}
       </p>
-      <Button
-        label={buttonLabel}
+      <Button 
         icon={icon}
         onClick={buttonOnClick}
         className="bg-zinc-600 text-white border-none px-7 py-2.5 rounded-md text-lg font-hedvig_letters"
-      />
+      >{buttonLabel}</Button>
     </div>
   );
 };

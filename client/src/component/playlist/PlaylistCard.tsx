@@ -41,7 +41,7 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
     <div className="group/item w-[210px] flex flex-col gap-1 max-md:w-full max-md:flex-row max-md:gap-4">
       <Link
         to={`/playlists/${playlist?._id}`}
-        className="relative h-[115px] w-full max-md:w-[45%] max-sm:min-h-[70px] max-sm:max-h-[10px] rounded-md max-md:rounded-lg overflow-hidden"
+        className="relative h-[115px] w-full max-md:w-[45%] max-sm:min-h-[60px] max-sm:max-h-[90px] rounded-md max-md:rounded-lg overflow-hidden"
       >
         {playlist?.playlistThumbnail ? (
           <img
@@ -79,16 +79,15 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
           </p>
         </div>
         <DropdownMenu
-          button={
+          triggerButton={
             <button className="p-3 text-lg rotate-90 rounded-full text-black dark:text-white hover:bg-slate-100 focus-within:bg-slate-100 dark:hover:bg-[#171717] focus-within:dark:bg-[#171717] focus-within:block hidden group-hover/item:block max-md:block">
               <IoIosMore />
             </button>
           }
         >
-          <Button
-            label="Edit"
+          <Button 
             className="w-full py-1.5 px-7 bg-blue-500 border-none"
-          />
+          >Edit</Button>
           <DeletePlaylistDialogButton
             isDeleting={isDeleting}
             onDelete={() => handleDeletePlaylist(playlist?._id)}

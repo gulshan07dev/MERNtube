@@ -74,7 +74,6 @@ const Home: React.FC = () => {
           {["desc", "acc"].map((type) => (
             <Button
               key={type}
-              label={type === "desc" ? "Newest" : "Oldest"}
               isLarge={false}
               onClick={() => handleSortTypeChange(type as "acc" | "desc")}
               className={twMerge(
@@ -84,7 +83,9 @@ const Home: React.FC = () => {
                   ? ["bg-black text-white dark:bg-white dark:text-black"]
                   : ["hover:bg-gray-300 dark:hover:bg-[#353535]"]
               )}
-            />
+            >
+              {type === "desc" ? "Newest" : "Oldest"}
+            </Button>
           ))}
         </div>
         <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">

@@ -13,7 +13,7 @@ import Button from "../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import { RootState } from "@/store/store";
 import Devider from "../Divider";
-import Dialog from "../CoreUI/Dialog";
+import Modal from "../CoreUI/Modal";
 import CommentBox from "../comment/CommentBox";
 import { twMerge } from "tailwind-merge";
 
@@ -80,18 +80,22 @@ const TweetCard = ({ data }: { data: Tweet }) => {
         {user?._id === data?.owner?._id && !isDeleted && (
           <DropdownMenu
             className="absolute top-3 right-3"
-            button={
-              <button className="p-3 text-lg rounded-full text-black dark:text-white hover:bg-slate-100 dark:hover:bg-[#171717] hidden focus-within:block group-hover:block max-md:block">
-                <IoIosMore />
-              </button>
+            triggerButton={
+              <Button
+                btnType="icon-btn"
+                className="hidden focus-within:block group-hover:block max-md:block"
+              >
+                <IoIosMore size={20} />
+              </Button>
             }
           >
             <Button
-              label="edit"
               className="w-full py-1.5 px-7 bg-blue-500 border-none"
               onClick={() => navigate(`/edit/tweet/${data?._id}`)}
-            />
-            <Dialog
+            >
+              edit
+            </Button>
+            <Modal
               title="Delete Tweet"
               description="Are you sure you want to delete the tweet?"
               submitLabel={isDeleting ? "deleting..." : "Delete"}
@@ -99,17 +103,19 @@ const TweetCard = ({ data }: { data: Tweet }) => {
               onSubmit={() => handleDeleteTweet(data?._id)}
               triggerButton={
                 <Button
-                  label={isDeleting ? "deleting..." : "delete"}
                   className="w-full py-1.5 px-7 bg-red-600 border-none"
                   disabled={isDeleting}
-                />
+                >
+                  {isDeleting ? "deleting..." : "delete"}
+                </Button>
               }
               closeButton={
                 <Button
-                  label="Cancel"
                   className="w-full py-1.5 px-7 bg-red-600 border-none"
                   disabled={isDeleting}
-                />
+                >
+                  Cancel
+                </Button>
               }
             />
           </DropdownMenu>

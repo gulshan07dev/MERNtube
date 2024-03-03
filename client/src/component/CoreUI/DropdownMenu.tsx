@@ -1,14 +1,14 @@
 import { ReactElement, ReactNode, useRef, useState } from "react";
 
-import useClickOutside from "@/hooks/useClickOutside ";
+import useClickOutside from "@/hooks/useClickOutside";
 import { twMerge } from "tailwind-merge";
 
 const DropdownMenu = ({
-  button,
+  triggerButton,
   className,
   children,
 }: {
-  button: ReactElement;
+  triggerButton: ReactElement;
   className?: string;
   children: ReactNode;
 }) => {
@@ -28,7 +28,7 @@ const DropdownMenu = ({
   return (
     <div className={twMerge("relative", className)} ref={dropdownRef}>
       <div onClick={handleToggle} className="cursor-pointer">
-        {button}
+        {triggerButton}
       </div>
       {isOpen && (
         <div

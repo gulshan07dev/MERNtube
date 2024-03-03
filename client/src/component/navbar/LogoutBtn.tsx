@@ -24,11 +24,12 @@ export default function LogoutBtn({ className = "" }: { className?: string }) {
   };
   return (
     <Button
-      label={isLoading ? "Logout..." : "Logout"}
       isLarge={false}
       onClick={handleLogout}
       disabled={isLoading}
       className={twMerge("bg-red-500 text-sm", className)}
-    />
+    >
+      {isLoading ? "Logout..." : "Logout"}
+    </Button>
   );
 }
