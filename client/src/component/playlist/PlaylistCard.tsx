@@ -47,9 +47,9 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
         to={`/playlists/${playlistDetails?._id}`}
         className="relative h-[115px] w-full max-md:w-[45%] max-sm:min-h-[60px] max-sm:max-h-[90px] rounded-md max-md:rounded-lg overflow-hidden"
       >
-        {playlistDetails?.playlistThumbnail ? (
+        {playlist?.playlistThumbnail ? (
           <img
-            src={playlistDetails?.playlistThumbnail?.url}
+            src={playlist?.playlistThumbnail?.url}
             alt="playlist-thumbnail"
             className="size-full"
           />
@@ -61,8 +61,8 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
           </div>
         )}
         <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-sm bg-gray-600 dark:bg-[#202020] text-white text-xs">
-          {playlistDetails?.videosCount}{" "}
-          {playlistDetails?.videosCount && playlistDetails?.videosCount > 1
+          {playlist?.videosCount}{" "}
+          {playlist?.videosCount && playlist?.videosCount > 1
             ? "videos"
             : "video"}
         </span>

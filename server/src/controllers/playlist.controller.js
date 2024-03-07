@@ -256,6 +256,117 @@ const getPlaylistById = asyncHandler(async (req, res) => {
     ));
 });
 
+// get user playlist videos
+const getUserPlaylistVideos = asyncHandler(async (req, res) => {
+    const { playlistId } = req.params;
+    let { page = 1, limit = 10, sortBy, sortType } = req.query;
+
+    // Validate page and limit
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    // Check if Invalid playlistId
+    if (!isValidObjectId(playlistId)) {
+        throw new ApiError(400, "Invalid playlistId");
+    }
+
+    // Check if playlist not exist
+    const playlist = await Playlist.findById(playlistId);
+    if (!playlist) {
+        throw new ApiError(404, "Playlist not found!");
+    }
+
+    const pipeline = [];
+
+    pipeline.push({
+        $match: {
+            _id: new Types.ObjectId(playlistId)
+        }
+    });
+
+    if (playlist?.owner?.toString() == req.user._id.toString()) {
+        pipeline.push({
+            $lookup: {
+                from: "videos",
+                localField: "videos",
+                foreignField: "_id",
+                as: "playlistVideo"
+            }
+        });
+    } else {
+        pipeline.push({
+            $lookup: {
+                from: "videos",
+                localField: "videos",
+                foreignField: "_id",
+                as: "playlistVideo",
+                pipeline: [
+                    {
+                        $match: {
+                            isPublished: true
+                        }
+                    }
+                ]
+            }
+        });
+    }
+
+    pipeline.push({
+        $unwind: "$playlistVideo"
+    });
+
+    pipeline.push({
+        $lookup: {
+            from: "users",
+            localField: "playlistVideo.owner",
+            foreignField: "_id",
+            as: "playlistVideo.owner",
+            pipeline: [
+                {
+                    $project: {
+                        fullName: 1,
+                        username: 1,
+                        avatar: 1
+                    }
+                }
+            ]
+        }
+    });
+
+    pipeline.push({
+        $addFields: {
+            "playlistVideo.owner": { $arrayElemAt: ["$playlistVideo.owner", 0] }
+        }
+    });
+
+    // Optionally, add sorting stage if sortBy and sortType are provided
+    if (sortBy && sortType) {
+        const sortStage = {};
+        sortStage[sortBy] = sortType === "asc" ? 1 : -1;
+        pipeline.push({ $sort: sortStage });
+    }
+    
+    pipeline.push({
+        $project: {
+            _id: 0,
+            playlistVideo: 1
+        }
+    })
+    const aggregate = Playlist.aggregate(pipeline);
+
+    Playlist.aggregatePaginate(aggregate, { page, limit })
+        .then(function (result) {
+            return res.status(200).json(new ApiResponse(
+                200,
+                { result },
+                "Fetched videos successfully"
+            ));
+        })
+        .catch(function (error) {
+            throw error;
+        });
+});
+
 // add video to playlist
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const { playlistId, videoId } = req.params;
@@ -405,6 +516,7 @@ export {
     createPlaylist,
     getUserPlaylists,
     getPlaylistById,
+    getUserPlaylistVideos,
     addVideoToPlaylist,
     removeVideoFromPlaylist,
     deletePlaylist,

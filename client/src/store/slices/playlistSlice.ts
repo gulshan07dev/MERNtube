@@ -2,19 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "@/helper/axiosInstance";
 import { User } from "./authSlice";
 
-interface QueryParams {
-  page?: number;
-  limit?: number;
-  videoId?: string;
-}
-
 export interface Playlist {
   _id: string;
   name: string;
   description: string;
   owner?: User;
   videosCount?: number;
-  totalViews?: number
+  totalViews?: number;
   isPrivate: boolean;
   playlistThumbnail: { key: string; url: string };
   isVideoAddedToPlaylist?: boolean;
@@ -51,7 +45,13 @@ const createPlaylist = createAsyncThunk(
 const getUserPlaylists = createAsyncThunk(
   "/playlists/get/user/userId",
   async (
-    { userId, queryParams }: { userId: string; queryParams: QueryParams },
+    {
+      userId,
+      queryParams,
+    }: {
+      userId: string;
+      queryParams: { page?: number; limit?: number; videoId?: string };
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -73,6 +73,37 @@ const getPlaylist = createAsyncThunk(
   async (playlistId: string, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(`/playlists/${playlistId}`);
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+const getUserPlaylistVideos = createAsyncThunk(
+  "/playlists/playlistId/videos",
+  async (
+    {
+      playlistId,
+      queryParams,
+    }: {
+      playlistId: string;
+      queryParams: {
+        page?: number;
+        limit?: number;
+        sortBy: string;
+        sortType: string;
+      };
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axiosInstance.get(`/playlists/${playlistId}/videos`, {
+        params: queryParams,
+      });
       return res?.data;
     } catch (error: any) {
       if (!error.response) {
@@ -186,6 +217,7 @@ export {
   createPlaylist,
   getUserPlaylists,
   getPlaylist,
+  getUserPlaylistVideos,
   addVideoToPlaylist,
   removeVideoFromPlaylist,
   deletePlaylist,
