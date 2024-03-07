@@ -9,12 +9,16 @@ import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import DeletePlaylistDialogButton from "./DeletePlaylistDialogButton";
+import UpdatePlaylistDialog from "./UpdatePlaylistDialog";
 
 export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
+  const [playlistDetails, setPlaylistDetails] = useState<Playlist>(playlist);
   const [
     isShowDeletePlaylistConfirmDialog,
     setIsShowDeletePlaylistConfirmDialog,
   ] = useState(false);
+  const [isShowUpdatePlaylistDialog, setIsShowUpdatePlaylistDialog] =
+    useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
 
   const { isLoading: isDeleting, handleAction: deletePlaylistAction } =
@@ -29,28 +33,23 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
     const { error, isSuccess } = await deletePlaylistAction(playlistId);
 
     if (!error && isSuccess) {
-      setIsShowDeletePlaylistConfirmDialog(false)
+      setIsShowDeletePlaylistConfirmDialog(false);
       setIsDeleted(true);
     }
   };
 
   if (isDeleted) {
-    return (
-      <p className="p-2 max-md:bg-slate-50 max-md:dark:bg-[#252525] max-md:w-full text-black dark:text-white">
-        This playlist has been deleted.
-      </p>
-    );
+    return null;
   }
-
   return (
     <div className="group/item w-[210px] flex flex-col gap-1 max-md:w-full max-md:flex-row max-md:gap-4">
       <Link
-        to={`/playlists/${playlist?._id}`}
+        to={`/playlists/${playlistDetails?._id}`}
         className="relative h-[115px] w-full max-md:w-[45%] max-sm:min-h-[60px] max-sm:max-h-[90px] rounded-md max-md:rounded-lg overflow-hidden"
       >
-        {playlist?.playlistThumbnail ? (
+        {playlistDetails?.playlistThumbnail ? (
           <img
-            src={playlist?.playlistThumbnail?.url}
+            src={playlistDetails?.playlistThumbnail?.url}
             alt="playlist-thumbnail"
             className="size-full"
           />
@@ -62,8 +61,8 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
           </div>
         )}
         <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-sm bg-gray-600 dark:bg-[#202020] text-white text-xs">
-          {playlist?.videosCount}{" "}
-          {playlist?.videosCount && playlist?.videosCount > 1
+          {playlistDetails?.videosCount}{" "}
+          {playlistDetails?.videosCount && playlistDetails?.videosCount > 1
             ? "videos"
             : "video"}
         </span>
@@ -71,10 +70,10 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
       <div className="flex flex-grow max-md:w-[50%]">
         <div className="flex-grow flex-col gap-1">
           <h1 className="text-[16px] line-clamp-2 font-roboto font-[500] text-gray-800 dark:text-[#f1f1f1]">
-            {playlist?.name}
+            {playlistDetails?.name}
           </h1>
           <p className="text-sm max-sm:text-xs text-zinc-700 dark:text-slate-300 md:leading-6 leading-8 font-roboto">
-            {playlist?.isPrivate ? (
+            {playlistDetails?.isPrivate ? (
               <span className="flex items-center gap-x-1 px-1.5 py-0 max-sm:py-1 rounded-sm bg-slate-200 dark:bg-[#282828] w-fit">
                 private <MdLock />
               </span>
@@ -92,7 +91,10 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
             </button>
           }
         >
-          <Button className="w-full py-1.5 px-7 bg-blue-500 border-none">
+          <Button
+            className="w-full py-1.5 px-7 bg-blue-500 border-none"
+            onClick={() => setIsShowUpdatePlaylistDialog((prev) => !prev)}
+          >
             Edit
           </Button>
           <Button
@@ -110,7 +112,20 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
           open={isShowDeletePlaylistConfirmDialog}
           handleClose={() => setIsShowDeletePlaylistConfirmDialog(false)}
           isDeleting={isDeleting}
-          onDelete={() => handleDeletePlaylist(playlist?._id)}
+          onDelete={() => handleDeletePlaylist(playlistDetails?._id)}
+        />
+        <UpdatePlaylistDialog
+          open={isShowUpdatePlaylistDialog}
+          handleClose={() => setIsShowUpdatePlaylistDialog(false)}
+          playlistId={playlistDetails?._id}
+          playlistDetails={{
+            name: playlistDetails?.name,
+            description: playlistDetails?.description,
+            isPrivate: playlistDetails?.isPrivate,
+          }}
+          onUpdate={(updatedPlaylist: Playlist) =>
+            setPlaylistDetails(updatedPlaylist)
+          }
         />
       </div>
     </div>

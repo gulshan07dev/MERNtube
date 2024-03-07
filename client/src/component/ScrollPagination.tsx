@@ -92,7 +92,7 @@ const ScrollPagination = ({
             !loading && (
               <Button
                 onClick={loadNextPage}
-                className="mt-2 bg-slate-50 dark:bg-[#171717] rounded-full text-sm font-hedvig_letters border-slate-300 dark:border-[#202020] text-black dark:text-white"
+                className="mt-2 bg-slate-200 dark:bg-[#171717] rounded-full text-sm font-hedvig_letters border-slate-300 dark:border-[#202020] text-black dark:text-white"
               >
                 "Load More"
               </Button>

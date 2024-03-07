@@ -16,6 +16,7 @@ import ErrorDialog from "@/component/error/ErrorDialog";
 import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import Button from "@/component/CoreUI/Button";
 import DeletePlaylistDialogButton from "@/component/playlist/DeletePlaylistDialogButton";
+import UpdatePlaylistDialog from "@/component/playlist/UpdatePlaylistDialog";
 
 export default function PlaylistVideos() {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ export default function PlaylistVideos() {
     isShowDeletePlaylistConfirmDialog,
     setIsShowDeletePlaylistConfirmDialog,
   ] = useState(false);
+  const [isShowUpdatePlaylistDialog, setIsShowUpdatePlaylistDialog] =
+    useState(false);
   const { playlist } = useSelector((state: RootState) => state?.playlist);
 
   const { isLoading: isDeleting, handleAction: deletePlaylistAction } =
@@ -53,8 +56,8 @@ export default function PlaylistVideos() {
 
   useEffect(() => {
     fetchPlaylist();
-    console.log(playlist);
   }, [playlistId]);
+
   return (
     <Layout className="w-full flex max-lg:flex-col max-lg:gap-7 lg:h-full lg:overflow-y-scroll gap-3 py-5">
       {/* playlist details */}
@@ -131,7 +134,12 @@ export default function PlaylistVideos() {
                     </button>
                   }
                 >
-                  <Button className="w-full py-1.5 px-7 bg-blue-500 border-none">
+                  <Button
+                    className="w-full py-1.5 px-7 bg-blue-500 border-none"
+                    onClick={() =>
+                      setIsShowUpdatePlaylistDialog((prev) => !prev)
+                    }
+                  >
                     Edit
                   </Button>
                   <Button
@@ -152,6 +160,17 @@ export default function PlaylistVideos() {
                   }
                   isDeleting={isDeleting}
                   onDelete={() => handleDeletePlaylist()}
+                />
+                <UpdatePlaylistDialog
+                  open={isShowUpdatePlaylistDialog}
+                  handleClose={() => setIsShowUpdatePlaylistDialog(false)}
+                  playlistId={playlist?._id || ""}
+                  playlistDetails={{
+                    name: playlist?.name || "",
+                    description: playlist?.description || "",
+                    isPrivate: playlist?.isPrivate || false,
+                  }}
+                  onUpdate={() => fetchPlaylist()}
                 />
               </div>
               <p className="text-sm -mt-1 font-nunito_sans">

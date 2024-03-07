@@ -112,6 +112,9 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
             },
         },
         {
+            $sort: {createdAt: -1}
+        },
+        {
             $addFields: {
                 playlistThumbnail: {
                     $cond: {
@@ -158,6 +161,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
         });
 });
 
+// get playlist by id
 const getPlaylistById = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
 
@@ -251,8 +255,6 @@ const getPlaylistById = asyncHandler(async (req, res) => {
         "Playlist fetched successfully"
     ));
 });
-
-
 
 // add video to playlist
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
@@ -362,7 +364,7 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 // update playlist by playlistId
 const updatePlaylist = asyncHandler(async (req, res) => {
     const { playlistId } = req.params
-    const { name, description } = req.body
+    const { name, description, isPrivate } = req.body
 
     // check if Invalid playlistId
     if (!isValidObjectId(playlistId)) {
@@ -370,8 +372,8 @@ const updatePlaylist = asyncHandler(async (req, res) => {
     }
 
     // check if any field is empty
-    if (!name || !description) {
-        throw new ApiError(400, "All fields are required!");
+    if (!name) {
+        throw new ApiError(400, "Name fields is required!");
     }
 
     // check if playlist not exist
@@ -383,9 +385,10 @@ const updatePlaylist = asyncHandler(async (req, res) => {
     const updatedPlaylist = await Playlist.findByIdAndUpdate(playlistId, {
         $set: {
             name,
-            description
+            description,
+            isPrivate
         }
-    })
+    }, { new: true })
 
     if (!updatedPlaylist) {
         throw new ApiError(500, "Something went wrong while updating playlist!");
@@ -393,7 +396,7 @@ const updatePlaylist = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(
         200,
-        {},
+        { playlist: updatedPlaylist },
         "Playlist updated successfully"
     ))
 })

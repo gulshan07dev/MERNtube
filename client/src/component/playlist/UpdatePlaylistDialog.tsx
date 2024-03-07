@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 import Modal from "../CoreUI/Modal";
@@ -6,54 +7,65 @@ import TextAreaInput from "../CoreUI/TextAreaInput";
 import CheckBox from "../CoreUI/CheckBox";
 import useForm from "@/hooks/useForm";
 import useActionHandler from "@/hooks/useActionHandler";
-import { createPlaylist } from "@/store/slices/playlistSlice";
+import { updatePlaylist } from "@/store/slices/playlistSlice";
 
-interface CreatePlaylistDialogProps {
+interface UpdatePlaylistDialogProps {
   open: boolean;
   handleClose: () => void;
-  onCreate: (createdPlaylist: any) => void;
+  playlistId: string;
+  playlistDetails: { name: string; description: string; isPrivate: boolean };
+  onUpdate: (updatedPlaylist: any) => void;
 }
 
-export default function CreatePlaylistDialog({
+export default function UpdatePlaylistDialog({
   open,
   handleClose,
-  onCreate,
-}: CreatePlaylistDialogProps) {
-  const playlistDetails = {
-    name: "",
-    description: "",
-    isPrivate: false,
-  };
-
+  playlistId,
+  playlistDetails,
+  onUpdate,
+}: UpdatePlaylistDialogProps) {
   const { formData, handleInputChange, resetForm } = useForm({
     initialFormState: playlistDetails,
   });
 
   const { isLoading, error, handleAction } = useActionHandler({
-    action: createPlaylist,
+    action: updatePlaylist,
     isShowToastMessage: true,
-    toastMessages: { loadingMessage: "Creating playlist..." },
+    toastMessages: { loadingMessage: "Updating playlist..." },
   });
 
   const handleSubmitForm = async () => {
     if (!formData.name) {
       return toast.error("Name is required!");
     }
-    const { isSuccess, resData } = await handleAction(formData);
+    const { isSuccess, resData } = await handleAction({
+      playlistId,
+      data: formData,
+    });
+
     if (isSuccess && !error) {
-      resetForm();
       handleClose();
-      onCreate(resData.playlist);
+      onUpdate(resData.playlist);
     }
   };
+
+  useEffect(() => {
+    resetForm();
+  }, [playlistDetails]);
+
   return (
     <Modal
       open={open}
       handleClose={handleClose}
-      title="Create Playlist"
-      description="create your playlist by providing name and description"
-      submitLabel={isLoading ? "loading..." : "Create Playlist"}
+      title="Update Playlist"
+      description="update your playlist by providing name and description"
+      submitLabel={isLoading ? "loading..." : "Update Playlist"}
       onSubmit={handleSubmitForm}
+      isSubmitButtonDisabled={
+        playlistDetails?.name === formData?.name &&
+        playlistDetails?.description === formData?.description &&
+        playlistDetails.isPrivate === formData?.isPrivate
+      }
       isLoading={isLoading}
       className="flex flex-col gap-4"
     >

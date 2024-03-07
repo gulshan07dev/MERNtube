@@ -17,7 +17,7 @@ export default function Playlists() {
   const { user, channel } = useSelector((state: RootState) => state?.auth);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [currPage, setCurrPage] = useState(1);
-  const limit = 15;
+  const limit = 5;
   const [totalPages, setTotalPages] = useState(0);
   const [totalDocs, setTotalDocs] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
@@ -80,7 +80,7 @@ export default function Playlists() {
           No more playlists to show !!!
         </p>
       }
-      className={twMerge("min-h-[55vh]", error && "min-h-full pt-10")}
+      className={twMerge("min-h-[55vh] pb-20", error && "min-h-full pt-10")}
     >
       <div className="flex justify-between max-md:pb-3 px-3">
         <h2 className="max-md:self-center md:text-lg text-base font-semibold text-zinc-800 dark:text-slate-200 font-Noto_sans">
@@ -100,6 +100,9 @@ export default function Playlists() {
             <CreatePlaylistDialog
               open={isShowCreatePlaylistDialog}
               handleClose={() => setIsShowCreatePlaylistDialog(false)}
+              onCreate={(createdPlaylist) =>
+                setPlaylists((prev) => [createdPlaylist, ...prev])
+              }
             />
           </>
         )}

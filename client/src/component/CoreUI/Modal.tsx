@@ -14,6 +14,7 @@ interface ModalProps {
   children?: React.ReactNode;
   submitLabel?: string;
   onSubmit?: () => void;
+  isSubmitButtonDisabled?: boolean
   isLoading?: boolean;
   className?: string;
   closeButton?: React.ReactElement;
@@ -28,6 +29,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
   submitLabel,
   onSubmit,
+  isSubmitButtonDisabled,
   isLoading,
   className = "",
   closeButton,
@@ -88,7 +90,7 @@ const Modal: React.FC<ModalProps> = ({
                 {submitLabel && onSubmit && (
                   <Button
                     onClick={onSubmit}
-                    disabled={isLoading}
+                    disabled={isLoading || isSubmitButtonDisabled}
                     isGradientBg={true}
                     className="border-none dark:text-white"
                   >
