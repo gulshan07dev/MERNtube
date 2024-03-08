@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { abbreviateNumber } from "js-abbreviation-number";
-import TimeAgo from "react-timeago";
 import { FaPencilAlt } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
@@ -24,6 +23,8 @@ import DeletePlaylistDialogButton from "@/component/playlist/DeletePlaylistDialo
 import UpdatePlaylistDialog from "@/component/playlist/UpdatePlaylistDialog";
 import ScrollPagination from "@/component/ScrollPagination";
 import { Video } from "@/store/slices/videoSlice";
+import PlaylistVideoCard from "@/component/playlist/playlistVideo/PlaylistVideoCard";
+import PlaylistVideoSkeleton from "@/component/playlist/playlistVideo/PlaylistVideoSkeleton";
 
 export default function PlaylistVideos() {
   const navigate = useNavigate();
@@ -116,11 +117,11 @@ export default function PlaylistVideos() {
         <>
           {/* Playlist Details */}
           {isFetchingPlaylist ? (
-            <Skeleton className="lg:w-[30%] w-full lg:h-[85vh] h-[500px] lg:sticky lg:top-0 rounded-lg" />
+            <Skeleton className="lg:w-[30%] w-full lg:h-[85vh] h-[250px] lg:sticky lg:top-0 rounded-lg" />
           ) : (
             <div
               className={twMerge(
-                "lg:w-[30%] w-full lg:h-[85vh] flex lg:flex-col md:flex-row md:gap-5 lg:justify-start md:justify-center flex-col gap-y-4 p-5 lg:top-5 lg:sticky lg:overflow-y-scroll rounded-lg",
+                "lg:w-[30%] w-full lg:h-[85vh] flex lg:flex-col md:flex-row md:gap-5 lg:justify-start md:justify-center flex-col gap-y-0 p-5 lg:top-5 lg:sticky lg:overflow-y-scroll rounded-lg max-md:rounded-none",
                 !playlist?.playlistThumbnail
                   ? "bg-none"
                   : [
@@ -130,11 +131,11 @@ export default function PlaylistVideos() {
             >
               {/* Thumbnail */}
               {playlist?.playlistThumbnail && (
-                <div className="lg:w-full md:w-[40%] w-full rounded-xl overflow-hidden">
+                <div className="lg:w-full md:w-[40%] w-[80%] mx-auto rounded-xl overflow-hidden">
                   <img
                     src={playlist?.playlistThumbnail?.url}
                     alt="playlistThumbnail"
-                    className="w-full max-md:w-[50%] max-sm:w-full mx-auto"
+                    className="w-full max-md:w-[50%] max-sm:size-[175px] max-sm:rounded-full mx-auto"
                   />
                 </div>
               )}
@@ -148,17 +149,20 @@ export default function PlaylistVideos() {
               >
                 {/* Playlist Name */}
                 <div className="w-full flex gap-2 justify-between">
-                  <h1 className="md:text-[28px] text-2xl leading-10 font-semibold capitalize  ">
+                  <h1 className="md:text-[28px] text-xl leading-10 font-semibold capitalize  ">
                     {playlist?.name}
                   </h1>
-                  <button className="size-10 grid place-items-center rounded-full text-sm text-white bg-black">
+                  <button
+                    className="size-10 grid place-items-center rounded-full text-sm text-white bg-black"
+                    onClick={() => setIsShowUpdateDialog((prev) => !prev)}
+                  >
                     <FaPencilAlt />
                   </button>
                 </div>
                 {/* Playlist Metadata */}
                 <div className="flex">
-                  <div className="flex flex-grow flex-col gap-3">
-                    <p className="text-base font-[600]">
+                  <div className="flex flex-grow flex-col md:gap-3 gap-1">
+                    <p className="md:text-base text-[14.5px] md:font-[600]">
                       {playlist?.owner?.fullName}
                     </p>
                     <p className="text-xs">
@@ -180,9 +184,12 @@ export default function PlaylistVideos() {
                   {/* Dropdown Menu */}
                   <DropdownMenu
                     triggerButton={
-                      <button className="size-10 grid place-items-center rounded-full text-black dark:text-white bg-slate-200 hover:bg-slate-300 dark:bg-[#222222] dark:hover:bg-[#474747]">
+                      <Button
+                        btnType="icon-btn"
+                        className="bg-white dark:bg-dark_bg text-lg"
+                      >
                         <IoIosMore />
-                      </button>
+                      </Button>
                     }
                   >
                     {/* Edit Button */}
@@ -247,7 +254,7 @@ export default function PlaylistVideos() {
                 No more playlists to show !!!
               </p>
             }
-            className="lg:w-[70%] w-full flex flex-col gap-2 px-1 pb-10"
+            className="lg:w-[70%] w-full min-h-full flex flex-col gap-2 px-1 pb-10"
           >
             {!playlistVideos?.length &&
             totalVideos === 0 &&
@@ -261,50 +268,18 @@ export default function PlaylistVideos() {
               />
             ) : (
               playlistVideos?.map(({ playlistVideo: video }, idx) => (
-                <Link
-                  to={`/watch/${video?._id}`}
+                <PlaylistVideoCard
                   key={video?._id}
-                  className="w-full flex gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-200 dark:hover:bg-[#202020]"
-                >
-                  <span className="self-center text-zinc-700 dark:text-slate-50 text-sm">
-                    {idx + 1}
-                  </span>
-                  <img
-                    src={video?.thumbnail?.url}
-                    alt="thumbnail"
-                    className="w-[160px] h-[90px] rounded-lg"
-                  />
-                  <div className="flex flex-col gap-1 flex-grow h-full">
-                    <h1 className="text-base max-sm:text-sm max-sm:leading-tight text-black line-clamp-2 dark:text-white font-roboto">
-                      {video?.title}
-                    </h1>
-                    <div className="text-sm max-md:text-xs text-[#606060] dark:text-[#AAAAAA] font-roboto">
-                      <p className="line-clamp-1">{video?.owner?.fullName}</p>
-                      <p className="line-clamp-1">
-                        {`${abbreviateNumber(video?.views, 1)} views · `}
-                        <TimeAgo date={video?.createdAt} />
-                      </p>
-                    </div>
-                  </div>
-                </Link>
+                  video={video}
+                  playlistId={playlistId || ""}
+                  idx={idx}
+                />
               ))
             )}
             {(isFetchingVideos || isFetchingPlaylist) &&
               currentPage == 1 &&
               Array.from({ length: 10 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="w-full flex gap-3 p-3 rounded-lg"
-                >
-                  <Skeleton className="w-[160px] h-[90px] rounded-lg" />
-                  <div className="flex flex-col gap-3 flex-grow h-full">
-                    <Skeleton className="lg:w-[80%] w-[95%] h-5" />
-                    <div className="flex flex-col gap-3">
-                      <Skeleton className="h-4 w-[40%]" />
-                      <Skeleton className="h-3 w-[30%]" />
-                    </div>
-                  </div>
-                </div>
+                <PlaylistVideoSkeleton key={idx} />
               ))}
           </ScrollPagination>
         </>
