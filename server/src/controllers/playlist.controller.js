@@ -345,7 +345,7 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
         sortStage[sortBy] = sortType === "asc" ? 1 : -1;
         pipeline.push({ $sort: sortStage });
     }
-    
+
     pipeline.push({
         $project: {
             _id: 0,
