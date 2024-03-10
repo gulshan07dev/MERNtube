@@ -87,7 +87,7 @@ export default function UpdatePlaylistDialog({
           label="Description"
           rows={5}
           value={formData?.description}
-          maxTextSize={150}
+          maxTextSize={250}
           onChange={(e) => handleInputChange("description", e.target.value)}
         />
         <CheckBox

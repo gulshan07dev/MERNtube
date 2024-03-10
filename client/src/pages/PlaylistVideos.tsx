@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { abbreviateNumber } from "js-abbreviation-number";
-import { FaPencilAlt } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 
@@ -25,6 +24,7 @@ import ScrollPagination from "@/component/ScrollPagination";
 import { Video } from "@/store/slices/videoSlice";
 import PlaylistVideoCard from "@/component/playlist/playlistVideo/PlaylistVideoCard";
 import PlaylistVideoSkeleton from "@/component/playlist/playlistVideo/PlaylistVideoSkeleton";
+import TextWithToggle from "@/component/CoreUI/TextWithToggle";
 
 export default function PlaylistVideos() {
   const navigate = useNavigate();
@@ -148,17 +148,9 @@ export default function PlaylistVideos() {
                 )}
               >
                 {/* Playlist Name */}
-                <div className="w-full flex gap-2 justify-between">
-                  <h1 className="md:text-[28px] text-xl leading-10 font-semibold capitalize  ">
-                    {playlist?.name}
-                  </h1>
-                  <button
-                    className="size-10 grid place-items-center rounded-full text-sm text-white bg-black"
-                    onClick={() => setIsShowUpdateDialog((prev) => !prev)}
-                  >
-                    <FaPencilAlt />
-                  </button>
-                </div>
+                <h1 className="md:text-[28px] text-xl leading-10 font-semibold capitalize  ">
+                  {playlist?.name}
+                </h1>
                 {/* Playlist Metadata */}
                 <div className="flex">
                   <div className="flex flex-grow flex-col md:gap-3 gap-1">
@@ -230,9 +222,12 @@ export default function PlaylistVideos() {
                   />
                 </div>
                 {/* Description */}
-                <p className="text-sm -mt-1 font-nunito_sans">
+                <TextWithToggle
+                  initialShowLine={2}
+                  className="text-sm -mt-1 font-nunito_sans"
+                >
                   {playlist?.description || "No Description"}
-                </p>
+                </TextWithToggle>
               </div>
             </div>
           )}

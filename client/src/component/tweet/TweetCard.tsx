@@ -16,6 +16,7 @@ import Devider from "../Divider";
 import Modal from "../CoreUI/Modal";
 import CommentBox from "../comment/CommentBox";
 import { twMerge } from "tailwind-merge";
+import TextWithToggle from "../CoreUI/TextWithToggle";
 
 const TweetCard = ({ data }: { data: Tweet }) => {
   const navigate = useNavigate();
@@ -129,9 +130,9 @@ const TweetCard = ({ data }: { data: Tweet }) => {
 
       {/* Content */}
       <div className="bg-gray-100 dark:bg-[#121212] p-3 rounded-lg mb-3">
-        <p className="text-lg text-gray-800 dark:text-slate-100 font-poppins font-medium">
+        <TextWithToggle initialShowLine={2} className="text-lg text-gray-800 dark:text-slate-100 font-poppins font-medium">
           {data?.content}
-        </p>
+        </TextWithToggle>
       </div>
 
       {/* Bottom Section */}

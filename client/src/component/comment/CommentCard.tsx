@@ -18,6 +18,7 @@ import Button from "../CoreUI/Button";
 import EditableTextarea from "../CoreUI/EditableTextarea";
 import Modal from "../CoreUI/Modal";
 import { FiMoreVertical } from "react-icons/fi";
+import TextWithToggle from "../CoreUI/TextWithToggle";
 
 interface CommentCardProps {
   comment: Comment;
@@ -122,9 +123,9 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
                 <TimeAgo date={comment?.createdAt} />
               </p>
             </div>
-            <p className="text-sm text-gray-800 dark:text-slate-50 font-roboto whitespace-break-spaces break-all">
+            <TextWithToggle initialShowLine={2} className="text-sm text-gray-800 dark:text-slate-50 font-roboto whitespace-break-spaces break-all">
               {commentContent}
-            </p>
+            </TextWithToggle>
             <LikeBtn
               contentId={comment._id}
               isLiked={comment.isLiked}
