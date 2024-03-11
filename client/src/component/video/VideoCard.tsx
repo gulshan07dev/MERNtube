@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { abbreviateNumber } from "js-abbreviation-number";
 import TimeAgo from "react-timeago";
 import { AiOutlineClockCircle } from "react-icons/ai";
@@ -15,6 +15,7 @@ import ShareDialog from "../ShareDialog";
 import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 
 const VideoCard = ({ data }: { data: Video }) => {
+  const navigate = useNavigate()
   const [isShowAddVideoToPlaylistDialog, setIsShowAddVideoToPlaylistDialog] =
     useState(false);
   const [isShowShareDialog, setIsShowShareDialog] = useState(false);
@@ -34,6 +35,7 @@ const VideoCard = ({ data }: { data: Video }) => {
             <Avatar
               fullName={data?.owner?.fullName}
               url={data?.owner?.avatar?.url}
+              onClick={() => navigate(`/c/${data?.owner?.username}`)}
               className="h-8 w-8"
             />
             <div className="flex flex-col gap-[1px]">
@@ -51,8 +53,8 @@ const VideoCard = ({ data }: { data: Video }) => {
           </div>
           <DropdownMenu
             triggerButton={
-              <Button btnType="icon-btn">
-                <FiMoreVertical size={30} />
+              <Button btnType="icon-btn" className="hidden group-hover/item:block max-md:block">
+                <FiMoreVertical size={15} />
               </Button>
             }
           >

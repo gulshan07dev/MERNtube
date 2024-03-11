@@ -121,7 +121,7 @@ export default function PlaylistVideos() {
           ) : (
             <div
               className={twMerge(
-                "lg:w-[30%] w-full lg:h-[85vh] flex lg:flex-col md:flex-row md:gap-5 lg:justify-start md:justify-center flex-col gap-y-0 p-5 lg:top-5 lg:sticky lg:overflow-y-scroll rounded-lg max-md:rounded-none",
+                "lg:w-[30%] w-full lg:h-[85vh] flex lg:flex-col md:flex-row md:gap-5 lg:justify-start md:justify-center flex-col gap-y-1 p-5 lg:top-5 lg:sticky lg:overflow-y-scroll rounded-lg max-md:rounded-none",
                 !playlist?.playlistThumbnail
                   ? "bg-none"
                   : [
@@ -135,14 +135,14 @@ export default function PlaylistVideos() {
                   <img
                     src={playlist?.playlistThumbnail?.url}
                     alt="playlistThumbnail"
-                    className="w-full max-md:w-[50%] max-sm:size-[175px] max-sm:rounded-full mx-auto"
+                    className="w-full max-md:w-[50%] max-sm:w-full max-sm:h-[150px] max-sm:rounded-2xl mx-auto"
                   />
                 </div>
               )}
               {/* Playlist Info */}
               <div
                 className={twMerge(
-                  "lg:w-full md:w-[50%] w-full flex flex-col gap-4",
+                  "lg:w-full md:w-[50%] w-full flex flex-col gap-4 max-sm:gap-2",
                   " text-white dark:text-[#F1F1F1] font-roboto",
                   !playlist?.playlistThumbnail && ["text-[#0F0F0F] md:px-4"]
                 )}
@@ -224,7 +224,7 @@ export default function PlaylistVideos() {
                 {/* Description */}
                 <TextWithToggle
                   initialShowLine={2}
-                  className="text-sm -mt-1 font-nunito_sans"
+                  className="text-sm font-nunito_sans"
                 >
                   {playlist?.description || "No Description"}
                 </TextWithToggle>
