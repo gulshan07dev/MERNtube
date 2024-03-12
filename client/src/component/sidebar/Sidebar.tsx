@@ -11,8 +11,9 @@ import { CiSettings } from "react-icons/ci";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { MdCloudUpload } from "react-icons/md";
 
+import "./sidebar.css"
 import { RootState } from "@/store/store";
-import { onClose } from "@/store/slices/sidebarSlice";
+import { onToggle } from "@/store/slices/sidebarSlice";
 import { sidebarWidth } from "@/constant";
 import MenuLink from "./MenuLink";
 import Divider from "../Divider";
@@ -23,7 +24,9 @@ import Avatar from "../CoreUI/Avatar";
 const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
   const dispatch = useDispatch();
   const { user, isLoggedIn } = useSelector((state: RootState) => state?.auth);
-  const { isOpen } = useSelector((state: RootState) => state.sidebar);
+  const { isOpen, isOpenInMobile } = useSelector(
+    (state: RootState) => state.sidebar
+  );
 
   const menuItems = useMemo(
     () => [
@@ -120,22 +123,35 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
       <aside
         id="sidebar"
         className={twMerge(
-          "h-full bg-white dark:bg-dark_bg top-0 z-50 overflow-y-scroll thin-scrollbar max-md:fixed transition-[left] duration-500 delay-0",
-          isOpen ? "left-0" : isHidden ? "left-[-100%]" : "max-md:left-[-100%]",
-          isHidden ? ["fixed"] : ["md:sticky md:left-0"]
+          "h-full bg-white dark:bg-dark_bg max-md:fixed top-0 z-50 overflow-y-scroll thin-scrollbar transition-[left] duration-500 delay-0",
+          isOpen
+            ? "max-lg:left-0 lg:fixed"
+            : isHidden
+            ? "left-[-100%]"
+            : "max-lg:sticky",
+          isOpenInMobile
+            ? ["max-lg:left-0 max-lg:fixed"]
+            : ["max-md:left-[-100%] max-lg:sticky"],
+          isHidden ? ["fixed"] : ["lg:sticky left-0"]
         )}
-        style={{ width: sidebarWidth }}
+        style={{ width: isOpen ? isOpenInMobile ? "auto" : sidebarWidth : "auto" }}
         role="navigation"
       >
         <div
-          className={`px-2 pb-2 flex flex-col gap-2 ${
-            !isHidden && !isOpen ? "pt-4" : ""
-          }`}
+          className={twMerge(
+            "px-2 pb-2 flex flex-col gap-2",
+            !isOpen && ["lg:gap-5 pr-5"],
+            !isOpenInMobile && [
+              "max-lg:gap-5 max-md:gap-2 max-lg:pr-5 max-md:px-2",
+            ]
+          )}
         >
           <div
-            className={`sticky top-0 mb-2 px-2 bg-white dark:bg-dark_bg items-center ${
-              isHidden ? "flex" : "md:hidden flex"
-            }`}
+            className={twMerge(
+              "sticky top-0 px-2 bg-white dark:bg-dark_bg items-center flex max-lg:hidden",
+              isHidden ? "flex" : "lg:hidden flex",
+              isOpenInMobile && "max-lg:flex"
+            )}
           >
             <SidebarToggleBtn />
             <Logo />
@@ -144,9 +160,11 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
           {/* Menu Items */}
           <div
             className={twMerge(
-              "md:px-2 md:pb-2 flex md:flex-col md:gap-2",
+              "md:pb-2 flex md:flex-col max-lg:gap-2 lg:gap-2 pt-2",
               "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white dark:max-md:bg-dark_bg max-md:border dark:max-md:border-[#121212] max-md:items-center max-md:transition-all",
-              isOpen && "max-md:-bottom-[60px]"
+              isOpen && ["md:gap-5"],
+              !isOpen && ["lg:gap-5"],
+              isOpenInMobile && ["max-md:-bottom-[60px]"]
             )}
           >
             {menuItems.map(
@@ -155,6 +173,11 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
                   <MenuLink
                     key={menuItem.slug}
                     {...menuItem}
+                    isLabelHiddenClassName={twMerge(
+                      "max-lg:hidden",
+                      !isOpen && "lg:hidden",
+                      isOpenInMobile && "max-lg:block"
+                    )}
                     className="max-md:flex-col max-md:justify-center max-md:items-center
                     max-md:gap-1 max-md:w-[20vw] max-md:text-xs"
                   />
@@ -166,18 +189,42 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
           {/* User Menu */}
           {userMenu.map(
             (menuItem) =>
-              menuItem.active && <MenuLink key={menuItem.slug} {...menuItem} />
+              menuItem.active && (
+                <MenuLink
+                  key={menuItem.slug}
+                  {...menuItem}
+                  isLabelHiddenClassName={twMerge(
+                    "max-lg:hidden",
+                    !isOpen && "lg:hidden",
+                    isOpenInMobile && "max-lg:block"
+                  )}
+                />
+              )
           )}
           <Divider />
 
           {/* Miscellaneous Menu */}
           {miscellaneousMenu.map(
             (menuItem) =>
-              menuItem.active && <MenuLink key={menuItem.slug} {...menuItem} />
+              menuItem.active && (
+                <MenuLink
+                  key={menuItem.slug}
+                  {...menuItem}
+                  isLabelHiddenClassName={twMerge(
+                    "max-lg:hidden",
+                    !isOpen && "lg:hidden",
+                    isOpenInMobile && "max-lg:block"
+                  )}
+                />
+              )
           )}
           <Divider />
 
-          <div className="px-3 pb-3">
+          <div
+            className={`px-3 pb-3 max-md:block ${!isOpen ? "md:hidden" : ""} ${
+              !isOpenInMobile ? "max-lg:hidden" : ""
+            }`}
+          >
             <p className="text-sm font-hedvig_letters text-gray-700 dark:text-white leading-none">
               Made With <span className="text-lg text-red-600">❤</span>
               <br /> <span className="pl-3 font-Noto_sans">By Gulshan</span>
@@ -192,10 +239,15 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
           isOpen && isHidden
             ? ["bg-gray-300 opacity-50"]
             : isOpen
-            ? ["max-md:bg-white max-md:opacity-30 md:hidden"]
+            ? ["bg-white opacity-30 lg:hidden"]
+            : "hidden",
+          isOpenInMobile && isHidden
+            ? ["bg-gray-300 opacity-50"]
+            : isOpenInMobile
+            ? ["bg-white opacity-30 lg:hidden block"]
             : "hidden"
         )}
-        onClick={() => dispatch(onClose())}
+        onClick={() => dispatch(onToggle())}
       ></div>
     </>
   );

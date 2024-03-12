@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface SidebarState {
   isOpen: boolean;
+  isOpenInMobile: boolean;
 }
 
 const initialState: SidebarState = {
-  isOpen: false,
+  isOpen: true,
+  isOpenInMobile: false,
 };
 
 const sidebarSlice = createSlice({
@@ -14,9 +16,11 @@ const sidebarSlice = createSlice({
   reducers: {
     onClose: (state) => {
       state.isOpen = false;
+      state.isOpenInMobile = false;
     },
     onToggle: (state) => {
       state.isOpen = !state.isOpen;
+      state.isOpenInMobile = !state.isOpenInMobile;
     },
   },
 });

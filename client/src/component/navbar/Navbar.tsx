@@ -13,11 +13,7 @@ import SidebarToggleBtn from "./SidebarToggleBtn";
 import type { RootState } from "@/store/store";
 import Skeleton from "../Skeleton";
 
-const Navbar = ({
-  showSidebarToggleBtn,
-}: {
-  showSidebarToggleBtn: boolean;
-}) => {
+const Navbar = () => {
   const navigate = useNavigate();
   const { user: appLoading } = useSelector(
     (state: RootState) => state.appLoading
@@ -26,16 +22,14 @@ const Navbar = ({
 
   return (
     <nav
-      className={`w-full bg-white dark:bg-dark_bg flex justify-between items-center md:px-7 px-3`}
+      className={`w-full bg-white dark:bg-dark_bg flex justify-between items-center md:px-7 md:pl-4 px-3`}
       style={{ height: navHeight }}
       role="navigation"
       aria-label="Primary Navigation"
     >
       {/* Left Section */}
       <div className="flex items-center">
-        <SidebarToggleBtn
-          className={showSidebarToggleBtn ? "md:block" : "md:hidden"}
-        />
+        <SidebarToggleBtn />
         <Logo />
       </div>
 
@@ -111,19 +105,23 @@ const Navbar = ({
           </div>
         ) : (
           <div className="flex gap-2 items-center">
-            <Button 
+            <Button
               type="button"
               isLarge={false}
               isGradientBg={true}
               className="h-8 w-16 rounded-md"
               onClick={() => navigate("/auth/login")}
-            >Login</Button>
-            <Button 
+            >
+              Login
+            </Button>
+            <Button
               type="button"
               isLarge={false}
               className="h-10 w-16 rounded-md bg-slate-50 dark:bg-[#202020] text-violet-600 dark:text-white border-slate-300  dark:border-gray-600"
               onClick={() => navigate("/auth/signup")}
-            >Signup</Button>
+            >
+              Signup
+            </Button>
           </div>
         )}
       </div>
