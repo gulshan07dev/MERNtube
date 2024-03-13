@@ -11,7 +11,7 @@ import { CiSettings } from "react-icons/ci";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { MdCloudUpload } from "react-icons/md";
 
-import "./sidebar.css"
+import "./sidebar.css";
 import { RootState } from "@/store/store";
 import { onToggle } from "@/store/slices/sidebarSlice";
 import { sidebarWidth } from "@/constant";
@@ -21,7 +21,7 @@ import SidebarToggleBtn from "../navbar/SidebarToggleBtn";
 import Logo from "../CoreUI/Logo";
 import Avatar from "../CoreUI/Avatar";
 
-const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
+const Sidebar = () => {
   const dispatch = useDispatch();
   const { user, isLoggedIn } = useSelector((state: RootState) => state?.auth);
   const { isOpen, isOpenInMobile } = useSelector(
@@ -124,17 +124,15 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
         id="sidebar"
         className={twMerge(
           "h-full bg-white dark:bg-dark_bg max-md:fixed top-0 z-50 overflow-y-scroll thin-scrollbar transition-[left] duration-500 delay-0",
-          isOpen
-            ? "max-lg:left-0 lg:fixed"
-            : isHidden
-            ? "left-[-100%]"
-            : "max-lg:sticky",
+          isOpen && ["max-lg:sticky max-lg:left-0 lg:fixed"],
           isOpenInMobile
             ? ["max-lg:left-0 max-lg:fixed"]
             : ["max-md:left-[-100%] max-lg:sticky"],
-          isHidden ? ["fixed"] : ["lg:sticky left-0"]
+          ["lg:sticky left-0"]
         )}
-        style={{ width: isOpen ? isOpenInMobile ? "auto" : sidebarWidth : "auto" }}
+        style={{
+          width: isOpen ? (isOpenInMobile ? "auto" : sidebarWidth) : "auto",
+        }}
         role="navigation"
       >
         <div
@@ -148,8 +146,7 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
         >
           <div
             className={twMerge(
-              "sticky top-0 px-2 bg-white dark:bg-dark_bg items-center flex max-lg:hidden",
-              isHidden ? "flex" : "lg:hidden flex",
+              "sticky top-0 px-2 bg-white dark:bg-dark_bg items-center hidden",
               isOpenInMobile && "max-lg:flex"
             )}
           >
@@ -236,16 +233,8 @@ const Sidebar = ({ isHidden }: { isHidden: boolean }) => {
       <div
         className={twMerge(
           "fixed z-[49] top-0 left-0 right-0 bottom-0 w-screen h-screen",
-          isOpen && isHidden
-            ? ["bg-gray-300 opacity-50"]
-            : isOpen
-            ? ["bg-white opacity-30 lg:hidden"]
-            : "hidden",
-          isOpenInMobile && isHidden
-            ? ["bg-gray-300 opacity-50"]
-            : isOpenInMobile
-            ? ["bg-white opacity-30 lg:hidden block"]
-            : "hidden"
+          isOpen ? ["bg-white opacity-30 lg:hidden"] : "hidden",
+          isOpenInMobile ? ["bg-white opacity-30 lg:hidden block"] : "hidden"
         )}
         onClick={() => dispatch(onToggle())}
       ></div>

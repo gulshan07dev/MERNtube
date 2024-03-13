@@ -1,10 +1,9 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import { onClose } from "@/store/slices/sidebarSlice";
-import { RootState } from "@/store/store";
+import { onToggle } from "@/store/slices/sidebarSlice";
 
 interface MenuLinkProps {
   label: string;
@@ -22,16 +21,15 @@ export default function MenuLink({
   className,
 }: MenuLinkProps) {
   const dispatch = useDispatch();
-  const { isOpenInMobile } = useSelector((state: RootState) => state.sidebar);
   return (
     <NavLink
       to={`${slug}`}
-      onClick={() => isOpenInMobile && dispatch(onClose())}
+      onClick={() => window.innerWidth <= 768 && dispatch(onToggle())}
     >
       {({ isActive }) => (
         <button
           className={twMerge(
-            "flex gap-6 items-center font-Noto_sans px-4 py-1.5 rounded-lg w-full",
+            "flex gap-6 items-cente font-Noto_sans px-4 py-1.5 rounded-lg w-full",
             isActive
               ? "bg-[#edf4ff] dark:bg-[#272727] text-[#000000] dark:text-white"
               : "text-[#202427] dark:text-slate-50",

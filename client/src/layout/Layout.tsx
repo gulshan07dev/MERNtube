@@ -10,18 +10,16 @@ interface LayoutProps {
   children: React.ReactNode;
   className?: string;
   showNavigationBar?: boolean;
-  showSidebar?: boolean;
 }
 
 const Layout: React.FC<LayoutProps> = ({
   children,
   className,
   showNavigationBar = true,
-  showSidebar = true,
 }) => {
   return showNavigationBar ? (
     <>
-      <Navbar showSidebarToggleBtn={!showSidebar} />
+      <Navbar />
       <div
         style={{ height: `calc(100vh - ${navHeight})` }}
         className="w-full bg-white dark:bg-dark_bg relative flex overflow-y-scroll"
@@ -29,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({
         aria-label="Main Content"
         id="main-container"
       >
-        <Sidebar isHidden={!showSidebar} />
+        <Sidebar />
         <main className="w-full flex-1 flex-grow" role="main">
           <section className={twMerge("w-full min-h-full flex", className)}>
             <OfflineDetector>{children}</OfflineDetector>
@@ -38,7 +36,11 @@ const Layout: React.FC<LayoutProps> = ({
       </div>
     </>
   ) : (
-    <main role="main" className="w-full bg-white dark:bg-dark_bg" id="main-container">
+    <main
+      role="main"
+      className="w-full bg-white dark:bg-dark_bg"
+      id="main-container"
+    >
       <section className={twMerge("w-full min-h-screen flex", className)}>
         <OfflineDetector>{children}</OfflineDetector>
       </section>

@@ -16,7 +16,7 @@ const sidebarSlice = createSlice({
   reducers: {
     onClose: (state) => {
       state.isOpen = false;
-      state.isOpenInMobile = false;
+       state.isOpenInMobile = true;
     },
     onToggle: (state) => {
       state.isOpen = !state.isOpen;

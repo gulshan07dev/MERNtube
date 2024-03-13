@@ -20,10 +20,7 @@ export default function Account() {
   return appLoading ? (
     <Loader />
   ) : (
-    <Layout
-      showSidebar={false}
-      className="flex justify-center md:items-center max-md:mt-16"
-    >
+    <Layout className="flex justify-center md:items-center max-md:mt-16">
       <Tabs tabs={tabs} />
     </Layout>
   );
