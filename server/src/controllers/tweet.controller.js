@@ -1,9 +1,11 @@
 import { Tweet } from "../models/tweet.model.js"
+import { Like } from "../models/like.model.js"
 import { User } from "../models/user.model.js"
 import { Types, isValidObjectId } from "mongoose"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
 import asyncHandler from "../utils/asyncHandler.js"
+import { Comment } from "../models/comment.model.js"
 
 // create tweet
 const createTweet = asyncHandler(async (req, res) => {
@@ -92,6 +94,21 @@ const deleteTweet = asyncHandler(async (req, res) => {
         throw new ApiError(403, "You do not have permission to delete this tweet!");
     }
 
+    // Delete the likes associated with this tweet
+    await Like.deleteMany({ tweet: tweetId });
+
+    // Find all comments associated with the tweet
+    const comments = await Comment.find({ tweet: tweetId }).select('_id');
+
+    // Extract comment IDs
+    const commentIds = comments.map(comment => comment._id);
+
+    // Delete likes associated with comments
+    await Like.deleteMany({ comment: { $in: commentIds } });
+
+    // Delete comments
+    await Comment.deleteMany({ tweet: tweetId });
+
     // delete the tweet
     const deletedTweet = await Tweet.findByIdAndDelete(tweetId);
 
@@ -103,8 +120,8 @@ const deleteTweet = asyncHandler(async (req, res) => {
         200,
         {},
         "Tweet deleted successfully"
-    ))
-})
+    ));
+});
 
 // get tweet by tweetId
 const getTweetById = asyncHandler(async (req, res) => {
