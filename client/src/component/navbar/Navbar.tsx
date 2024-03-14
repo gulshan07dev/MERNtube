@@ -28,7 +28,7 @@ const Navbar = () => {
       aria-label="Primary Navigation"
     >
       {/* Left Section */}
-      <div className="flex items-center">
+      <div className="flex items-center gap-3">
         <SidebarToggleBtn />
         <Logo />
       </div>

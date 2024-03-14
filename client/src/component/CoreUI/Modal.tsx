@@ -14,7 +14,7 @@ interface ModalProps {
   children?: React.ReactNode;
   submitLabel?: string;
   onSubmit?: () => void;
-  isSubmitButtonDisabled?: boolean
+  isSubmitButtonDisabled?: boolean;
   isLoading?: boolean;
   className?: string;
   closeButton?: React.ReactElement;
@@ -53,7 +53,7 @@ const Modal: React.FC<ModalProps> = ({
     <>
       {open &&
         createPortal(
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-70">
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-15 backdrop-blur-[3px]">
             <div
               ref={ModalRef}
               className={twMerge(

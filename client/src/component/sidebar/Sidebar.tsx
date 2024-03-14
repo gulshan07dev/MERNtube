@@ -128,7 +128,8 @@ const Sidebar = () => {
           isOpenInMobile
             ? ["max-lg:left-0 max-lg:fixed"]
             : ["max-md:left-[-100%] max-lg:sticky"],
-          ["lg:sticky left-0"]
+          ["lg:sticky left-0"],
+          !isOpen && "lg:mr-20"
         )}
         style={{
           width: isOpen ? (isOpenInMobile ? "auto" : sidebarWidth) : "auto",
@@ -146,7 +147,7 @@ const Sidebar = () => {
         >
           <div
             className={twMerge(
-              "sticky top-0 px-2 bg-white dark:bg-dark_bg items-center hidden",
+              "sticky top-0 p-2 bg-white dark:bg-dark_bg items-center gap-3 hidden",
               isOpenInMobile && "max-lg:flex"
             )}
           >
