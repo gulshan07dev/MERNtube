@@ -9,14 +9,8 @@ const playlistSchema = new Schema({
     },
     description: {
         type: String,
-        maxLimit: [150, "Playlist name must be less than 150 character!"]
+        maxLimit: [250, "Playlist name must be less than 250 character!"]
     },
-    videos: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Video"
-        }
-    ],
     owner:
     {
         type: Schema.Types.ObjectId,
