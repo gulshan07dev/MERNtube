@@ -97,8 +97,8 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
           <option value="oldest">Oldest</option>{" "}
         </select>
         {/* Render comments */}
-        {comments.map((comment) => (
-          <CommentCard key={comment._id} comment={comment} />
+        {comments?.map((comment) => (
+          <CommentCard key={comment?._id} comment={comment} />
         ))}
         {!comments.length &&
           totalDocs === 0 &&

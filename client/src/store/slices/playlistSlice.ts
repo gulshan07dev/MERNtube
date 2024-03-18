@@ -94,8 +94,9 @@ const getUserPlaylistVideos = createAsyncThunk(
       queryParams: {
         page?: number;
         limit?: number;
-        sortBy: string;
-        sortType: string;
+        orderBy?: "acc" | "desc";
+        sortBy?: "createdAt" | "views";
+        sortType?: "acc" | "desc";
       };
     },
     { rejectWithValue }

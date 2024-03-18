@@ -273,7 +273,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 // get user playlist videos
 const getUserPlaylistVideos = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
-    let { page = 1, limit = 10, videoOrder, sortBy, sortType } = req.query;
+    let { page = 1, limit = 10, orderBy, sortBy, sortType } = req.query;
 
     // Validate page and limit
     page = parseInt(page);
@@ -301,13 +301,13 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
         }
     });
 
-    if (playlist?.owner?.toString() == req.user._id.toString()) {
+    if (playlist.owner.toString() === req.user._id.toString()) {
         pipeline.push({
             $lookup: {
                 from: "videos",
                 localField: "videoId",
                 foreignField: "_id",
-                as: "playlistVideos",
+                as: "playlistVideo",
                 pipeline: [
                     {
                         $lookup: {
@@ -325,6 +325,13 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
                                 }
                             ]
                         }
+                    },
+                    {
+                        $addFields: {
+                            owner: {
+                                $first: "$owner"
+                            }
+                        }
                     }
                 ]
             }
@@ -335,7 +342,7 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
                 from: "videos",
                 localField: "videoId",
                 foreignField: "_id",
-                as: "playlistVideos",
+                as: "playlistVideo",
                 pipeline: [
                     {
                         $match: {
@@ -364,26 +371,50 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
         });
     }
 
-    // Optionally, add sorting stage if sortBy and sortType are provided
-    if (sortBy && sortType) {
+    // sorting
+    if (orderBy) {
         let sortStage = {};
 
-        // Convert sortType to 1 for ascending and -1 for descending
-        const sortOrder = sortType === "asc" ? 1 : -1;
-
-        // Handle sorting based on sortBy field
-        if (sortBy === "createdAt") {
-            sortStage["createdAt"] = sortOrder;
-        } else if (sortBy === "views") {
-            sortStage["views"] = sortOrder;
+        if (orderBy === "desc") {
+            sortStage["createdAt"] = -1;
+        } else {
+            sortStage["createdAt"] = 1;
         }
 
         pipeline.push({ $sort: sortStage });
+
+    } else {
+        if (sortBy && sortType) {
+            let sortStage = {};
+
+            // Convert sortType to 1 for ascending and -1 for descending
+            const sortOrder = sortType === "acc" ? 1 : -1;
+
+            // Handle sorting based on sortBy field
+            if (sortBy === "createdAt") {
+                sortStage["playlistVideo.createdAt"] = sortOrder;
+            } else if (sortBy === "views") {
+                sortStage["playlistVideo.views"] = sortOrder;
+            }
+
+            pipeline.push({ $sort: sortStage });
+        }
     }
 
+
     pipeline.push({
-        "$project": {
-            playlistVideos: 1
+        $addFields: {
+            playlistVideo: {
+                $first: "$playlistVideo"
+            }
+        }
+    })
+
+    pipeline.push({
+        $project: {
+            _id: 0,
+            playlistVideo: 1,
+            createdAt: 1
         }
     })
 
@@ -403,7 +434,6 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
             throw error;
         });
 });
-
 
 // add video to playlist
 const addVideoToPlaylist = asyncHandler(async (req, res) => {

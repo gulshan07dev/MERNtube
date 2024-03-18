@@ -96,7 +96,7 @@ const Home: React.FC = () => {
               onRefresh={() => fetchVideos(1)}
             />
           ) : (
-            videos?.map((item, index) => <VideoCard key={index} data={item} />)
+            videos?.map((item) => <VideoCard key={item?._id} data={item} />)
           )}
           {loading && renderSkeletons()}
         </div>

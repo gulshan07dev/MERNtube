@@ -57,7 +57,7 @@ const playlistVideoCard = ({
   }
 
   return (
-    <div className="w-full flex md:gap-3 gap-2.5 p-3 max-md:pr-0 max-md:pl-2 rounded-lg hover:bg-slate-200 dark:hover:bg-[#202020]">
+    <div className="group/item w-full flex md:gap-3 gap-2.5 p-3 max-md:pr-0 max-md:pl-2 rounded-lg hover:bg-slate-200 dark:hover:bg-[#202020]">
       <span className="self-center text-zinc-700 dark:text-slate-50 text-sm">
         {idx + 1}
       </span>
@@ -82,7 +82,10 @@ const playlistVideoCard = ({
       </Link>
       <DropdownMenu
         triggerButton={
-          <Button btnType="icon-btn" className="text-lg">
+          <Button
+            btnType="icon-btn"
+            className="text-lg hidden group-hover/item:block md:focus-within:block max-md:block"
+          >
             <FiMoreVertical />
           </Button>
         }

@@ -26,6 +26,13 @@ import PlaylistVideoCard from "@/component/playlist/playlistVideo/PlaylistVideoC
 import PlaylistVideoSkeleton from "@/component/playlist/playlistVideo/PlaylistVideoSkeleton";
 import TextWithToggle from "@/component/CoreUI/TextWithToggle";
 
+type SortType =
+  | "date-added-newest"
+  | "date-added-oldest"
+  | "popular"
+  | "date-published-newest"
+  | "date-published-oldest";
+
 export default function PlaylistVideos() {
   const navigate = useNavigate();
   const { playlistId } = useParams();
@@ -33,11 +40,12 @@ export default function PlaylistVideos() {
 
   const [isShowDeleteDialog, setIsShowDeleteDialog] = useState(false);
   const [isShowUpdateDialog, setIsShowUpdateDialog] = useState(false);
+  const [sortType, setSortType] = useState<SortType>("date-added-newest");
   const [playlistVideos, setPlaylistVideos] = useState<
     { playlistVideo: Video }[]
   >([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 10;
+  const limit = 5;
   const [totalPages, setTotalPages] = useState(0);
   const [totalVideos, setTotalVideos] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
@@ -78,9 +86,33 @@ export default function PlaylistVideos() {
   const handleFetchPlaylistVideos = async (page: number) => {
     if (!playlist?._id || !playlistId) return;
 
+    if (page == 1) {
+      setPlaylistVideos([]);
+    }
+
     const { isSuccess, resData } = await fetchPlaylistVideos({
       playlistId,
-      queryParams: { page, limit, sortBy: "createdAt", sortType: "acc" },
+      queryParams: {
+        page,
+        limit,
+        orderBy: sortType.includes("date-added")
+          ? sortType.includes("newest")
+            ? "desc"
+            : "acc"
+          : undefined,
+        sortBy: !sortType.includes("date-added")
+          ? sortType.includes("popular")
+            ? "views"
+            : "createdAt"
+          : undefined,
+        sortType: !sortType.includes("date-added")
+          ? sortType.includes("popular")
+            ? "acc"
+            : sortType.includes("newest")
+            ? "desc"
+            : "acc"
+          : undefined,
+      },
     });
 
     if (isSuccess && resData?.result) {
@@ -103,10 +135,10 @@ export default function PlaylistVideos() {
 
   useEffect(() => {
     handleFetchPlaylistVideos(1);
-  }, [playlistId, playlist?._id]);
+  }, [playlistId, playlist?._id, sortType]);
 
   return (
-    <Layout className="w-full flex max-lg:flex-col max-lg:gap-7 min-h-full gap-3 py-5">
+    <Layout className="w-full flex max-lg:flex-col max-lg:gap-7 min-h-full gap-3 md:py-5 md:px-4">
       {playlistFetchingError ? (
         <ErrorDialog
           errorMessage={playlistFetchingError}
@@ -262,14 +294,31 @@ export default function PlaylistVideos() {
                 buttonOnClick={() => handleFetchPlaylistVideos(1)}
               />
             ) : (
-              playlistVideos?.map(({ playlistVideo: video }, idx) => (
-                <PlaylistVideoCard
-                  key={video?._id}
-                  video={video}
-                  playlistId={playlistId || ""}
-                  idx={idx}
-                />
-              ))
+              <>
+                <select
+                  className="w-min px-4 py-2 mb-3 bg-slate-50 dark:bg-[#171717] hover:bg-slate-200 dark:hover:bg-[#202020] rounded-full text-sm text-gray-700 dark:text-white"
+                  value={sortType}
+                  onChange={(e) => setSortType(e.target.value as SortType)}
+                >
+                  <option value="date-added-newest">Date added (newest)</option>
+                  <option value="date-added-oldest">Date added (oldest)</option>
+                  <option value="popular">Most popular</option>
+                  <option value="date-published-newest">
+                    Date published (newest)
+                  </option>
+                  <option value="date-published-oldest">
+                    Date published (oldest)
+                  </option>
+                </select>
+                {playlistVideos?.map(({ playlistVideo: video }, idx) => (
+                  <PlaylistVideoCard
+                    key={video?._id}
+                    video={video}
+                    playlistId={playlistId || ""}
+                    idx={idx}
+                  />
+                ))}
+              </>
             )}
             {(isFetchingVideos || isFetchingPlaylist) &&
               currentPage == 1 &&
