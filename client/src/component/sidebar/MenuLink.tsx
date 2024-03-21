@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import { onToggle } from "@/store/slices/sidebarSlice";
+import { resetBydefault } from "@/store/slices/sidebarSlice";
 
 interface MenuLinkProps {
   label: string;
@@ -24,7 +24,7 @@ export default function MenuLink({
   return (
     <NavLink
       to={`${slug}`}
-      onClick={() => window.innerWidth <= 768 && dispatch(onToggle())}
+      onClick={() => window.innerWidth <= 768 && dispatch(resetBydefault())}
     >
       {({ isActive }) => (
         <button

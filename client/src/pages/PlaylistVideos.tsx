@@ -107,7 +107,7 @@ export default function PlaylistVideos() {
           : undefined,
         sortType: !sortType.includes("date-added")
           ? sortType.includes("popular")
-            ? "acc"
+            ? "desc"
             : sortType.includes("newest")
             ? "desc"
             : "acc"

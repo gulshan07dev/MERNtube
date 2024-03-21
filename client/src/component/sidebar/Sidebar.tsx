@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineHome } from "react-icons/ai";
@@ -13,7 +13,7 @@ import { MdCloudUpload } from "react-icons/md";
 
 import "./sidebar.css";
 import { RootState } from "@/store/store";
-import { onToggle } from "@/store/slices/sidebarSlice";
+import { onClose, onToggle, resetBydefault } from "@/store/slices/sidebarSlice";
 import { sidebarWidth } from "@/constant";
 import MenuLink from "./MenuLink";
 import Divider from "../Divider";
@@ -21,7 +21,11 @@ import SidebarToggleBtn from "../navbar/SidebarToggleBtn";
 import Logo from "../CoreUI/Logo";
 import Avatar from "../CoreUI/Avatar";
 
-const Sidebar = () => {
+const Sidebar = ({
+  byDefaultSidebarHidden = false,
+}: {
+  byDefaultSidebarHidden?: boolean;
+}) => {
   const dispatch = useDispatch();
   const { user, isLoggedIn } = useSelector((state: RootState) => state?.auth);
   const { isOpen, isOpenInMobile } = useSelector(
@@ -113,42 +117,72 @@ const Sidebar = () => {
         label: "Send Feedback",
         icon: <MdOutlineFeedback />,
         slug: "/send-feedback",
+        active: true,
       },
     ],
     []
   );
 
+  useEffect(() => {
+    if (byDefaultSidebarHidden) {
+      dispatch(onClose());
+    } else {
+      dispatch(resetBydefault());
+    }
+  }, []);
   return (
     <>
       <aside
         id="sidebar"
         className={twMerge(
           "h-full bg-white dark:bg-dark_bg max-md:fixed top-0 z-50 overflow-y-scroll thin-scrollbar transition-[left] duration-500 delay-0",
-          isOpen && ["max-lg:sticky max-lg:left-0 lg:fixed"],
-          isOpenInMobile
-            ? ["max-lg:left-0 max-lg:fixed"]
-            : ["max-md:left-[-100%] max-lg:sticky"],
-          ["lg:sticky left-0"],
-          !isOpen && "lg:mr-20"
+          isOpen &&
+            !byDefaultSidebarHidden && ["max-lg:sticky max-lg:left-0 lg:fixed"],
+          !byDefaultSidebarHidden
+            ? isOpenInMobile
+              ? ["max-lg:left-0 max-lg:fixed"]
+              : ["max-md:left-[-100%] max-lg:sticky"]
+            : "",
+          !byDefaultSidebarHidden && ["lg:sticky left-0"],
+          !isOpen && !byDefaultSidebarHidden && "lg:mr-20",
+          byDefaultSidebarHidden
+            ? isOpen
+              ? ["md:fixed md:left-0"]
+              : ["md:fixed md:left-[-100%]"]
+            : "",
+          byDefaultSidebarHidden
+            ? isOpenInMobile
+              ? ["max-md:fixed max-md:left-0"]
+              : ["max-md:fixed max-md:left-[-100%]"]
+            : ""
         )}
         style={{
-          width: isOpen ? (isOpenInMobile ? "auto" : sidebarWidth) : "auto",
+          width: isOpen
+            ? isOpenInMobile && !byDefaultSidebarHidden
+              ? "auto"
+              : sidebarWidth
+            : byDefaultSidebarHidden
+            ? sidebarWidth
+            : "auto",
         }}
         role="navigation"
       >
         <div
           className={twMerge(
             "px-2 pb-2 flex flex-col gap-2",
-            !isOpen && ["lg:gap-5 pr-5"],
-            !isOpenInMobile && [
-              "max-lg:gap-5 max-md:gap-2 max-lg:pr-5 max-md:px-2",
-            ]
+            !isOpen && !byDefaultSidebarHidden && ["lg:gap-5 pr-5"],
+            !isOpenInMobile &&
+              !byDefaultSidebarHidden && [
+                "max-lg:gap-5 max-md:gap-2 max-lg:pr-5 max-md:px-2",
+              ],
+            byDefaultSidebarHidden && "max-md:gap-2 max-md:px-2"
           )}
         >
           <div
             className={twMerge(
               "sticky top-0 p-2 bg-white dark:bg-dark_bg items-center gap-3 hidden",
-              isOpenInMobile && "max-lg:flex"
+              isOpenInMobile && "max-lg:flex",
+              byDefaultSidebarHidden && "flex"
             )}
           >
             <SidebarToggleBtn />
@@ -162,7 +196,8 @@ const Sidebar = () => {
               "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white dark:max-md:bg-dark_bg max-md:border dark:max-md:border-[#121212] max-md:items-center max-md:transition-all",
               isOpen && ["md:gap-5"],
               !isOpen && ["lg:gap-5"],
-              isOpenInMobile && ["max-md:-bottom-[60px]"]
+              isOpenInMobile && ["max-md:-bottom-[60px]"],
+              byDefaultSidebarHidden && ["md:gap-2 lg:gap-2 gap-2"]
             )}
           >
             {menuItems.map(
@@ -173,8 +208,9 @@ const Sidebar = () => {
                     {...menuItem}
                     isLabelHiddenClassName={twMerge(
                       "max-lg:hidden",
-                      !isOpen && "lg:hidden",
-                      isOpenInMobile && "max-lg:block"
+                      !isOpen && !byDefaultSidebarHidden && "lg:hidden",
+                      isOpenInMobile && "max-lg:block",
+                      byDefaultSidebarHidden && ["lg:block max-lg:block"]
                     )}
                     className="max-md:flex-col max-md:justify-center max-md:items-center
                     max-md:gap-1 max-md:w-[20vw] max-md:text-xs"
@@ -193,8 +229,9 @@ const Sidebar = () => {
                   {...menuItem}
                   isLabelHiddenClassName={twMerge(
                     "max-lg:hidden",
-                    !isOpen && "lg:hidden",
-                    isOpenInMobile && "max-lg:block"
+                    !isOpen && !byDefaultSidebarHidden && "lg:hidden",
+                    isOpenInMobile && "max-lg:block",
+                    byDefaultSidebarHidden && ["lg:block max-lg:block"]
                   )}
                 />
               )
@@ -210,8 +247,9 @@ const Sidebar = () => {
                   {...menuItem}
                   isLabelHiddenClassName={twMerge(
                     "max-lg:hidden",
-                    !isOpen && "lg:hidden",
-                    isOpenInMobile && "max-lg:block"
+                    !isOpen && !byDefaultSidebarHidden && "lg:hidden",
+                    isOpenInMobile && "max-lg:block",
+                    byDefaultSidebarHidden && ["lg:block max-lg:block"]
                   )}
                 />
               )
@@ -219,9 +257,14 @@ const Sidebar = () => {
           <Divider />
 
           <div
-            className={`px-3 pb-3 max-md:block ${!isOpen ? "md:hidden" : ""} ${
-              !isOpenInMobile ? "max-lg:hidden" : ""
-            }`}
+            className={twMerge(
+              "px-3 pb-3 max-md:block",
+              !isOpen && "md:hidden",
+              !isOpenInMobile && "max-lg:hidden",
+              byDefaultSidebarHidden && [
+                "md:block max-lg:block max-md:block block",
+              ]
+            )}
           >
             <p className="text-sm font-hedvig_letters text-gray-700 dark:text-white leading-none">
               Made With <span className="text-lg text-red-600">❤</span>
@@ -233,9 +276,14 @@ const Sidebar = () => {
       {/* overlay */}
       <div
         className={twMerge(
-          "fixed z-[49] top-0 left-0 right-0 bottom-0 w-screen h-screen",
-          isOpen ? ["bg-white opacity-30 lg:hidden"] : "hidden",
-          isOpenInMobile ? ["bg-white opacity-30 lg:hidden block"] : "hidden"
+          "fixed z-[49] top-0 left-0 right-0 bottom-0 w-screen h-screen hidden",
+          "bg-white opacity-30",
+          isOpen && !byDefaultSidebarHidden ? ["max-lg:hidden"] : "hidden",
+          isOpenInMobile && !byDefaultSidebarHidden
+            ? ["max-lg:block"]
+            : "hidden",
+          byDefaultSidebarHidden ? isOpen && ["md:block"] : "",
+          byDefaultSidebarHidden ? isOpenInMobile && ["max-md:block"] : ""
         )}
         onClick={() => dispatch(onToggle())}
       ></div>

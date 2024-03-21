@@ -10,12 +10,14 @@ interface LayoutProps {
   children: React.ReactNode;
   className?: string;
   showNavigationBar?: boolean;
+  byDefaultSidebarHidden?: boolean
 }
 
 const Layout: React.FC<LayoutProps> = ({
   children,
   className,
   showNavigationBar = true,
+  byDefaultSidebarHidden
 }) => {
   return showNavigationBar ? (
     <>
@@ -27,7 +29,7 @@ const Layout: React.FC<LayoutProps> = ({
         aria-label="Main Content"
         id="main-container"
       >
-        <Sidebar />
+        <Sidebar byDefaultSidebarHidden={byDefaultSidebarHidden ? true : false} />
         <main className="w-full flex-1 flex-grow" role="main">
           <section className={twMerge("w-full min-h-full flex", className)}>
             <OfflineDetector>{children}</OfflineDetector>

@@ -16,14 +16,17 @@ const sidebarSlice = createSlice({
   reducers: {
     onClose: (state) => {
       state.isOpen = false;
-       state.isOpenInMobile = true;
     },
     onToggle: (state) => {
       state.isOpen = !state.isOpen;
       state.isOpenInMobile = !state.isOpenInMobile;
     },
+    resetBydefault: (state) => {
+      state.isOpen = true;
+      state.isOpenInMobile = false;
+    },
   },
 });
 
 export default sidebarSlice.reducer;
-export const { onClose, onToggle } = sidebarSlice.actions;
+export const { onClose, onToggle, resetBydefault } = sidebarSlice.actions;
