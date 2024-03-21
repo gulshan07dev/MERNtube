@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import Layout from "@/layout/Layout";
@@ -7,7 +7,9 @@ import useActionHandler from "@/hooks/useActionHandler";
 import { registerUser } from "@/store/slices/authSlice";
 
 export default function Signup() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const { redirectPath } = location.state;
 
   const { error, isLoading, handleAction } = useActionHandler({
     action: registerUser,
@@ -42,7 +44,9 @@ export default function Signup() {
     });
 
     if (isSuccess) {
-      navigate("/auth/login", { state: { usernameOrEmail: email, password } });
+      navigate("/auth/login", {
+        state: { usernameOrEmail: email, password, redirectPath },
+      });
     }
   };
 

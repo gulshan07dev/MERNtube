@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 import { navHeight } from "@/constant";
 import Logo from "../CoreUI/Logo";
@@ -14,6 +14,7 @@ import type { RootState } from "@/store/store";
 import Skeleton from "../Skeleton";
 
 const Navbar = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { user: appLoading } = useSelector(
     (state: RootState) => state.appLoading
@@ -110,7 +111,11 @@ const Navbar = () => {
               isLarge={false}
               isGradientBg={true}
               className="h-8 w-16 rounded-md"
-              onClick={() => navigate("/auth/login")}
+              onClick={() =>
+                navigate("/auth/login", {
+                  state: { redirectPath: location.pathname },
+                })
+              }
             >
               Login
             </Button>
@@ -118,7 +123,11 @@ const Navbar = () => {
               type="button"
               isLarge={false}
               className="h-10 w-16 rounded-md bg-slate-50 dark:bg-[#202020] text-violet-600 dark:text-white border-slate-300  dark:border-gray-600"
-              onClick={() => navigate("/auth/signup")}
+              onClick={() =>
+                navigate("/auth/signup", {
+                  state: { redirectPath: location.pathname },
+                })
+              }
             >
               Signup
             </Button>

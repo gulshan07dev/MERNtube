@@ -1,9 +1,15 @@
 import { FaExclamationCircle, FaSignInAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Layout from "@/layout/Layout";
+import Button from "./CoreUI/Button";
 
-export default function DeniedAccess() {
+export default function DeniedAccess({
+  redirectPath,
+}: {
+  redirectPath: string;
+}) {
+  const navigate = useNavigate();
   return (
     <Layout className="min-h-screen flex justify-center items-center">
       <div className="w-[500px] max-w-[92%] flex flex-col gap-8 md:py-14 md:px-8 px-4 py-16 bg-white dark:bg-[#171717] border-[1px] border-slate-300 dark:border-[#272727] shadow-sm rounded-xl">
@@ -19,20 +25,28 @@ export default function DeniedAccess() {
           access the page.
         </p>
         <div className="flex items-center justify-center gap-5 font-nunito_sans">
-          <Link
-            to="/auth/login"
+          <Button
+            onClick={() =>
+              navigate("/auth/login", {
+                state: { redirectPath },
+              })
+            }
             className="flex items-center gap-3 px-4 py-2 text-white bg-blue-500 rounded-md transition duration-300 hover:bg-blue-600"
           >
             <FaSignInAlt />
             Login
-          </Link>
-          <Link
-            to="/auth/signup"
+          </Button>
+          <Button
+            onClick={() =>
+              navigate("/auth/signup", {
+                state: { redirectPath },
+              })
+            }
             className="flex items-center gap-3 px-4 py-2 text-white bg-green-500 rounded-md transition duration-300 hover:bg-green-600"
           >
             <FaSignInAlt />
             Sign Up
-          </Link>
+          </Button>
         </div>
       </div>
     </Layout>
