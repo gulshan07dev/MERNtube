@@ -21,11 +21,13 @@ export interface Video {
   views: number;
   isPublished: boolean;
   owner: User;
+  videoLikesCount: number;
+  isLiked: boolean;
   createdAt: Date;
 }
 
 interface initialState {
-  video: Video | [];
+  video: Video | null;
   videos: Video[];
   loading: boolean;
   error: string | null;
@@ -36,7 +38,7 @@ interface initialState {
 }
 
 const initialState: initialState = {
-  video: [],
+  video: null,
   videos: [],
   loading: false,
   error: null,
@@ -140,6 +142,16 @@ const videoSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getVideoByVideoId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getVideoByVideoId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.video = action.payload.data?.video;
+      })
+
       .addCase(getAllVideos.pending, (state) => {
         state.loading = true;
         state.error = null;

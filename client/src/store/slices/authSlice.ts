@@ -126,7 +126,10 @@ const changeUserPassword = createAsyncThunk(
 
 const changeAccountDetails = createAsyncThunk(
   "/users/change-account",
-  async (data: {fullName?: string, username?: string}, { rejectWithValue }) => {
+  async (
+    data: { fullName?: string; username?: string },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await axiosInstance.patch("/users/change-account", data);
       return res?.data;
@@ -141,7 +144,7 @@ const changeAccountDetails = createAsyncThunk(
 
 const changeUserAvatar = createAsyncThunk(
   "/users/change-avatar",
-  async (data: {avatar: File}, { rejectWithValue }) => {
+  async (data: { avatar: File }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.patch("/users/change-avatar", data, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -158,7 +161,7 @@ const changeUserAvatar = createAsyncThunk(
 
 const changeCoverImage = createAsyncThunk(
   "/users/change-coverImage",
-  async (data: {coverImage: File}, { rejectWithValue }) => {
+  async (data: { coverImage: File }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.patch("/users/change-coverImage", data, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -238,18 +241,18 @@ const authSlice = createSlice({
       localStorage.setItem("isLoggedIn", JSON.stringify(true));
     });
 
-    builder.addCase(getCurrentUser.rejected, (state) => {
+    builder.addCase(refreshAccessToken.rejected, (state) => {
       state.user = null;
       state.isLoggedIn = false;
       localStorage.removeItem("isLoggedIn");
     });
 
-    builder.addCase(getChannel.pending, (state) => {
-      state.channel = null;
-    });
-
     builder.addCase(getChannel.fulfilled, (state, action) => {
       state.channel = action.payload?.data?.channel;
+    });
+
+    builder.addCase(getChannel.rejected, (state) => {
+      state.channel = null;
     });
   },
 });

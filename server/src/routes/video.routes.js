@@ -21,7 +21,7 @@ router.route("/")
 
 router.route("/:videoId")
     .patch(verifyJwt, upload.single("thumbnail"), updateVideo)
-    .get(getVideoById)
+    .get(verifyJwt, getVideoById)
     .delete(verifyJwt, deleteVideo)
 
 router.route("/toggle-status/:videoId").post(verifyJwt, togglePublishStatus)

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Nunito+Sans:opsz@6..12&family=Nunito:wght@500&family=Poppins:ital,wght@0,200;0,300;0,400;0,500;1,500&family=Roboto&family=Noto+Sans:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Nunito+Sans:opsz@6..12&family=Nunito:wght@500&family=Poppins:ital,wght@0,200;0,300;0,400;0,500;1,500&family=Roboto&family=Noto+Sans:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -35,31 +35,33 @@ body {
 }
 
 .thin-scrollbar::-webkit-scrollbar {
-  width: 3px;
+  width: 1px;
 }
 
 .thin-scrollbar::-webkit-scrollbar-thumb {
   background: #adadadaf;
-  border-radius: 3px;
+  border-radius: 1px;
 }
 
 body.dark .thin-scrollbar::-webkit-scrollbar-thumb {
   background: #b4b4b4;
-  border-radius: 3px;
+  border-radius: 1px;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cc02ff;
-}
-
-body.dark ::-webkit-scrollbar-thumb {
-  background: #b8b8b8; 
+@media screen and (min-width: 768px) {
+  ::-webkit-scrollbar {
+      width: 6px;
+    }
+  
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  
+    ::-webkit-scrollbar-thumb {
+      background: #cc02ff;
+    }
+  
+    body.dark ::-webkit-scrollbar-thumb {
+      background: #b8b8b8;
+    }
 }

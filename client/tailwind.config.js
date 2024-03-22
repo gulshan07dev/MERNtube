@@ -15,7 +15,8 @@ export default {
         Noto_sans: ['"Noto Sans"', 'sans-serif']
       },
       colors: {
-        dark_bg: "#0f0f0f"
+        white_bg: "#ffffff",
+        dark_bg: "#040D12"
       }
     },
   },

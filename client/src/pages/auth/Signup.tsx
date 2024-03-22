@@ -9,7 +9,7 @@ import { registerUser } from "@/store/slices/authSlice";
 export default function Signup() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { redirectPath } = location.state;
+  const redirectPath = location?.state?.redirectPath;
 
   const { error, isLoading, handleAction } = useActionHandler({
     action: registerUser,
@@ -45,7 +45,7 @@ export default function Signup() {
 
     if (isSuccess) {
       navigate("/auth/login", {
-        state: { usernameOrEmail: email, password, redirectPath },
+        state: { usernameOrEmail: email, password, redirectPath: redirectPath || undefined },
       });
     }
   };

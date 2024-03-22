@@ -24,7 +24,7 @@ export default function MenuLink({
   return (
     <NavLink
       to={`${slug}`}
-      onClick={() => window.innerWidth <= 768 && dispatch(resetBydefault())}
+      onClick={() => dispatch(resetBydefault())}
     >
       {({ isActive }) => (
         <button

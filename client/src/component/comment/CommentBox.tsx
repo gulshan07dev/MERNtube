@@ -36,7 +36,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
       tweetId: contentId,
       queryParams: {
         page,
-        limit: 2,
+        limit: 5,
         sortBy: "createdAt",
         sortType: sortType === "oldest" ? "acc" : "desc",
       },

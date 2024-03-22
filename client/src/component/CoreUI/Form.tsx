@@ -32,7 +32,7 @@ export default function Form({
         e.preventDefault();
         onSubmit();
       }}
-      className="py-7 md:px-9 px-4 border border-zinc-300 dark:border-[#c5c5c547] bg-slate-50 dark:bg-[#222222] flex flex-col gap-7"
+      className="py-7 md:px-9 px-4 border border-zinc-300 dark:border-[#c5c5c547] bg-slate-50 dark:bg-[#172227] flex flex-col gap-7"
     >
       <div className="flex flex-col gap-[2px]">
         <h1 className="text-zinc-950 dark:text-white text-2xl font-roboto font-[600]">

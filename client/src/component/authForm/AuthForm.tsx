@@ -70,7 +70,7 @@ export default function AuthForm({
 
       <form
         onSubmit={handleFormSubmit}
-        className="w-full shadow-3xl bg-white dark:bg-[#171717] border border-slate-300 dark:border-[#474747] rounded-xl md:py-8 py-7 pb-12 md:px-5 px-3.5 flex flex-col gap-7"
+        className="w-full shadow-3xl bg-white dark:bg-[#172227] border border-slate-300 dark:border-[#474747] rounded-xl md:py-8 py-7 pb-12 md:px-5 px-3.5 flex flex-col gap-7"
       >
         <div className="flex flex-col gap-1 items-center mb-5">
           <Logo className="md:w-32" />

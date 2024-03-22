@@ -11,11 +11,12 @@ import SubscribeBtn from "@/component/channel/SubscribeBtn";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import ErrorDialog from "@/component/error/ErrorDialog";
+import { abbreviateNumber } from "js-abbreviation-number";
 
 export default function ChannelLayout() {
   const { username } = useParams();
   const location = useLocation();
-  const { channel } = useSelector((state: RootState) => state?.auth);
+  let { channel } = useSelector((state: RootState) => state?.auth);
 
   const { error, isLoading, handleAction } = useActionHandler({
     action: getChannel,
@@ -27,7 +28,11 @@ export default function ChannelLayout() {
   }
 
   useEffect(() => {
-    fetchChannel();
+    if(location?.state?.channel) {
+      channel = location?.state?.channel
+    } else {
+      fetchChannel();
+    }
   }, [username]);
 
   const channelTabsLink = [
@@ -110,7 +115,7 @@ export default function ChannelLayout() {
                     {channel?.username}
                   </p>
                   <p className="md:text-lg text-sm text-zinc-600 dark:text-[#AAAAAA] font-semibold leading-loose">
-                    {channel?.subscriberCount}{" "}
+                    {abbreviateNumber(channel?.subscriberCount || 0, 1)}{" "}
                     {channel?.subscriberCount || 0 <= 1
                       ? "Subscriber"
                       : "Subscribers"}{" "}

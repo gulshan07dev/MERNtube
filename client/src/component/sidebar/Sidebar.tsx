@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineHome } from "react-icons/ai";
@@ -13,7 +13,7 @@ import { MdCloudUpload } from "react-icons/md";
 
 import "./sidebar.css";
 import { RootState } from "@/store/store";
-import { onClose, onToggle, resetBydefault } from "@/store/slices/sidebarSlice";
+import { onToggle } from "@/store/slices/sidebarSlice";
 import { sidebarWidth } from "@/constant";
 import MenuLink from "./MenuLink";
 import Divider from "../Divider";
@@ -123,19 +123,13 @@ const Sidebar = ({
     []
   );
 
-  useEffect(() => {
-    if (byDefaultSidebarHidden) {
-      dispatch(onClose());
-    } else {
-      dispatch(resetBydefault());
-    }
-  }, []);
   return (
     <>
       <aside
         id="sidebar"
         className={twMerge(
-          "h-full bg-white dark:bg-dark_bg max-md:fixed top-0 z-50 overflow-y-scroll thin-scrollbar transition-[left] duration-500 delay-0",
+          "h-full bg-white dark:bg-dark_bg max-md:fixed top-0 left-[-100%] z-50 overflow-y-scroll thin-scrollbar",
+          "transition-[left] duration-500 delay-0",
           isOpen &&
             !byDefaultSidebarHidden && ["max-lg:sticky max-lg:left-0 lg:fixed"],
           !byDefaultSidebarHidden
@@ -145,15 +139,15 @@ const Sidebar = ({
             : "",
           !byDefaultSidebarHidden && ["lg:sticky left-0"],
           !isOpen && !byDefaultSidebarHidden && "lg:mr-20",
-          byDefaultSidebarHidden
-            ? isOpen
-              ? ["md:fixed md:left-0"]
-              : ["md:fixed md:left-[-100%]"]
-            : "",
+          // byDefaultSidebarHidden
+          //   ? isOpen
+          //     ? ["md:fixed md:left-0"]
+          //     : ["md:fixed md:left-[-100%]"]
+          //   : "",
           byDefaultSidebarHidden
             ? isOpenInMobile
-              ? ["max-md:fixed max-md:left-0"]
-              : ["max-md:fixed max-md:left-[-100%]"]
+              ? ["fixed left-0"]
+              : ["fixed left-[-100%]"]
             : ""
         )}
         style={{
@@ -282,8 +276,8 @@ const Sidebar = ({
           isOpenInMobile && !byDefaultSidebarHidden
             ? ["max-lg:block"]
             : "hidden",
-          byDefaultSidebarHidden ? isOpen && ["md:block"] : "",
-          byDefaultSidebarHidden ? isOpenInMobile && ["max-md:block"] : ""
+          // byDefaultSidebarHidden ? isOpen && ["md:block"] : "",
+          byDefaultSidebarHidden ? isOpenInMobile && ["block"] : ""
         )}
         onClick={() => dispatch(onToggle())}
       ></div>

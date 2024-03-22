@@ -154,25 +154,45 @@ const getVideoById = asyncHandler(async (req, res) => {
                 pipeline: [
                     {
                         $project: {
-                            username: 1,
-                            email: 1,
-                            avatar: 1
+                            username: 1
                         }
                     }
                 ]
             }
         },
         {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "video",
+                as: "videoLikes"
+            }
+        },
+        {
             $addFields: {
                 owner: {
                     $first: "$owner"
+                },
+                videoLikesCount: {
+                    $size: "$videoLikes"
+                },
+                isLiked: {
+                    $cond: {
+                        if: { $in: [req.user?._id, "$videoLikes.owner"] },
+                        then: true,
+                        else: false
+                    }
                 }
             }
         }
     ])
 
-    if (!video.length) {
-        throw new ApiError(404, "Video not find!")
+    if (!video?.length) {
+        throw new ApiError(404, "Video not found!")
+    }
+
+    if (!video[0]?.isPublished) {
+        throw new ApiError(400, "This video is private!")
     }
 
     return res.status(200).json(new ApiResponse(

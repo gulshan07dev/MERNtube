@@ -12,6 +12,7 @@ import {
   addCommentToTweet,
   addCommentToVideo,
 } from "@/store/slices/commentSlice";
+import { useNavigate } from "react-router-dom";
 
 interface AddCommentProps {
   contentId: string;
@@ -26,6 +27,7 @@ const AddComment: React.FC<AddCommentProps> = ({
   type,
   setComments,
 }) => {
+  const navigate = useNavigate()
   const { user } = useSelector((state: RootState) => state?.auth);
 
   const { formData, handleInputChange, resetForm } = useForm({
@@ -59,7 +61,7 @@ const AddComment: React.FC<AddCommentProps> = ({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-1">
       <div className="flex items-center md:gap-5 gap-3 py-1.5">
-        <Avatar url={user?.avatar?.url} fullName={user?.fullName} />
+        <Avatar url={user?.avatar?.url} fullName={user?.fullName} onClick={() => navigate(`/c/${user?.username}`)} />
         <input
           type="text"
           name="content"

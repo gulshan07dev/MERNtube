@@ -9,7 +9,7 @@ import { loginUser } from "@/store/slices/authSlice";
 export default function Login() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { redirectPath } = location.state;
+  const redirectPath = location.state?.redirectPath;
 
   const { isLoading, error, handleAction } = useActionHandler({
     action: loginUser,
