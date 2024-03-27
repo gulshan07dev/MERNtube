@@ -49,14 +49,12 @@ const userSchema = new Schema({
             type: String
         }
     },
-    watchHistory: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Video"
-        }
-    ],
     refreshToken: {
         type: String,
+    },
+    isWatchHistoryPaused: {
+        type: Boolean,
+        default: false
     }
 
 }, { timestamps: true })

@@ -8,6 +8,7 @@ export interface User {
   email: string;
   avatar?: { key: string; url: string };
   coverImage?: { key: string; url: string };
+  isWatchHistoryPaused?: boolean;
 }
 
 interface Channel extends User {

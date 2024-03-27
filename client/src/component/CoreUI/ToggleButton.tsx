@@ -1,9 +1,14 @@
 interface ToggleButtonProps {
   value: boolean;
   onChange: (value: boolean) => void;
+  disabled?: boolean;
 }
 
-const ToggleButton = ({ value, onChange }: ToggleButtonProps) => {
+const ToggleButton = ({
+  value,
+  onChange,
+  disabled = false,
+}: ToggleButtonProps) => {
   const handleClick = () => {
     const newValue = !value;
     onChange(newValue);
@@ -13,12 +18,15 @@ const ToggleButton = ({ value, onChange }: ToggleButtonProps) => {
     <button
       onClick={handleClick}
       className={`w-14 h-5 flex items-center relative rounded-full ${
-        value ? "bg-gray-800" : "bg-gray-200"
+        value ? "bg-zinc-300 dark:bg-gray-500" : "bg-gray-300 dark:bg-gray-600"
       }`}
+      disabled={disabled}
     >
       <div
-        className={`w-6 h-6 rounded-full absolute transition-[right_left] duration-700 ${
-          value ? "bg-white right-1" : "bg-gray-500 left-1"
+        className={`w-7 h-7 rounded-full absolute transition-[right_left] duration-700 ${
+          value
+            ? "bg-blue-500 dark:bg-white right-0"
+            : "bg-gray-400 dark:bg-gray-400 left-0"
         }`}
       ></div>
     </button>

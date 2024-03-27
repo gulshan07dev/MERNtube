@@ -21,6 +21,7 @@ import TweetEdit from "./pages/edit/TweetEdit";
 import Settings from "./pages/Settings";
 import PlaylistVideos from "./pages/PlaylistVideos";
 import VideoPlayer from "./pages/VideoPlayer ";
+import WatchHistory from "./pages/WatchHistory";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -30,7 +31,7 @@ function App() {
       dispatch(setUserLoading(true));
 
       const res = await dispatch(getCurrentUser());
-      
+
       if (!res?.payload?.success) {
         // If there's an error, try refreshing the access token
         await dispatch(refreshAccessToken());
@@ -84,6 +85,9 @@ function App() {
 
         {/* video player */}
         <Route path="/watch/:videoId" element={<VideoPlayer />} />
+
+        {/* watch history */}
+        <Route path="/history" element={<WatchHistory />} />
       </Route>
 
       {/* Authentication routes */}

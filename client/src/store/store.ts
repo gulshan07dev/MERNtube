@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit"
 import authSlice from "./slices/authSlice";
 import subscriptionSlice from "./slices/subscriptionSlice";
 import videoSlice from "./slices/videoSlice";
+import watchHistorySlice from "./slices/watchHistorySlice";
 import tweetSlice from "./slices/tweetSlice";
 import playlistSlice from "./slices/playlistSlice";
 import likeSlice from "./slices/likeSlice";
@@ -15,6 +16,7 @@ const store = configureStore({
         subscription: subscriptionSlice,
         video: videoSlice,
         tweet: tweetSlice,
+        watch_history: watchHistorySlice,
         playlist: playlistSlice,
         like: likeSlice,
         comment: commentSlice,

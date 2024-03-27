@@ -1,7 +1,10 @@
 import { useState } from "react";
+
 import Layout from "@/layout/Layout";
 import ToggleDarkMode from "@/component/settings/ToggleDarkModeBtn";
 import SettingsCategory from "@/component/settings/SettingsCategory";
+import ToggleWatchHistoryPauseStatus from "@/component/settings/ToggleWatchHistoryPauseStatus";
+import ClearWatchHistory from "@/component/settings/ClearWatchHistory";
 
 const Settings = () => {
   const [openCategory, setOpenCategory] = useState("Preferences");
@@ -23,6 +26,16 @@ const Settings = () => {
           onToggle={() => handleToggleCategory("Preferences")}
         >
           <ToggleDarkMode />
+        </SettingsCategory>
+
+        {/* watch history setting */}
+        <SettingsCategory
+          title="Watch History"
+          isOpen={openCategory === "Watch History"}
+          onToggle={() => handleToggleCategory("Watch History")}
+        >
+          <ClearWatchHistory />
+          <ToggleWatchHistoryPauseStatus />
         </SettingsCategory>
 
         {/* another category for fun */}

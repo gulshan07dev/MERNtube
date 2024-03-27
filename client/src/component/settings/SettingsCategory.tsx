@@ -12,12 +12,12 @@ const SettingsCategory = ({
   children,
 }: SettingsCategoryProps) => {
   return (
-    <div className="py-5 md:px-5 px-3 flex flex-col gap-4 bg-slate-100 dark:bg-[#191919] rounded">
+    <div className="py-5 md:px-5 px-3 flex flex-col gap-4 bg-slate-100 dark:bg-[#172227] rounded">
       <div
         className="flex justify-between items-center cursor-pointer"
         onClick={onToggle}
       >
-        <h2 className="text-xl text-gray-800 dark:text-slate-100 font-semibold mb-2">
+        <h2 className="text-xl text-gray-800 dark:text-slate-200 font-semibold mb-2">
           {title}
         </h2>
         <div className="transform transition-transform text-black dark:text-white">
