@@ -1,9 +1,9 @@
 import { FaTrash } from "react-icons/fa";
 
-import Button from "../CoreUI/Button";
+import Button from "../../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import { clearWatchHistory } from "@/store/slices/watchHistorySlice";
-import Modal from "../CoreUI/Modal";
+import Modal from "../../CoreUI/Modal";
 import { useState } from "react";
 
 export default function ClearWatchHistory() {
@@ -19,13 +19,16 @@ export default function ClearWatchHistory() {
   });
 
   const handleClearWatchHistory = async () => {
-    await handleAction();
+    const { isSuccess, error } = await handleAction();
+    if (isSuccess && !error) {
+      setIsShowClearWatchHistoryConfirmDialog(false);
+    }
   };
 
   return (
     <>
       <Button
-        className="bg-transparent text-black dark:text-white rounded-full hover:opacity-1 hover:bg-slate-200 dark:hover:bg-[#505050]"
+        className="-ml-4 bg-transparent text-lg text-gray-700 dark:text-gray-300 rounded-full hover:opacity-1 hover:bg-slate-200 dark:hover:bg-[#505050] py-2"
         icon={<FaTrash />}
         onClick={() => setIsShowClearWatchHistoryConfirmDialog((prev) => !prev)}
       >
