@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { abbreviateNumber } from "js-abbreviation-number";
 import TimeAgo from "react-timeago";
+import { FaChartBar, FaShare } from "react-icons/fa";
+import { BiSolidPlaylist } from "react-icons/bi";
 
 import Layout from "@/layout/Layout";
 import useActionHandler from "@/hooks/useActionHandler";
-import { RootState } from "@/store/store";
+import { AppDispatch, RootState } from "@/store/store";
 import { getVideoByVideoId } from "@/store/slices/videoSlice";
 import { getChannel } from "@/store/slices/authSlice";
 import { toggleVideoLike } from "@/store/slices/likeSlice";
@@ -20,11 +22,11 @@ import Avatar from "@/component/CoreUI/Avatar";
 import ErrorDialog from "@/component/error/ErrorDialog";
 import Button from "@/component/CoreUI/Button";
 import TextWithToggle from "@/component/CoreUI/TextWithToggle";
-import { FaChartBar, FaShare } from "react-icons/fa";
-import { BiSolidPlaylist } from "react-icons/bi";
 import AddVideoToPlaylistDialog from "@/component/playlist/AddVideoToPlaylistDialog";
+import { addVideoToWatchHistory } from "@/store/slices/watchHistorySlice";
 
 export default function VideoPlayer() {
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const { videoId } = useParams();
   const [isShareVideoDialogOpen, setIsShareVideoDialogOpen] = useState(false);
@@ -59,10 +61,17 @@ export default function VideoPlayer() {
     await handleFetchChannelAction(username);
   };
 
+  // fetch video and add video to user watch history
   useEffect(() => {
-    fetchVideo();
+    (async () => {
+      await fetchVideo();
+      if (video) {
+        await dispatch(addVideoToWatchHistory(video?._id));
+      }
+    })();
   }, [videoId]);
 
+  // fetch channel details of the video owner
   useEffect(() => {
     if (video?.owner?.username && !isFetchingVideo && video) {
       fetchChannel(video?.owner?.username);
@@ -86,27 +95,27 @@ export default function VideoPlayer() {
           <div className="w-full">
             {/* video player */}
             {isFetchingVideo || !video ? (
-              <Skeleton className="md:h-[400px] sm:h-[300px] h-[250px] w-full rounded-lg" />
+              <Skeleton className="md:h-[400px] sm:h-[300px] h-[180px] w-full rounded-lg" />
             ) : (
               <video
                 src={video?.videoFile?.url}
-                className="md:h-[400px] sm:h-[300px] w-full shadow-[10px_25px_150px_#e3e3e3] dark:shadow-[10px_25px_150px_#252525]"
+                className="md:h-[400px] sm:h-[300px] h-[180px] w-full shadow-[10px_25px_150px_#e3e3e3] dark:shadow-[10px_25px_150px_#252525]"
                 controls
               />
             )}
 
             {/* video details */}
-            <div className="w-full flex flex-col gap-5 md:px-3 max-md:px-3.5">
+            <div className="w-full flex flex-col gap-5 md:px-3 max-md:px-3.5 pt-3">
               {/* title */}
               {isFetchingVideo || !video ? (
                 <Skeleton className="w-[80%] h-8 mt-5" />
               ) : (
-                <h2 className="text-[20px] font-Noto_sans font-[600] text-[#0F0F0F] dark:text-[#F1F1F1]">
+                <h2 className="md:text-[20px] text-[18px] font-Noto_sans md:font-[600] font-[500] text-[#0F0F0F] dark:text-[#F1F1F1]">
                   {video.title}
                 </h2>
               )}
               {/* channel details */}
-              <div className="flex md:justify-between md:items-center max-md:flex-col max-md:gap-10">
+              <div className="flex md:justify-between md:items-center max-md:flex-col max-md:gap-7">
                 {isFetchingChannel || !channel || channelFetchingError ? (
                   <div className="flex-grow flex gap-2">
                     <Skeleton className="size-10 rounded-full" />
@@ -118,7 +127,7 @@ export default function VideoPlayer() {
                       <Avatar
                         fullName={channel?.fullName}
                         url={channel?.avatar?.url}
-                        className="size-10"
+                        className="size-10 flex-shrink-0"
                         onClick={() =>
                           navigate(`/c/${channel?.username}`, {
                             state: { channel },
@@ -126,7 +135,7 @@ export default function VideoPlayer() {
                         }
                       />
                       <div className="flex flex-col flex-grow truncate">
-                        <h3 className="text-[16px] font-Noto_sans font-[600] text-[#0F0F0F] dark:text-[#F1F1F1] leading-4 w-full truncate">
+                        <h3 className="md:text-base text-[15px] font-Noto_sans font-[600] text-[#0F0F0F] dark:text-[#F1F1F1] leading-[18px] w-full truncate">
                           {channel?.fullName}
                         </h3>
                         <p className="text-[13px] text-zinc-600 dark:text-[#AAAAAA] font-semibold leading-0 truncate">
@@ -156,7 +165,7 @@ export default function VideoPlayer() {
 
                 {/* like, share, and save to playlist button */}
                 {!isFetchingVideo && video && (
-                  <div className="flex gap-3 max-md:w-full max-md:whitespace-nowrap max-md:overflow-x-scroll max-md:no-scrollbar">
+                  <div className="flex gap-3 pl-3 max-md:w-full max-md:whitespace-nowrap max-md:overflow-x-scroll max-md:no-scrollbar">
                     {/* like button */}
                     <LikeBtn
                       contentId={video._id}

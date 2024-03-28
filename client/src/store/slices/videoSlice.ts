@@ -145,6 +145,7 @@ const videoSlice = createSlice({
       .addCase(getVideoByVideoId.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.video = null
       })
       .addCase(getVideoByVideoId.fulfilled, (state, action) => {
         state.loading = false;
