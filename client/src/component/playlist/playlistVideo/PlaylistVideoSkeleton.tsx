@@ -2,7 +2,7 @@ import Skeleton from "@/component/Skeleton";
 
 export default function PlaylistVideoSkeleton() {
   return (
-    <div className="w-full flex gap-3 p-3 rounded-lg">
+    <div className="w-full flex gap-3 p-3 md:pl-8 pl-6 rounded-lg">
       <Skeleton className="w-[160px] h-[90px] rounded-lg" />
       <div className="flex flex-col gap-3 flex-grow h-full">
         <Skeleton className="lg:w-[80%] w-[95%] h-5" />
