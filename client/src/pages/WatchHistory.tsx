@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { twMerge } from "tailwind-merge";
 
 import { AppDispatch, RootState } from "@/store/store";
 import Layout from "@/layout/Layout";
-import { getWatchHistory } from "@/store/slices/watchHistorySlice";
 import ScrollPagination from "@/component/ScrollPagination";
+import { getWatchHistory } from "@/store/slices/watchHistorySlice";
 import ErrorDialog from "@/component/error/ErrorDialog";
-import PlaylistVideoSkeleton from "@/component/playlist/playlistVideo/PlaylistVideoSkeleton";
-import { twMerge } from "tailwind-merge";
 import WatchHistoryVideoCard from "@/component/watchHistory/WatchHistoryVideoCard";
-import ClearWatchHistory from "@/component/settings/ClearWatchHistory";
-import ToggleWatchHistoryPauseStatus from "@/component/settings/ToggleWatchHistoryPauseStatus";
+import WatchHistoryVideoSkeleton from "@/component/watchHistory/WatchHistoryVideoSkeleton";
+import ClearWatchHistory from "@/component/settings/watchHistory/ClearWatchHistory";
+import ToggleWatchHistoryPauseStatus from "@/component/settings/watchHistory/ToggleWatchHistoryPauseStatus";
 
 export default function WatchHistory() {
   const dispatch: AppDispatch = useDispatch();
@@ -29,10 +29,7 @@ export default function WatchHistory() {
   };
 
   useEffect(() => {
-    if (currentPage === 0) {
-      handleFetchWatchHistory(1);
-    }
-    return;
+    handleFetchWatchHistory(1);
   }, []);
   return (
     <Layout className="flex flex-col gap-7 max-lg:gap-5 md:px-7 md:py-5 p-3.5">
@@ -85,13 +82,13 @@ export default function WatchHistory() {
           )}
           {loading &&
             Array.from({ length: 10 }).map((_, idx) => (
-              <PlaylistVideoSkeleton key={idx} />
+              <WatchHistoryVideoSkeleton key={idx} />
             ))}
         </ScrollPagination>
 
         {/* watch history settings */}
         {!error && (
-          <div className="lg:w-[400px] w-full h-fit bg-slate-50 dark:bg-[#252525] rounded-md lg:sticky lg:top-[88px] lg:py-24 lg:pl-5 py-3">
+          <div className="lg:w-[470px] w-full h-fit bg-slate-50 dark:bg-[#252525] rounded-md lg:sticky lg:top-[88px] lg:py-24 lg:px-5 px-3 py-3">
             <div className="flex flex-col justify-start items-start gap-3">
               <ClearWatchHistory />
               <ToggleWatchHistoryPauseStatus />

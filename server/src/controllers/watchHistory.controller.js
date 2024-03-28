@@ -11,29 +11,28 @@ const addVideoToWatchHistory = asyncHandler(async (req, res) => {
 
     // Check if Invalid videoId
     if (!isValidObjectId(videoId)) {
-        throw new ApiError(400, "Invalid videoId!")
+        throw new ApiError(400, "Invalid videoId!");
     }
 
-    // if the video is already in the watched history for today, remove it and create another
+    // Set today's date
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const existingWatchedVideo = await WatchHistory.findOne({
+
+    // Check if the video is already in the watched history for today, remove it and create another
+    await WatchHistory.deleteOne({
         videoId,
         owner: userId,
         createdAt: { $gte: today }
     });
-    if (existingWatchedVideo) {
-        await existingWatchedVideo.deleteOne()
-    }
 
     // Create a new VideoHistory document
     const videoHistory = await WatchHistory.create({
         videoId,
         owner: userId
-    })
+    });
 
     if (!videoHistory) {
-        throw new ApiError(500, "Something went wrong while adding video to watch history")
+        throw new ApiError(500, "Something went wrong while adding video to watch history");
     }
 
     return res.status(200).json(
@@ -95,7 +94,6 @@ const toggleWatchHistoryPauseStatus = asyncHandler(async (req, res) => {
         `Watch history pause status toggled successfully: ${user.watchHistoryPaused ? 'Paused' : 'Resumed'}`
     ));
 });
-
 
 // get watch history videos
 const getWatchHistoryVideos = asyncHandler(async (req, res) => {

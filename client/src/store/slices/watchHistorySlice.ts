@@ -139,7 +139,13 @@ const watchHistorySlice = createSlice({
       .addCase(getWatchHistory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch watch history";
-      });
+      })
+
+      .addCase(clearWatchHistory.fulfilled, (state) => {
+        state.watchHistories = []
+        state.totalVideos = 0;
+        state.totalPages = 1
+      })
   },
 });
 
