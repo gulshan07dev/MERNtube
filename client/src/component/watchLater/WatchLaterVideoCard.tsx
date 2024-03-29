@@ -90,7 +90,7 @@ const WatchLaterVideoCard = ({ video }: { video: Video }) => {
             className="bg-red-500 text-sm text-white font-roboto hover:opacity-75 w-full py-2"
             onClick={() => setIsShowVideoRemoveConfirmDialog((prev) => !prev)}
           >
-            Remove from History
+            Remove from watch later
           </Button>
 
           <Button

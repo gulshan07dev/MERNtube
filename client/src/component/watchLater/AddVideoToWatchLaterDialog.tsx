@@ -38,7 +38,7 @@ export default function AddVideoToWatchLaterDialog({
           Cancel
         </Button>
       }
-      submitLabel="Add Video to watch later"
+      submitLabel="Add to watch later"
       onSubmit={handleAddVideoToWatchLater}
       isLoading={isLoading}
     />
