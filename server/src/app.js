@@ -13,7 +13,8 @@ app.use(express.static("public"))
 // import routes
 import userRouter from "./routes/user.routes.js"
 import videoRouter from "./routes/video.routes.js"
-import WatchedHistoryRouter from "./routes/watchHistory.routes.js";
+import WatchHistoryRouter from "./routes/watchHistory.routes.js";
+import WatchLaterRouter from "./routes/watchLater.routes.js";
 import commentRouter from "./routes/comment.routes.js"
 import likeRouter from "./routes/like.routes.js"
 import tweetRouter from "./routes/tweet.routes.js"
@@ -25,7 +26,8 @@ import healthcheckRouter from "./routes/healthcheck.routes.js"
 // routes declarations
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/videos", videoRouter);
-app.use("/api/v1/watch_history", WatchedHistoryRouter);
+app.use("/api/v1/watch_history", WatchHistoryRouter);
+app.use("/api/v1/watch_later", WatchLaterRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/likes", likeRouter);
 app.use("/api/v1/tweets", tweetRouter);

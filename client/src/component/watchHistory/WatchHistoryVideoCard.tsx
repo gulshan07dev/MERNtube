@@ -13,9 +13,10 @@ import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import Button from "@/component/CoreUI/Button";
 import ShareDialog from "@/component/ShareDialog";
 import useActionHandler from "@/hooks/useActionHandler";
+import AddVideoToWatchLaterDialog from "../watchLater/AddVideoToWatchLaterDialog";
+import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 import Modal from "@/component/CoreUI/Modal";
 import { removeVideoToWatchHistory } from "@/store/slices/watchHistorySlice";
-import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 
 const WatchHistoryVideoCard = ({
   video,
@@ -24,6 +25,10 @@ const WatchHistoryVideoCard = ({
   video: Video;
   historyId: string;
 }) => {
+   const [
+     isShowAddVideoToWatchLaterDialog,
+     setIsShowAddVideoToWatchLaterDialog
+   ] = useState(false);
   const [isShowAddVideoToPlaylistDialog, setIsShowAddVideoToPlaylistDialog] =
     useState(false);
   const [isVideoRemovedFromHistory, setIsVideoRemovedFromHistory] =
@@ -90,6 +95,7 @@ const WatchHistoryVideoCard = ({
           <Button
             icon={<AiOutlineClockCircle />}
             className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
+            onClick={() => setIsShowAddVideoToWatchLaterDialog((prev) => !prev)}
           >
             Save to Watch Later
           </Button>
@@ -119,6 +125,11 @@ const WatchHistoryVideoCard = ({
           </Button>
         </div>
       </DropdownMenu>
+      <AddVideoToWatchLaterDialog
+        open={isShowAddVideoToWatchLaterDialog}
+        handleClose={() => setIsShowAddVideoToWatchLaterDialog(false)}
+        videoId={video?._id}
+      />
       <AddVideoToPlaylistDialog
         videoId={video?._id}
         open={isShowAddVideoToPlaylistDialog}

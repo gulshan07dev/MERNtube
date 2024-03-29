@@ -3,6 +3,7 @@ import authSlice from "./slices/authSlice";
 import subscriptionSlice from "./slices/subscriptionSlice";
 import videoSlice from "./slices/videoSlice";
 import watchHistorySlice from "./slices/watchHistorySlice";
+import watchLaterSlice from "./slices/watchLaterSlice";
 import tweetSlice from "./slices/tweetSlice";
 import playlistSlice from "./slices/playlistSlice";
 import likeSlice from "./slices/likeSlice";
@@ -15,11 +16,12 @@ const store = configureStore({
         auth: authSlice,
         subscription: subscriptionSlice,
         video: videoSlice,
-        tweet: tweetSlice,
         watch_history: watchHistorySlice,
-        playlist: playlistSlice,
+        watch_later: watchLaterSlice,
+        tweet: tweetSlice,
         like: likeSlice,
         comment: commentSlice,
+        playlist: playlistSlice,
         sidebar: sidebarSlice,
         appLoading: appLoadingSlice
     },

@@ -12,10 +12,15 @@ import Avatar from "../CoreUI/Avatar";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
 import ShareDialog from "../ShareDialog";
+import AddVideoToWatchLaterDialog from "../watchLater/AddVideoToWatchLaterDialog";
 import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 
 const VideoCard = ({ data }: { data: Video }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [
+    isShowAddVideoToWatchLaterDialog,
+    setIsShowAddVideoToWatchLaterDialog,
+  ] = useState(false);
   const [isShowAddVideoToPlaylistDialog, setIsShowAddVideoToPlaylistDialog] =
     useState(false);
   const [isShowShareDialog, setIsShowShareDialog] = useState(false);
@@ -53,7 +58,10 @@ const VideoCard = ({ data }: { data: Video }) => {
           </div>
           <DropdownMenu
             triggerButton={
-              <Button btnType="icon-btn" className="hidden group-hover/item:block max-md:block">
+              <Button
+                btnType="icon-btn"
+                className="hidden group-hover/item:block max-md:block"
+              >
                 <FiMoreVertical size={15} />
               </Button>
             }
@@ -62,6 +70,9 @@ const VideoCard = ({ data }: { data: Video }) => {
               <Button
                 icon={<AiOutlineClockCircle />}
                 className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
+                onClick={() =>
+                  setIsShowAddVideoToWatchLaterDialog((prev) => !prev)
+                }
               >
                 Save to Watch Later
               </Button>
@@ -85,6 +96,11 @@ const VideoCard = ({ data }: { data: Video }) => {
               </Button>
             </div>
           </DropdownMenu>
+          <AddVideoToWatchLaterDialog
+            open={isShowAddVideoToWatchLaterDialog}
+            handleClose={() => setIsShowAddVideoToWatchLaterDialog(false)}
+            videoId={data?._id}
+          />
           <AddVideoToPlaylistDialog
             videoId={data?._id}
             open={isShowAddVideoToPlaylistDialog}

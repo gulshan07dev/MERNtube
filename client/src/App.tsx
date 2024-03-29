@@ -22,6 +22,7 @@ import Settings from "./pages/Settings";
 import PlaylistVideos from "./pages/PlaylistVideos";
 import VideoPlayer from "./pages/VideoPlayer ";
 import WatchHistory from "./pages/WatchHistory";
+import WatchLater from "./pages/WatchLater";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -88,6 +89,9 @@ function App() {
 
         {/* watch history */}
         <Route path="/history" element={<WatchHistory />} />
+
+        {/* watch later */}
+        <Route path="/watch-later" element={<WatchLater />} />
       </Route>
 
       {/* Authentication routes */}
