@@ -23,6 +23,7 @@ import PlaylistVideos from "./pages/PlaylistVideos";
 import VideoPlayer from "./pages/VideoPlayer ";
 import WatchHistory from "./pages/WatchHistory";
 import WatchLater from "./pages/WatchLater";
+import LikedVideos from "./pages/LikedVideos";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -92,6 +93,9 @@ function App() {
 
         {/* watch later */}
         <Route path="/watch-later" element={<WatchLater />} />
+
+        {/* liked videos */}
+        <Route path="/liked-videos" element={<LikedVideos />} />
       </Route>
 
       {/* Authentication routes */}

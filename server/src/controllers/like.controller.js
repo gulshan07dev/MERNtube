@@ -123,12 +123,16 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 
 // get user liked videos
 const getLikedVideos = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
     const userId = req.user._id;
 
-    const likes = await Like.aggregate([
+    const aggregate = Like.aggregate([
         {
             $match: {
-                owner: new Types.ObjectId(userId)
+                $and: [
+                    { owner: new Types.ObjectId(userId) },
+                    { "video": { "$exists": true } }
+                ]
             }
         },
         {
@@ -164,14 +168,37 @@ const getLikedVideos = asyncHandler(async (req, res) => {
                     }
                 ]
             }
+        },
+        {
+            $sort: {
+                createdAt: -1
+            }
+        },
+        {
+            $addFields: {
+                likedVideos: {
+                    $first: "$likedVideos"
+                }
+            }
+        },
+        {
+            $project: {
+                likedVideos: 1
+            }
         }
     ])
 
-    return res.status(200).json(new ApiResponse(
-        200,
-        { likedVideos: likes[0]?.likedVideos || {} },
-        "Liked Videos fetched successfully"
-    ))
+    Like.aggregatePaginate(aggregate, { page, limit })
+        .then(function (result) {
+            return res.status(200).json(new ApiResponse(
+                200,
+                { result },
+                "Liked Videos fetched successfully"
+            ))
+        })
+        .catch(function (error) {
+            throw error
+        })
 })
 
 export {
