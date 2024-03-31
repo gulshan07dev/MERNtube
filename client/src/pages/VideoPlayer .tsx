@@ -23,6 +23,7 @@ import ErrorDialog from "@/component/error/ErrorDialog";
 import Button from "@/component/CoreUI/Button";
 import TextWithToggle from "@/component/CoreUI/TextWithToggle";
 import AddVideoToPlaylistDialog from "@/component/playlist/AddVideoToPlaylistDialog";
+import AddVideoToWatchLaterDialog from "@/component/watchLater/AddVideoToWatchLaterDialog";
 import { addVideoToWatchHistory } from "@/store/slices/watchHistorySlice";
 
 export default function VideoPlayer() {
@@ -32,6 +33,10 @@ export default function VideoPlayer() {
   const [isShareVideoDialogOpen, setIsShareVideoDialogOpen] = useState(false);
   const [isShowAddVideoToPlaylistDialog, setIsShowAddVideoToPlaylistDialog] =
     useState(false);
+  const [
+    isShowAddVideoToWatchLaterDialog,
+    setIsShowAddVideoToWatchLaterDialog,
+  ] = useState(false);
   const { video } = useSelector((state: RootState) => state?.video);
   const { channel, user } = useSelector((state: RootState) => state?.auth);
 
@@ -81,7 +86,7 @@ export default function VideoPlayer() {
   return (
     <Layout
       byDefaultSidebarHidden={true}
-      className="flex gap-6 max-xl:flex-col max-xl:gap-14 md:px-8 md:pt-7 max-md:pb-16 pb-3"
+      className="w-full flex gap-6 max-xl:flex-col max-xl:gap-14 md:px-8 md:pt-7 max-md:pb-16 pb-3"
     >
       {videoFetchingError ? (
         <ErrorDialog
@@ -92,7 +97,7 @@ export default function VideoPlayer() {
       ) : (
         <>
           {/* video and channel details */}
-          <div className="w-full">
+          <div className="xl:flex-grow w-full">
             {/* video player */}
             {isFetchingVideo || !video ? (
               <Skeleton className="md:h-[400px] sm:h-[300px] h-[180px] w-full rounded-lg" />
@@ -115,14 +120,14 @@ export default function VideoPlayer() {
                 </h2>
               )}
               {/* channel details */}
-              <div className="flex md:justify-between md:items-center max-md:flex-col max-md:gap-7">
+              <div className="flex lg:justify-between lg:items-center lg:gap-10 max-lg:flex-col max-lg:gap-7">
                 {isFetchingChannel || !channel || channelFetchingError ? (
                   <div className="flex-grow flex gap-2">
                     <Skeleton className="size-10 rounded-full" />
                     <Skeleton className="h-5 md:w-[40%] w-[70%]" />
                   </div>
                 ) : (
-                  <div className="flex items-center max-md:flex-grow max-md:w-full max-md:justify-between md:gap-4 gap-7">
+                  <div className="flex items-center max-md:w-full md:justify-start max-md:justify-between md:gap-3 gap-7">
                     <div className="flex gap-2.5 items-center flex-grow truncate">
                       <Avatar
                         fullName={channel?.fullName}
@@ -165,7 +170,7 @@ export default function VideoPlayer() {
 
                 {/* like, share, and save to playlist button */}
                 {!isFetchingVideo && video && (
-                  <div className="flex gap-3 pl-3 max-md:w-full max-md:whitespace-nowrap max-md:overflow-x-scroll max-md:no-scrollbar">
+                  <div className="flex gap-2 max-sm:gap-3 pl-3 w-fit max-md:w-full whitespace-nowrap max-md:overflow-x-scroll max-md:no-scrollbar">
                     {/* like button */}
                     <LikeBtn
                       contentId={video._id}
@@ -175,11 +180,11 @@ export default function VideoPlayer() {
                     />
                     {/* share button */}
                     <Button
-                      className="bg-slate-200 dark:bg-[#272727] text-black dark:text-white rounded-full hover:opacity-1 hover:bg-slate-300 dark:hover:bg-[#505050] max-md:py-2"
+                      className="bg-slate-200 dark:bg-[#272727] text-black dark:text-white rounded-full hover:opacity-1 hover:bg-slate-300 dark:hover:bg-[#505050] py-2"
                       icon={<FaShare />}
                       onClick={() => setIsShareVideoDialogOpen((prev) => !prev)}
                     >
-                      Share
+                      <span className="lg:hidden">Share</span>
                     </Button>
                     <ShareDialog
                       open={isShareVideoDialogOpen}
@@ -188,7 +193,7 @@ export default function VideoPlayer() {
                     />
                     {/* save to playlist button */}
                     <Button
-                      className="bg-slate-200 dark:bg-[#272727] text-black dark:text-white rounded-full hover:opacity-1 hover:bg-slate-300 dark:hover:bg-[#505050] max-md:py-2"
+                      className="bg-slate-200 dark:bg-[#272727] text-black dark:text-white rounded-full hover:opacity-1 hover:bg-slate-300 dark:hover:bg-[#505050] py-2"
                       icon={<BiSolidPlaylist />}
                       onClick={() =>
                         setIsShowAddVideoToPlaylistDialog((prev) => !prev)
@@ -200,6 +205,23 @@ export default function VideoPlayer() {
                       open={isShowAddVideoToPlaylistDialog}
                       handleClose={() =>
                         setIsShowAddVideoToPlaylistDialog(false)
+                      }
+                      videoId={video?._id}
+                    />
+                    {/* save to watch later */}
+                    <Button
+                      className="bg-slate-200 dark:bg-[#272727] text-black dark:text-white rounded-full hover:opacity-1 hover:bg-slate-300 dark:hover:bg-[#505050] py-2"
+                      icon={<BiSolidPlaylist />}
+                      onClick={() =>
+                        setIsShowAddVideoToWatchLaterDialog((prev) => !prev)
+                      }
+                    >
+                      Save to watch Later
+                    </Button>
+                    <AddVideoToWatchLaterDialog
+                      open={isShowAddVideoToWatchLaterDialog}
+                      handleClose={() =>
+                        setIsShowAddVideoToWatchLaterDialog(false)
                       }
                       videoId={video?._id}
                     />
