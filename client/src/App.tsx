@@ -24,6 +24,7 @@ import VideoPlayer from "./pages/VideoPlayer ";
 import WatchHistory from "./pages/WatchHistory";
 import WatchLater from "./pages/WatchLater";
 import LikedVideos from "./pages/LikedVideos";
+import SendFeedback from "./pages/SendFeedback";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -57,6 +58,9 @@ function App() {
     <Routes>
       {/* home page */}
       <Route path="/" element={<Home />} />
+
+      {/* send Feedback */}
+      <Route path="/send-feedback" element={<SendFeedback />} />
 
       {/* settings */}
       <Route path="/settings" element={<Settings />} />
