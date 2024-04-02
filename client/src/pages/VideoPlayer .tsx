@@ -70,7 +70,7 @@ export default function VideoPlayer() {
   useEffect(() => {
     (async () => {
       await fetchVideo();
-      if (video) {
+      if (video && !user?.isWatchHistoryPaused) {
         await dispatch(addVideoToWatchHistory(video?._id));
       }
     })();

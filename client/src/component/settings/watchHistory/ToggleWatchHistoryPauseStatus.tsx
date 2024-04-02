@@ -1,13 +1,15 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { RootState } from "@/store/store";
+import { AppDispatch, RootState } from "@/store/store";
 import { useState } from "react";
 import ToggleButton from "../../CoreUI/ToggleButton";
 import useActionHandler from "@/hooks/useActionHandler";
 import { toggleWatchHistoryPauseStatus } from "@/store/slices/watchHistorySlice";
 import { FaPause, FaPlayCircle } from "react-icons/fa";
+import { getCurrentUser } from "@/store/slices/authSlice";
 
 export default function ToggleWatchHistoryPauseStatus() {
+  const dispatch:AppDispatch = useDispatch()
   const { user } = useSelector((state: RootState) => state?.auth);
   const [isWatchHistoryPaused, setIsWatchHistoryPaused] = useState(
     user?.isWatchHistoryPaused
@@ -23,7 +25,8 @@ export default function ToggleWatchHistoryPauseStatus() {
 
   const handleToggleWatchHistoryPauseStatus = async () => {
     const { isSuccess, error } = await handleAction();
-    if (isSuccess && !error) {
+    const res = await dispatch(getCurrentUser())
+    if (isSuccess && !error && res.payload.success) {
       setIsWatchHistoryPaused((prev) => !prev);
     }
   };

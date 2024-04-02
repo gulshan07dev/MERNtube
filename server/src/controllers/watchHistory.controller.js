@@ -7,11 +7,16 @@ import { Types, isValidObjectId } from "mongoose";
 // add video to watch history
 const addVideoToWatchHistory = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    const userId = req.user._id;
+    const {user} = req;
 
     // Check if Invalid videoId
     if (!isValidObjectId(videoId)) {
         throw new ApiError(400, "Invalid videoId!");
+    }
+
+    // Check if the option to add video to watch history is not allowed
+    if (user.isWatchHistoryPaused) {
+        throw new ApiError(400, "Please enable the watch history option.");
     }
 
     // Set today's date
@@ -21,14 +26,14 @@ const addVideoToWatchHistory = asyncHandler(async (req, res) => {
     // Check if the video is already in the watched history for today, remove it and create another
     await WatchHistory.deleteOne({
         videoId,
-        owner: userId,
+        owner: user._id,
         createdAt: { $gte: today }
     });
 
     // Create a new VideoHistory document
     const videoHistory = await WatchHistory.create({
         videoId,
-        owner: userId
+        owner: user._id
     });
 
     if (!videoHistory) {

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
@@ -11,6 +11,14 @@ import WatchHistoryVideoCard from "@/component/watchHistory/WatchHistoryVideoCar
 import WatchHistoryVideoSkeleton from "@/component/watchHistory/WatchHistoryVideoSkeleton";
 import ClearWatchHistory from "@/component/settings/watchHistory/ClearWatchHistory";
 import ToggleWatchHistoryPauseStatus from "@/component/settings/watchHistory/ToggleWatchHistoryPauseStatus";
+import { Video } from "@/store/slices/videoSlice";
+
+interface GroupedWatchHistories {
+  [key: string]: {
+    date: string;
+    videos: { video: Video; historyId: string }[];
+  };
+}
 
 export default function WatchHistory() {
   const dispatch: AppDispatch = useDispatch();
@@ -24,13 +32,58 @@ export default function WatchHistory() {
     hasNextPage,
   } = useSelector((state: RootState) => state.watch_history);
 
-  const handleFetchWatchHistory = async (page: number) => {
-    dispatch(getWatchHistory({ queryParams: { page, limit: 10 } }));
-  };
+  const [groupedWatchHistories, setGroupedWatchHistories] =
+    useState<GroupedWatchHistories>({});
+
+  const handleFetchWatchHistory = useCallback(
+    (page: number) => {
+      dispatch(getWatchHistory({ queryParams: { page, limit: 10 } }));
+    },
+    [dispatch]
+  );
+
+  const getFormattedDate = useCallback((createdAt: string): string => {
+    const date = new Date(createdAt);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return "Today";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return "Yesterday";
+    } else {
+      const diff = Math.floor(
+        (today.getTime() - date.getTime()) / (1000 * 3600 * 24)
+      );
+      if (diff < 7) {
+        return date.toLocaleDateString("en-US", { weekday: "long" });
+      } else {
+        return date.toLocaleDateString();
+      }
+    }
+  }, []);
 
   useEffect(() => {
     handleFetchWatchHistory(1);
   }, []);
+
+  useEffect(() => {
+    const grouped: GroupedWatchHistories = {};
+
+    watchHistories.forEach(
+      ({ watchHistoryVideo: video, _id: historyId, createdAt }) => {
+        const date = getFormattedDate(createdAt.toString());
+        if (!grouped[date]) {
+          grouped[date] = { date, videos: [] };
+        }
+        grouped[date].videos.push({ video, historyId });
+      }
+    );
+
+    setGroupedWatchHistories(grouped);
+  }, [watchHistories]);
+
   return (
     <Layout className="flex flex-col gap-7 max-lg:gap-5 md:px-7 md:py-5 p-3.5">
       <h1 className="text-4xl font-roboto font-semibold text-[#0F0F0F] dark:text-[#F1F1F1]">
@@ -38,7 +91,7 @@ export default function WatchHistory() {
       </h1>
 
       <div className="flex lg:gap-7 max-lg:flex-col-reverse max-lg:gap-5">
-        {/* history videos categrize with day/dates */}
+        {/* history videos categorized with day/dates */}
         <ScrollPagination
           paginationType="infinite-scroll"
           currentPage={currentPage}
@@ -70,13 +123,18 @@ export default function WatchHistory() {
               buttonOnClick={() => handleFetchWatchHistory(1)}
             />
           ) : (
-            watchHistories?.map(
-              ({ watchHistoryVideo: video, _id: historyId }, idx) => (
-                <WatchHistoryVideoCard
-                  key={idx}
-                  video={video}
-                  historyId={historyId}
-                />
+            Object.values(groupedWatchHistories).map(
+              ({ date, videos }, idx) => (
+                <div key={idx}>
+                  <h1 className="text-black dark:text-white text-lg">{date}</h1>
+                  {videos.map(({ video, historyId }, videoIdx) => (
+                    <WatchHistoryVideoCard
+                      key={videoIdx}
+                      video={video}
+                      historyId={historyId}
+                    />
+                  ))}
+                </div>
               )
             )
           )}
