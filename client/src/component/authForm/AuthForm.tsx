@@ -64,7 +64,7 @@ export default function AuthForm({
   }, [state]);
 
   return (
-    <div className="flex flex-col gap-3 justify-center w-[450px] max-w-[93%] before:content-[''] before:fixed before:z-0 before:h-[90vh] before:w-[12vw] before:bg-gradient-to-tr before:from-violet-400 before:via-violet-500 before:to-violet-300 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-45 before:opacity-55 after:content-[''] after:fixed after:z-[1] after:h-[100vh] after:w-[100vw] after:top-0 after:left-0 after:right-0 after:bottom-0 after:bg-transparent after:backdrop-blur-3xl">
+    <div className="flex flex-col gap-3 justify-center w-[450px] max-w-[93%] before:content-[''] before:fixed before:z-0 before:h-[90vh] before:w-[12vw] max-md:before:w-[25vw] before:bg-gradient-to-tr before:from-violet-400 before:via-violet-500 before:to-violet-300 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-45 md:before:opacity-55 before:opacity-70 after:content-[''] after:fixed after:z-[1] after:h-[100vh] after:w-[100vw] after:top-0 after:left-0 after:right-0 after:bottom-0 after:bg-transparent after:backdrop-blur-3xl">
       {/* showing error */}
       {error && <ErrorMessage errorMessage={error} />}
 
