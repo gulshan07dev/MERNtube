@@ -64,13 +64,13 @@ export default function AuthForm({
   }, [state]);
 
   return (
-    <div className="flex flex-col gap-3 justify-center w-[450px] max-w-[93%]">
+    <div className="flex flex-col gap-3 justify-center w-[450px] max-w-[93%] before:content-[''] before:fixed before:z-0 before:h-[90vh] before:w-[12vw] before:bg-gradient-to-tr before:from-violet-400 before:via-violet-500 before:to-violet-300 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-45 before:opacity-55 after:content-[''] after:fixed after:z-[1] after:h-[100vh] after:w-[100vw] after:top-0 after:left-0 after:right-0 after:bottom-0 after:bg-transparent after:backdrop-blur-3xl">
       {/* showing error */}
       {error && <ErrorMessage errorMessage={error} />}
 
       <form
         onSubmit={handleFormSubmit}
-        className="w-full shadow-3xl bg-white dark:bg-[#172227] border border-slate-300 dark:border-[#474747] rounded-xl md:py-8 py-7 pb-12 md:px-5 px-3.5 flex flex-col gap-7"
+        className="relative z-[2] w-full shadow-3xl bg-[#ffffffe5] dark:bg-[#172227b7] border border-transparent dark:border-[#474747] rounded-xl md:py-8 py-7 pb-12 md:px-5 px-3.5 flex flex-col gap-7"
       >
         <div className="flex flex-col gap-1 items-center mb-5">
           <Logo className="md:w-32" />
