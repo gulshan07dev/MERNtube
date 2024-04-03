@@ -37,6 +37,8 @@ export default function VideoPlayer() {
     isShowAddVideoToWatchLaterDialog,
     setIsShowAddVideoToWatchLaterDialog,
   ] = useState(false);
+  const [isVideoAddedToWatchHistory, setIsVideoAddedToWatchHistory] =
+    useState(false);
   const { video } = useSelector((state: RootState) => state?.video);
   const { channel, user } = useSelector((state: RootState) => state?.auth);
 
@@ -66,21 +68,33 @@ export default function VideoPlayer() {
     await handleFetchChannelAction(username);
   };
 
-  // fetch video and add video to user watch history
+  // fetch video
   useEffect(() => {
+    if (!videoId) {
+      return;
+    }
+    fetchVideo();
+  }, [videoId]);
+
+  // add video to watch history
+  useEffect(() => {
+    if (!videoId || !video || isFetchingVideo || isVideoAddedToWatchHistory) {
+      return;
+    }
     (async () => {
-      await fetchVideo();
-      if (video && !user?.isWatchHistoryPaused) {
-        await dispatch(addVideoToWatchHistory(video?._id));
+      const res = await dispatch(addVideoToWatchHistory(videoId));
+      if (res.payload.success) {
+        setIsVideoAddedToWatchHistory(true);
       }
     })();
-  }, [videoId]);
+  }, [videoId, video?._id, isFetchingVideo, isVideoAddedToWatchHistory]);
 
   // fetch channel details of the video owner
   useEffect(() => {
-    if (video?.owner?.username && !isFetchingVideo && video) {
-      fetchChannel(video?.owner?.username);
+    if (!video?.owner?.username || isFetchingVideo) {
+      return;
     }
+    fetchChannel(video?.owner?.username);
   }, [isFetchingVideo, video?.owner?.username]);
 
   return (

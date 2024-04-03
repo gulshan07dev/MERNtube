@@ -1,4 +1,5 @@
 import { WatchHistory } from "../models/WatchHistory.model.js";
+import { Video } from "../models/video.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
@@ -12,6 +13,12 @@ const addVideoToWatchHistory = asyncHandler(async (req, res) => {
     // Check if Invalid videoId
     if (!isValidObjectId(videoId)) {
         throw new ApiError(400, "Invalid videoId!");
+    }
+
+    // Check video exist or not
+    const isVideoExist = await Video.findById(videoId)
+    if(!isVideoExist) {
+        throw new ApiError(404, "Video not found!")
     }
 
     // Check if the option to add video to watch history is not allowed
