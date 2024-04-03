@@ -24,7 +24,7 @@ export default function SendFeedback() {
   return (
     <Layout
       byDefaultSidebarHidden={true}
-      className="min-h-full flex items-start justify-between lg:gap-10 gap-12 lg:px-14 lg:py-10 max-lg:flex-col p-5 pt-12 pb-20 relative inset-0 w-full bg-[linear-gradient(to_right,#eeeeee_1px,transparent_1px),linear-gradient(to_bottom,#eeeeee_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#5e5e5e,transparent_1px),linear-gradient(to_bottom,#5e5e5e,transparent_1px)] bg-[size:50px_50px] bg-fixed"
+      className="min-h-full flex items-start justify-between lg:gap-10 gap-12 lg:px-14 lg:py-10 max-lg:flex-col p-5 pt-12 pb-20 w-full bg-[linear-gradient(to_right,#eeeeee_1px,transparent_1px),linear-gradient(to_bottom,#eeeeee_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#5e5e5e,transparent_1px),linear-gradient(to_bottom,#5e5e5e,transparent_1px)] bg-[size:50px_50px] bg-fixed before:content-[''] before:fixed before:z-0 before:h-[90vh] before:w-[12vw] max-md:before:w-[25vw] before:bg-gradient-to-tr before:from-violet-400 before:via-violet-500 before:to-violet-300 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:blur-3xl before:rotate-45 before:opacity-25 dark:before:opacity-35"
     >
       <div className="lg:w-1/2 w-full flex flex-col gap-12 items-start justify-center lg:sticky lg:top-20 h-fit">
         <p className="text-2xl max-md:text-lg font-extralight bg-gradient-to-tl from-gray-500 via-gray-600 to-gray-700 dark:from-slate-50 dark:via-slate-100 dark:to-white bg-clip-text text-transparent">
@@ -39,7 +39,7 @@ export default function SendFeedback() {
           have. Together, let's make Merntube even better!
         </p>
       </div>
-      <div className="w-full lg:w-[45%] max-w-[600px]">
+      <div className="relative dark:static  w-full lg:w-[45%] max-lg:max-w-[600px]">
         <Form
           title="Send Feedback"
           description="Share Your Experience with Merntube!"
