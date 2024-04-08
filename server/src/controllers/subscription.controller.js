@@ -53,6 +53,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 // get subscriber list of a channel
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     const { channelId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
 
     // check if Invalid channelId
     if (!isValidObjectId(channelId)) {
@@ -65,7 +66,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Channel not find!");
     }
 
-    const subscriptions = await Subscription.aggregate([
+    const aggregate = Subscription.aggregate([
         {
             $match: {
                 channel: new Types.ObjectId(channelId)
@@ -76,7 +77,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
                 from: "users",
                 localField: "subscriber",
                 foreignField: "_id",
-                as: "subscriberLists",
+                as: "subscriberList",
                 pipeline: [
                     {
                         $project: {
@@ -90,23 +91,36 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
-                subscriberLists: {
-                    $first: "$subscriberLists"
+                subscriberList: {
+                    $first: "$subscriberList"
                 }
+            }
+        },
+        {
+            $project: {
+                subscriberList: 1
             }
         }
     ])
 
-    return res.status(200).json(new ApiResponse(
-        200,
-        { subscriberLists: subscriptions[0]?.subscriberLists || [] },
-        "Subscriber lists fetched successfully"
-    ))
+    Subscription.aggregatePaginate(aggregate, { page, limit })
+        .then(function (result) {
+
+            return res.status(200).json(new ApiResponse(
+                200,
+                { result },
+                "Subscriber lists fetched successfully"
+            ))
+        })
+        .catch(function (error) {
+            throw error
+        })
 })
 
 // get channel list to which user has subscribed
 const getSubscribedChannels = asyncHandler(async (req, res) => {
     const { subscriberId } = req.params;
+    const {page = 1, limit = 10} = req.query;
 
     // check if Invalid subscriberId
     if (!isValidObjectId(subscriberId)) {
@@ -119,7 +133,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Subscriber not find!");
     }
 
-    const subscriptions = await Subscription.aggregate([
+    const aggregate = Subscription.aggregate([
         {
             $match: {
                 subscriber: new Types.ObjectId(subscriberId)
@@ -130,7 +144,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
                 from: "users",
                 localField: "channel",
                 foreignField: "_id",
-                as: "subscribedChannelLists",
+                as: "subscribedChannelList",
                 pipeline: [
                     {
                         $project: {
@@ -144,17 +158,28 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
-                subscribedChannelLists: {
-                    $first: "$subscribedChannelLists"
+                subscribedChannelList: {
+                    $first: "$subscribedChannelList"
                 }
+            }
+        },
+        {
+            $project: {
+                subscribedChannelList: 1
             }
         }
     ])
 
-    return res.status(200).json(new ApiResponse(
-        200,
-        { subscribedChannelLists: subscriptions[0]?.subscribedChannelLists || [] }
-    ))
+    Subscription.aggregatePaginate(aggregate, {page, limit})
+    .then(function (result) {
+        return res.status(200).json(new ApiResponse(
+            200,
+            { result }
+        ))
+    })
+    .catch(function (error) {
+        throw error
+    })
 })
 
 export {

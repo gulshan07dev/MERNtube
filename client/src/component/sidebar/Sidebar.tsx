@@ -39,7 +39,7 @@ const Sidebar = ({
       {
         label: "Subscriptions",
         icon: <TfiVideoClapper />,
-        slug: "/subscriptions",
+        slug: "/feed/subscriptions",
         active: true,
       },
       {
@@ -75,7 +75,7 @@ const Sidebar = ({
       {
         label: "History",
         icon: <RiHistoryFill />,
-        slug: "/history",
+        slug: "/feed/history",
         active: true,
       },
       {

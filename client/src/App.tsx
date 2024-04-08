@@ -25,6 +25,7 @@ import WatchHistory from "./pages/WatchHistory";
 import WatchLater from "./pages/WatchLater";
 import LikedVideos from "./pages/LikedVideos";
 import SendFeedback from "./pages/SendFeedback";
+import Subscriptions from "./pages/Subscriptions";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -70,6 +71,9 @@ function App() {
         {/* account */}
         <Route path="/account" element={<Account />} />
 
+        {/* subscriptions */}
+        <Route path="/feed/subscriptions" element={<Subscriptions />} />
+
         {/* channel */}
         <Route path="/c/:username" element={<ChannelLayout />}>
           <Route path="" element={<Channel />} />
@@ -93,7 +97,7 @@ function App() {
         <Route path="/watch/:videoId" element={<VideoPlayer />} />
 
         {/* watch history */}
-        <Route path="/history" element={<WatchHistory />} />
+        <Route path="/feed/history" element={<WatchHistory />} />
 
         {/* watch later */}
         <Route path="/watch-later" element={<WatchLater />} />
