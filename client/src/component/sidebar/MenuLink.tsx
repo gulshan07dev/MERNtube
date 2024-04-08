@@ -1,15 +1,15 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import { resetBydefault } from "@/store/slices/sidebarSlice";
+import { onClose } from "@/store/slices/sidebarSlice";
+import { RootState } from "@/store/store";
 
 interface MenuLinkProps {
   label: string;
   icon: React.ReactElement;
   slug: string;
-  isLabelHiddenClassName: string;
   className?: string;
 }
 
@@ -17,15 +17,12 @@ export default function MenuLink({
   label,
   icon,
   slug,
-  isLabelHiddenClassName,
   className,
 }: MenuLinkProps) {
   const dispatch = useDispatch();
+  const { isOpen } = useSelector((state: RootState) => state.sidebar);
   return (
-    <NavLink
-      to={`${slug}`}
-      onClick={() => dispatch(resetBydefault())}
-    >
+    <NavLink to={`${slug}`} onClick={() => isOpen && dispatch(onClose())}>
       {({ isActive }) => (
         <button
           className={twMerge(
@@ -48,7 +45,7 @@ export default function MenuLink({
               isActive
                 ? "text-zinc-950 dark:text-white"
                 : "text-zinc-700 dark:text-slate-50"
-            } ${className} max-md:block ${isLabelHiddenClassName}`}
+            } ${className}`}
           >
             {label}
           </span>

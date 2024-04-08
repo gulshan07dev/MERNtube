@@ -8,12 +8,16 @@ import Avatar from "../CoreUI/Avatar";
 import Button from "../CoreUI/Button";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import LogoutBtn from "./LogoutBtn";
-import SidebarToggleBtn from "./SidebarToggleBtn";
+import SidebarToggleBtn from "../sidebar/SidebarToggleBtn";
 
 import type { RootState } from "@/store/store";
 import Skeleton from "../Skeleton";
 
-const Navbar = () => {
+const Navbar = ({
+  showSidebarToggleBtn,
+}: {
+  showSidebarToggleBtn: boolean;
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user: appLoading } = useSelector(
@@ -30,7 +34,9 @@ const Navbar = () => {
     >
       {/* Left Section */}
       <div className="flex items-center gap-3">
-        <SidebarToggleBtn />
+        <SidebarToggleBtn
+          className={showSidebarToggleBtn ? "lg:block" : "lg:hidden"}
+        />
         <Logo />
       </div>
 

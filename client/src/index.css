@@ -34,34 +34,51 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
-.thin-scrollbar::-webkit-scrollbar {
-  width: 1px;
+/* Hide scrollbar by default */
+.scrollbar-show-on-hover::-webkit-scrollbar {
+  width: 0;
 }
 
-.thin-scrollbar::-webkit-scrollbar-thumb {
+/* Show scrollbar on hover */
+.scrollbar-show-on-hover:hover::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Keep scrollbar gutter stable */
+.scrollbar-show-on-hover {
+  scrollbar-gutter: stable;
+}
+
+/* Customize scrollbar thumb */
+.scrollbar-show-on-hover::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Customize scrollbar thumb on hover */
+.scrollbar-show-on-hover:hover::-webkit-scrollbar-thumb {
   background: #adadadaf;
   border-radius: 1px;
 }
 
-body.dark .thin-scrollbar::-webkit-scrollbar-thumb {
+/* Dark mode customization */
+body.dark .scrollbar-show-on-hover:hover::-webkit-scrollbar-thumb {
   background: #b4b4b4;
-  border-radius: 1px;
 }
 
 @media screen and (min-width: 768px) {
   ::-webkit-scrollbar {
-      width: 6px;
-    }
-  
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-  
-    ::-webkit-scrollbar-thumb {
-      background: #cc02ff;
-    }
-  
-    body.dark ::-webkit-scrollbar-thumb {
-      background: #b8b8b8;
-    }
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cc02ff;
+  }
+
+  body.dark ::-webkit-scrollbar-thumb {
+    background: #b8b8b8;
+  }
 }

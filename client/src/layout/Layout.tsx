@@ -17,11 +17,11 @@ const Layout: React.FC<LayoutProps> = ({
   children,
   className,
   showNavigationBar = true,
-  byDefaultSidebarHidden
+  byDefaultSidebarHidden = false
 }) => {
   return showNavigationBar ? (
     <>
-      <Navbar />
+      <Navbar showSidebarToggleBtn={byDefaultSidebarHidden} />
       <div
         style={{ height: `calc(100vh - ${navHeight})` }}
         className="w-full bg-white_bg dark:bg-dark_bg relative flex overflow-y-scroll"
