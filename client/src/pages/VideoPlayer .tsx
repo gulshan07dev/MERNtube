@@ -15,7 +15,7 @@ import { getChannel } from "@/store/slices/authSlice";
 import { toggleVideoLike } from "@/store/slices/likeSlice";
 import LikeBtn from "@/component/CoreUI/LikeBtn";
 import ShareDialog from "@/component/ShareDialog";
-import SubscribeBtn from "@/component/channel/SubscribeBtn";
+import SubscribeBtn from "@/component/subscription/SubscribeBtn";
 import CommentBox from "@/component/comment/CommentBox";
 import Skeleton from "@/component/Skeleton";
 import Avatar from "@/component/CoreUI/Avatar";

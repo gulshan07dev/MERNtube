@@ -9,7 +9,7 @@ import ScrollPagination from "@/component/ScrollPagination";
 import ErrorDialog from "@/component/error/ErrorDialog";
 import Avatar from "@/component/CoreUI/Avatar";
 import { getSubscribedChannels } from "@/store/slices/subscriptionSlice";
-import SubscribeBtn from "@/component/channel/SubscribeBtn";
+import SubscribeBtn from "@/component/subscription/SubscribeBtn";
 
 export default function Subscriptions() {
   const dispatch: AppDispatch = useDispatch();
@@ -36,7 +36,7 @@ export default function Subscriptions() {
 
   useEffect(() => {
     handleFetchSubscribedChannelLists(1);
-  }, []);
+  }, [user?._id]);
   return (
     <Layout className="md:px-7 md:py-5 p-3.5">
       <ScrollPagination
@@ -73,32 +73,34 @@ export default function Subscriptions() {
             </h1>
             {subscribedChannelLists.map(
               ({ subscribedChannelList: channel }) => (
-               
-                  <div
-                    key={channel?._id}
-                    className="w-full flex gap-3 py-3 px-2 rounded-full hover:bg-slate-100 dark:hover:bg-[#272727]"
+                <div
+                  key={channel?._id}
+                  className="w-full flex gap-3 py-3 px-2 truncate rounded-full hover:bg-slate-100 dark:hover:bg-[#272727]"
+                >
+                  <Link
+                    to={`/c/${channel?.username}`}
+                    className="flex flex-grow gap-3 truncate"
                   >
-                    <Link to={`/c/${channel?.username}`} className="flex flex-grow gap-3">
-                      <Avatar
-                        fullName={channel?.fullName}
-                        url={channel?.avatar?.url}
-                        className="md:h-14 md:w-14 w-10 h-10 flex-shrink-0"
-                      />
-                      <div className="flex flex-grow flex-col gap-1">
-                        <p className="md:text-[15px] text-[13px] leading-none text-gray-600 dark:text-[#AAAAAA] font-nunito_sans font-semibold">
-                          {channel?.username}
-                        </p>
-                        <h2 className="md:text-2xl text-lg text-[#606060] dark:text-[#F1F1F1] font-roboto font-normal leading-tight">
-                          {channel?.fullName}
-                        </h2>
-                      </div>
-                    </Link>
-                    <SubscribeBtn
-                      channelId={channel?._id}
-                      isSubscribed={true}
+                    <Avatar
+                      fullName={channel?.fullName}
+                      url={channel?.avatar?.url}
+                      className="md:h-14 md:w-14 w-10 h-10 flex-shrink-0"
                     />
-                  </div>
-               
+                    <div className="flex flex-grow flex-col gap-1 truncate">
+                      <p className="md:text-[15px] text-[13px] leading-none text-gray-600 dark:text-[#AAAAAA] font-nunito_sans font-semibold truncate">
+                        {channel?.username}
+                      </p>
+                      <h2 className="md:text-2xl text-base text-[#606060] dark:text-[#F1F1F1] font-roboto font-normal leading-tight truncate">
+                        {channel?.fullName}
+                      </h2>
+                    </div>
+                  </Link>
+                  <SubscribeBtn
+                    channelId={channel?._id}
+                    isSubscribed={true}
+                    className="max-sm:text-[13px] max-sm:py-1.5 max-sm:px-3"
+                  />
+                </div>
               )
             )}
           </div>

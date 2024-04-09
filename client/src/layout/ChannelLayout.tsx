@@ -7,7 +7,7 @@ import useActionHandler from "@/hooks/useActionHandler";
 import { getChannel } from "@/store/slices/authSlice";
 import Avatar from "@/component/CoreUI/Avatar";
 import Skeleton from "@/component/Skeleton";
-import SubscribeBtn from "@/component/channel/SubscribeBtn";
+import SubscribeBtn from "@/component/subscription/SubscribeBtn";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import ErrorDialog from "@/component/error/ErrorDialog";
@@ -28,8 +28,8 @@ export default function ChannelLayout() {
   }
 
   useEffect(() => {
-    if(location?.state?.channel) {
-      channel = location?.state?.channel
+    if (location?.state?.channel) {
+      channel = location?.state?.channel;
     } else {
       fetchChannel();
     }

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { FaUserPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { twMerge } from "tailwind-merge";
+import { FaUserPlus } from "react-icons/fa";
 
 import Button from "../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
@@ -11,9 +12,11 @@ import { RootState } from "@/store/store";
 export default function SubscribeBtn({
   isSubscribed,
   channelId,
+  className = "",
 }: {
   isSubscribed: boolean;
   channelId: string;
+  className?: string;
 }) {
   const { user } = useSelector((state: RootState) => state.auth);
   const [subscribed, setSubscribed] = useState(isSubscribed);
@@ -33,10 +36,13 @@ export default function SubscribeBtn({
 
   return user?._id !== channelId ? (
     <Button
-      icon={FaUserPlus}
+      icon={<FaUserPlus />}
       isLarge={false}
       disabled={isLoading}
-      className="text-base text-white bg-[#f10b64] px-4 rounded-full mt-2"
+      className={twMerge(
+        "text-base text-white bg-[#f10b64] px-4 rounded-full mt-2",
+        className
+      )}
       onClick={handleSubscribe}
     >
       {isLoading ? "subscribing..." : subscribed ? "Un subscribe" : "subscribe"}
