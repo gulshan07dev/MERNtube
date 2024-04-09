@@ -52,6 +52,10 @@ export default function ChannelLayout() {
       label: "Playlists",
       slug: `/c/${username}/playlists`,
     },
+    {
+      label: "Subscribers",
+      slug: `/c/${username}/subscribers`,
+    },
   ];
 
   const ChannelLayoutSkeleton = () => (
@@ -134,26 +138,28 @@ export default function ChannelLayout() {
           )}
 
           {/* Channel tabs */}
-          <div className="flex md:gap-10 gap-7 relative after:absolute after:-bottom-2 after:w-full after:h-[1px] after:bg-gray-300 dark:after:bg-gray-600">
-            {channelTabsLink.map(({ label, slug }) => (
-              // Render channel tabs with appropriate styles
-              <Link
-                to={slug}
-                key={slug}
-                className={twMerge(
-                  "text-base text-zinc-500 dark:text-[#AAAAAA] font-semibold font-poppins transition-all",
-                  location.pathname === slug &&
-                    "text-black dark:text-white relative after:content-[''] after:absolute after:z-[2] after:-bottom-2 after:left-0 after:w-full after:h-[2px] after:bg-black dark:after:bg-white"
-                )}
-              >
-                <button
-                  className="disabled:opacity-70 disabled:animate-pulse"
-                  disabled={isLoading}
+          <div className="w-full relative h-[35px] px-3 overflow-x-scroll overflow-y-visible no-scrollbar">
+            <div className="flex md:gap-10 gap-7 relative after:absolute after:-bottom-2 after:w-full after:h-[1px] after:bg-gray-300 dark:after:bg-gray-600">
+              {channelTabsLink.map(({ label, slug }) => (
+                // Render channel tabs
+                <Link
+                  to={slug}
+                  key={slug}
+                  className={twMerge(
+                    "text-base text-zinc-500 dark:text-[#AAAAAA] font-semibold font-poppins transition-all",
+                    location.pathname === slug &&
+                      "text-black dark:text-white relative after:content-[''] after:absolute after:z-[2] after:-bottom-2 after:left-0 after:w-full after:h-[2px] after:bg-black dark:after:bg-white"
+                  )}
                 >
-                  {label}
-                </button>
-              </Link>
-            ))}
+                  <button
+                    className="disabled:opacity-70 disabled:animate-pulse"
+                    disabled={isLoading}
+                  >
+                    {label}
+                  </button>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       )}
