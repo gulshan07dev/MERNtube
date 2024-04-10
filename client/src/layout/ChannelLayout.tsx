@@ -83,7 +83,7 @@ export default function ChannelLayout() {
         />
       ) : (
         // Render channel details if no error
-        <div className="w-full flex flex-col gap-8">
+        <div className="w-full relative flex flex-col gap-8">
           {isLoading ? (
             // Use ChannelLayoutSkeleton component while loading
             <ChannelLayoutSkeleton />
@@ -138,29 +138,28 @@ export default function ChannelLayout() {
           )}
 
           {/* Channel tabs */}
-          <div className="w-full relative h-[35px] px-3 overflow-x-scroll overflow-y-visible no-scrollbar">
-            <div className="flex md:gap-10 gap-7 relative after:absolute after:-bottom-2 after:w-full after:h-[1px] after:bg-gray-300 dark:after:bg-gray-600">
-              {channelTabsLink.map(({ label, slug }) => (
-                // Render channel tabs
-                <Link
-                  to={slug}
-                  key={slug}
-                  className={twMerge(
-                    "text-base text-zinc-500 dark:text-[#AAAAAA] font-semibold font-poppins transition-all",
-                    location.pathname === slug &&
-                      "text-black dark:text-white relative after:content-[''] after:absolute after:z-[2] after:-bottom-2 after:left-0 after:w-full after:h-[2px] after:bg-black dark:after:bg-white"
-                  )}
+          <div className="w-full flex overflow-x-scroll overflow-y-visible no-scrollbar md:gap-10 gap-7 relative ">
+            {channelTabsLink.map(({ label, slug }) => (
+              // Render channel tabs
+              <Link
+                to={slug}
+                key={slug}
+                className={twMerge(
+                  "pb-2 text-base text-zinc-500 dark:text-[#AAAAAA] font-semibold font-poppins transition-all",
+                  location.pathname === slug &&
+                    "text-black dark:text-white relative after:content-[''] after:absolute after:z-[2] after:-bottom-0 after:-left-[7.5px] after:w-[calc(100%+15px)] after:h-[2px] after:bg-black dark:after:bg-white"
+                )}
+              >
+                <button
+                  className="disabled:opacity-70 disabled:animate-pulse"
+                  disabled={isLoading}
                 >
-                  <button
-                    className="disabled:opacity-70 disabled:animate-pulse"
-                    disabled={isLoading}
-                  >
-                    {label}
-                  </button>
-                </Link>
-              ))}
-            </div>
+                  {label}
+                </button>
+              </Link>
+            ))}
           </div>
+          <hr className="absolute bottom-0 w-full border-0 rounded-md h-[1px]  bg-gray-300 dark:bg-gray-600" />
         </div>
       )}
       {!error && <Outlet />}

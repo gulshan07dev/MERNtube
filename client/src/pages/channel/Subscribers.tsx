@@ -47,10 +47,10 @@ export default function Subscribers() {
       loading={loading || !channel}
       totalPages={totalPages}
       totalItems={totalChannels}
-      className={twMerge("pb-10", error && "min-h-full")}
+      className={twMerge("pb-10", error && "min-h-full pt-10")}
       endMessage={
         <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
-          No more subscriber channels to show !!!
+          No more subscriber to show !!!
         </p>
       }
     >
@@ -68,7 +68,7 @@ export default function Subscribers() {
           {subscriberLists.map(({ subscriberList: subscriberChannel }) => (
             <div
               key={subscriberChannel?._id}
-              className="w-full flex gap-3 py-3 px-2 truncate rounded-full hover:bg-slate-100 dark:hover:bg-[#272727]"
+              className="w-full flex items-center gap-3 py-3 px-2 truncate rounded-full hover:bg-slate-100 dark:hover:bg-[#272727]"
             >
               <Link
                 to={`/c/${subscriberChannel?.username}`}

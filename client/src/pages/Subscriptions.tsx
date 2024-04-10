@@ -35,6 +35,7 @@ export default function Subscriptions() {
   };
 
   useEffect(() => {
+    if (subscribedChannelLists.length) return;
     handleFetchSubscribedChannelLists(1);
   }, [user?._id]);
   return (
@@ -47,7 +48,7 @@ export default function Subscriptions() {
         hasNextPage={hasNextPage}
         loadNextPage={() => handleFetchSubscribedChannelLists(currentPage + 1)}
         refreshHandler={() => handleFetchSubscribedChannelLists(1)}
-        loading={loading}
+        loading={loading || !user?._id}
         totalPages={totalPages}
         totalItems={totalChannels}
         className={twMerge("pb-10", error && "min-h-full")}
