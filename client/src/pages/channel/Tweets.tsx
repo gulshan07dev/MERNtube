@@ -87,7 +87,7 @@ export default function Tweets() {
             onRefresh={() => fetchUserTweets(1)}
           />
         ) : (
-          tweets?.map((tweet) => <TweetCard key={tweet?._id} data={tweet} />)
+          tweets?.map((tweet) => <TweetCard key={tweet?._id} tweet={tweet} />)
         )}
         {(isLoading || !channel?._id) && renderSkeletons()}
       </div>
