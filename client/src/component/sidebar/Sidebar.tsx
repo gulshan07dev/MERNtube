@@ -141,10 +141,10 @@ const Sidebar = ({
         style={{ width: sidebarWidth }}
         role="navigation"
       >
-        <div className={twMerge("px-2 pb-2 flex flex-col gap-2")}>
+        <div className={twMerge("px-2 pb-2 flex flex-col gap-2.5")}>
           <div
             className={twMerge(
-              "sticky top-0 p-2 bg-white dark:bg-dark_bg items-center gap-3 hidden",
+              "sticky top-0 pt-2 px-2 bg-white dark:bg-dark_bg items-center gap-3 hidden",
               isOpen && ["max-lg:flex"],
               byDefaultSidebarHidden && ["lg:flex"]
             )}
@@ -156,7 +156,7 @@ const Sidebar = ({
           {/* Menu Items */}
           <div
             className={twMerge(
-              "md:pb-2 flex md:flex-col max-lg:gap-2 lg:gap-2 pt-2",
+              "flex md:flex-col gap-2.5",
               "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white dark:max-md:bg-dark_bg max-md:border dark:max-md:border-[#121212] max-md:items-center max-md:transition-all",
               isOpen && ["max-md:bottom-[-100%]"]
             )}

@@ -26,10 +26,10 @@ export default function MenuLink({
       {({ isActive }) => (
         <button
           className={twMerge(
-            "flex gap-6 items-cente font-Noto_sans px-4 py-1.5 rounded-lg w-full",
+            "flex gap-6 items-cente font-Noto_sans px-4 py-[7px] rounded-lg w-full",
             isActive
               ? "bg-[#edf4ff] dark:bg-[#272727] text-[#000000] dark:text-white"
-              : "text-[#202427] dark:text-slate-50",
+              : "text-[#202427] dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-[#202020]",
             className
           )}
         >
