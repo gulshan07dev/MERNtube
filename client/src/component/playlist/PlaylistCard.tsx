@@ -49,7 +49,7 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
       >
         {playlist?.playlistThumbnail ? (
           <img
-            src={playlist?.playlistThumbnail?.url}
+            src={playlist?.playlistThumbnail}
             alt="playlist-thumbnail"
             className="size-full"
           />
