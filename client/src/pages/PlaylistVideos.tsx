@@ -165,7 +165,7 @@ export default function PlaylistVideos() {
               {playlist?.playlistThumbnail && (
                 <div className="lg:w-full md:w-[40%] w-[80%] mx-auto rounded-xl overflow-hidden">
                   <img
-                    src={playlist?.playlistThumbnail?.url}
+                    src={playlist?.playlistThumbnail}
                     alt="playlistThumbnail"
                     className="w-full max-md:w-[50%] max-sm:w-full max-sm:h-[150px] max-sm:rounded-2xl mx-auto"
                   />

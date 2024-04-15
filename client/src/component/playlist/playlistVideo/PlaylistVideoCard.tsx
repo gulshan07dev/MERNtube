@@ -68,7 +68,7 @@ const playlistVideoCard = ({
       </span>
       <Link className="flex flex-grow gap-3" to={`/watch/${video?._id}`}>
         <img
-          src={video?.thumbnail?.url}
+          src={video?.thumbnail}
           alt="thumbnail"
           className="md:w-[160px] md:h-[90px] w-[150px] h-[80px] rounded-lg"
         />
