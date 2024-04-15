@@ -117,7 +117,7 @@ export default function VideoPlayer() {
               <Skeleton className="md:h-[400px] sm:h-[300px] h-[180px] w-full rounded-lg" />
             ) : (
               <video
-                src={video?.videoFile?.url}
+                src={video?.videoFile}
                 className="md:h-[400px] sm:h-[300px] h-[180px] w-full shadow-[10px_25px_150px_#e3e3e3] dark:shadow-[10px_25px_150px_#252525]"
                 controls
               />
@@ -145,7 +145,7 @@ export default function VideoPlayer() {
                     <div className="flex gap-2.5 items-center flex-grow truncate">
                       <Avatar
                         fullName={channel?.fullName}
-                        url={channel?.avatar?.url}
+                        url={channel?.avatar}
                         className="size-10 flex-shrink-0"
                         onClick={() =>
                           navigate(`/c/${channel?.username}`, {
@@ -168,6 +168,7 @@ export default function VideoPlayer() {
                     <SubscribeBtn
                       channelId={channel?._id}
                       isSubscribed={channel?.isSubscribed}
+                      className="md:text-[14px] md:py-1.5 md:px-3"
                     />
                     {channel?._id === user?._id && (
                       <Button

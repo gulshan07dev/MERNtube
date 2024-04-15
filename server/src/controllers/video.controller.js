@@ -10,124 +10,138 @@ import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 // publish video
 const publishAVideo = asyncHandler(async (req, res) => {
     const { title, description, isPublished = true } = req.body;
+    let videoFile;
+    let thumbnail;
+    try {
+        // Check if any field is empty
+        if (!title) {
+            throw new ApiError(400, "title is required!");
+        }
 
-    // Check if any field is empty
-    if (!title) {
-        throw new ApiError(400, "title is required!");
+        // upload video & thumbnail on cloudinary
+        const videoFileLocalPath = req.files?.videoFile?.[0]?.path
+        const thumbnailLocalPath = req.files?.thumbnail?.[0]?.path
+
+        if (!videoFileLocalPath) {
+            throw new ApiError(400, "Video is missing!");
+        }
+
+        if (!thumbnailLocalPath) {
+            throw new ApiError(400, "thumbnail is missing!");
+        }
+
+        videoFile = await uploadOnCloudinary(videoFileLocalPath);
+        thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+
+        if (!videoFile) {
+            throw new ApiError(500, "Failed to upload video!, try again")
+        }
+
+        if (!thumbnail) {
+            throw new ApiError(500, "Failed to upload thumbnail!, try again")
+        }
+
+        // save video details in db
+        const video = await Video.create({
+            videoFile: videoFile?.url,
+            thumbnail: thumbnail?.url,
+            title,
+            description,
+            duration: videoFile?.duration,
+            owner: req.user._id,
+            isPublished
+        })
+
+        if (!video) {
+            throw new ApiError(500, "Something went wrong while uploading video, try again")
+        }
+
+        return res.status(200).json(new ApiResponse(
+            200,
+            { video },
+            "Video uploaded successfully!"
+        ))
+    } catch (error) {
+        if (videoFile?.url) {
+            await deleteOnCloudinary(videoFile?.url)
+        }
+        if (thumbnail?.url) {
+            await deleteOnCloudinary(thumbnail?.url)
+        }
+        throw error;
     }
-
-    // upload video & thumbnail on cloudinary
-    const videoFileLocalPath = req.files?.videoFile?.[0]?.path
-    const thumbnailLocalPath = req.files?.thumbnail?.[0]?.path
-
-    if (!videoFileLocalPath) {
-        throw new ApiError(400, "Video is missing!");
-    }
-
-    if (!thumbnailLocalPath) {
-        throw new ApiError(400, "thumbnail is missing!");
-    }
-
-    const videoFile = await uploadOnCloudinary(videoFileLocalPath);
-    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
-
-    if (!videoFile) {
-        throw new ApiError(500, "Failed to upload video!, try again")
-    }
-
-    if (!thumbnail) {
-        throw new ApiError(500, "Failed to upload thumbnail!, try again")
-    }
-
-    // save video details in db
-    const video = await Video.create({
-        videoFile: { key: videoFile?.public_id, url: videoFile?.url },
-        thumbnail: { key: thumbnail?.public_id, url: thumbnail?.url },
-        title,
-        description,
-        duration: videoFile?.duration,
-        owner: req.user._id,
-        isPublished
-    })
-
-    if (!video) {
-        throw new ApiError(500, "Something went wrong while uploading video, try again")
-    }
-
-    return res.status(200).json(new ApiResponse(
-        200,
-        { video },
-        "Video uploaded successfully!"
-    ))
 })
 
 // update video
 const updateVideo = asyncHandler(async (req, res) => {
     const { title, description } = req.body;
     const { videoId } = req.params;
-
-    // Check if any field is empty
-    if (![title, description].every(Boolean)) {
-        throw new ApiError(400, "All fields are required");
-    }
-
-    // check if Invalid videoId
-    if (!isValidObjectId(videoId)) {
-        throw new ApiError(400, "Invalid videoId!");
-    }
-
-    // delete previous thumbnail from cloudinary, if it exists
-    const thumbnailLocalPath = req.file?.path;
-
-    const oldVideoDetails = await Video.findOne({ _id: videoId });
-
-    if (!oldVideoDetails) {
-        throw new ApiError(404, "Video not find!");
-    }
-
-    if (thumbnailLocalPath) {
-        await deleteOnCloudinary(oldVideoDetails.thumbnail?.key);
-    }
-
-    // upload new thumbnail, if it exists
     let thumbnail;
-    if (thumbnailLocalPath) {
-        thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
-    }
+    try {
+        // Check if any field is empty
+        if (![title, description].every(Boolean)) {
+            throw new ApiError(400, "All fields are required");
+        }
 
-    if (!thumbnail && thumbnailLocalPath) {
-        throw new ApiError(500, "Failed to upload thumbnail!, please try again");
-    }
+        // check if Invalid videoId
+        if (!isValidObjectId(videoId)) {
+            throw new ApiError(400, "Invalid videoId!");
+        }
 
-    // update video with new details
-    const updateFields = {
-        $set: {
-            title,
-            description,
-        },
-    };
+        // delete previous thumbnail from cloudinary, if it exists
+        const thumbnailLocalPath = req.file?.path;
 
-    if (thumbnail) {
-        updateFields.$set.thumbnail = {
-            key: thumbnail.public_id,
-            url: thumbnail.url
+        const oldVideoDetails = await Video.findOne({ _id: videoId });
+
+        if (!oldVideoDetails) {
+            throw new ApiError(404, "Video not find!");
+        }
+
+        if (thumbnailLocalPath) {
+            await deleteOnCloudinary(oldVideoDetails.thumbnail);
+        }
+
+        // upload new thumbnail, if it exists
+        if (thumbnailLocalPath) {
+            thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+        }
+
+        if (!thumbnail && thumbnailLocalPath) {
+            throw new ApiError(500, "Failed to upload thumbnail!, please try again");
+        }
+
+        // update video with new details
+        const updateFields = {
+            $set: {
+                title,
+                description,
+            },
         };
+
+        if (thumbnail) {
+            updateFields.$set.thumbnail = thumbnail.url;
+        }
+
+        const updatedVideo = await Video.findByIdAndUpdate(
+            videoId,
+            updateFields,
+            { new: true });
+
+        if (!updatedVideo) {
+            throw new ApiError(500, "Something went wrong while updating video details, try again");
+        }
+
+        return res.status(200).json(new ApiResponse(
+            200,
+            { updatedVideo },
+            "Video updated successfully!"
+        ));
+    } catch (error) {
+        if (thumbnail?.url) {
+            await deleteOnCloudinary(thumbnail?.url)
+        }
+        throw error;
     }
-
-    const updatedVideo = await Video.findByIdAndUpdate(
-        videoId,
-        updateFields,
-        { new: true });
-
-    if (!updatedVideo) {
-        throw new ApiError(500, "Something went wrong while updating video details, try again");
-    }
-
-    return res.status(200).json(new ApiResponse(
-        200,
-        { updatedVideo },
-        "Video updated successfully!"
-    ));
 });
 
 // get video by videoId

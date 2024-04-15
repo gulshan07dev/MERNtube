@@ -30,7 +30,7 @@ const VideoCard = ({ data }: { data: Video }) => {
       <div className="flex flex-col gap-2">
         <Link to={`/watch/${data?._id}`}>
           <img
-            src={data.thumbnail.url}
+            src={data.thumbnail}
             title={data.title}
             className="w-full lg:h-[180px] md:h-[215px] h-[200px] rounded-md"
           />
@@ -39,7 +39,7 @@ const VideoCard = ({ data }: { data: Video }) => {
           <div className="flex gap-2 flex-grow">
             <Avatar
               fullName={data?.owner?.fullName}
-              url={data?.owner?.avatar?.url}
+              url={data?.owner?.avatar}
               onClick={() => navigate(`/c/${data?.owner?.username}`)}
               className="h-8 w-8"
             />

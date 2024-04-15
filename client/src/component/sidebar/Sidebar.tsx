@@ -53,7 +53,7 @@ const Sidebar = ({
         icon: (
           <Avatar
             fullName={user?.fullName}
-            url={user?.avatar?.url}
+            url={user?.avatar}
             className="h-7 w-7"
           />
         ),

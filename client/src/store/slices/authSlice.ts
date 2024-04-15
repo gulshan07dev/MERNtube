@@ -6,8 +6,8 @@ export interface User {
   fullName: string;
   username: string;
   email: string;
-  avatar?: { key: string; url: string };
-  coverImage?: { key: string; url: string };
+  avatar?: string;
+  coverImage?: string
   isWatchHistoryPaused?: boolean;
 }
 

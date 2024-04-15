@@ -84,7 +84,7 @@ export default function Subscriptions() {
                   >
                     <Avatar
                       fullName={channel?.fullName}
-                      url={channel?.avatar?.url}
+                      url={channel?.avatar}
                       className="md:h-14 md:w-14 w-10 h-10 flex-shrink-0"
                     />
                     <div className="flex flex-grow flex-col gap-1 truncate">

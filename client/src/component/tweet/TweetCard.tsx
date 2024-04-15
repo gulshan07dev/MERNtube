@@ -53,7 +53,7 @@ const TweetCard = ({ tweet }: { tweet: Tweet }) => {
         <div className="flex gap-3">
           <div className="flex gap-2">
             <Avatar
-              url={avatar?.url}
+              url={avatar}
               fullName={fullName}
               className="h-10 w-10"
               onClick={() => navigate(`/c/${username}`)}

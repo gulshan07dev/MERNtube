@@ -34,20 +34,10 @@ const userSchema = new Schema({
         trim: true,
     },
     avatar: {
-        key: {
-            type: String
-        },
-        url: {
-            type: String
-        }
+        type: String
     },
     coverImage: {
-        key: {
-            type: String
-        },
-        url: {
-            type: String
-        }
+        type: String
     },
     refreshToken: {
         type: String,

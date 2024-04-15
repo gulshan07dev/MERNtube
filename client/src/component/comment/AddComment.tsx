@@ -61,7 +61,7 @@ const AddComment: React.FC<AddCommentProps> = ({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-1">
       <div className="flex items-center md:gap-5 gap-3 py-1.5">
-        <Avatar url={user?.avatar?.url} fullName={user?.fullName} onClick={() => navigate(`/c/${user?.username}`)} />
+        <Avatar url={user?.avatar} fullName={user?.fullName} onClick={() => navigate(`/c/${user?.username}`)} />
         <input
           type="text"
           name="content"

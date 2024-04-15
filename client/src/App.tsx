@@ -124,7 +124,7 @@ function App() {
           element: <Subscriptions />,
         },
         {
-          path: "playlist/:playlistId",
+          path: "playlists/:playlistId",
           element: <PlaylistVideos />,
         },
         {

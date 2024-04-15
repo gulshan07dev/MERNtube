@@ -92,7 +92,7 @@ export default function ChannelLayout() {
               {/* Channel cover image */}
               <div className="w-full md:h-44 h-28 rounded-2xl overflow-hidden">
                 <img
-                  src={channel?.coverImage?.url || "/default-cover.png"}
+                  src={channel?.coverImage || "/default-cover.png"}
                   className="w-full h-full object-cover"
                   alt="coverImage"
                 />
@@ -100,7 +100,7 @@ export default function ChannelLayout() {
               {/* Display channel details once loaded */}
               <div className="flex md:gap-14 gap-5">
                 <Avatar
-                  url={channel?.avatar?.url}
+                  url={channel?.avatar}
                   fullName={channel?.fullName}
                   className="md:h-36 h-20 md:w-36 w-20"
                 />

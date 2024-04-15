@@ -10,7 +10,7 @@ export interface Playlist {
   videosCount?: number;
   totalViews?: number;
   isPrivate: boolean;
-  playlistThumbnail: { key: string; url: string };
+  playlistThumbnail: string;
   isVideoAddedToPlaylist?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

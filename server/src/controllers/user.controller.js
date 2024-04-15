@@ -32,53 +32,63 @@ const cookieOptions = {
 // register
 const registerUser = asyncHandler(async (req, res) => {
     const { fullName, email, password } = req.body;
+    let avatar;
+    let coverImage;
+    try {
+        // Check if any field is empty
+        if (![fullName, email, password].every(Boolean)) {
+            throw new ApiError(400, "All fields are required");
+        }
 
-    // Check if any field is empty
-    if (![fullName, email, password].every(Boolean)) {
-        throw new ApiError(400, "All fields are required");
+        // Check if user already exists
+        const isUserExist = await User.findOne({ email });
+        if (isUserExist) {
+            throw new ApiError(400, "User already registered, please login");
+        }
+
+        // Generate a unique username for the user
+        const username = generateUniqueUsername(fullName);
+
+        // Upload avatar and coverImage if they exist
+        const avatarLocalPath = req.files?.avatar?.[0]?.path;
+        const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+
+        avatar = avatarLocalPath ? await uploadOnCloudinary(avatarLocalPath) : undefined;
+        coverImage = coverImageLocalPath ? await uploadOnCloudinary(coverImageLocalPath) : undefined;
+
+        // Save user in the database
+        const user = await User.create({
+            username,
+            fullName,
+            email,
+            password,
+            avatar: avatar?.url,
+            coverImage: coverImage?.url,
+        });
+
+        if (!user) {
+            throw new ApiError(500, "Failed to register user, try again!");
+        }
+
+        // Omit sensitive fields from the response
+        const sensitiveFieldsToOmit = ['password', 'refreshToken'];
+        const createdUserWithoutSensitiveFields = omit(user.toObject(), sensitiveFieldsToOmit);
+
+        return res.status(201).json(
+            new ApiResponse(200, {
+                user: createdUserWithoutSensitiveFields
+            },
+                "User registered successfully!")
+        );
+    } catch (error) {
+        if (avatar?.url) {
+            await deleteOnCloudinary(avatar?.url)
+        }
+        if (coverImage?.url) {
+            await deleteOnCloudinary(coverImage?.url)
+        }
+        throw error;
     }
-
-    // Check if user already exists
-    const isUserExist = await User.findOne({ email });
-    if (isUserExist) {
-        throw new ApiError(400, "User already registered, please login");
-    }
-
-    // Generate a unique username for the user
-    const username = generateUniqueUsername(fullName);
-
-    // Upload avatar and coverImage if they exist
-    const avatarLocalPath = req.files?.avatar?.[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
-
-    const avatar = avatarLocalPath ? await uploadOnCloudinary(avatarLocalPath) : undefined;
-    const coverImage = coverImageLocalPath ? await uploadOnCloudinary(coverImageLocalPath) : undefined;
-
-    // Save user in the database
-    const user = await User.create({
-        username,
-        fullName,
-        email,
-        password,
-        avatar: { key: avatar?.public_id, url: avatar?.url },
-        coverImage: { key: coverImage?.public_id, url: coverImage?.url },
-    });
-
-    if (!user) {
-        throw new ApiError(500, "Failed to register user, try again!");
-    }
-
-    // Omit sensitive fields from the response
-    const sensitiveFieldsToOmit = ['password', 'refreshToken'];
-    const createdUserWithoutSensitiveFields = omit(user.toObject(), sensitiveFieldsToOmit);
-
-    return res.status(201).json(
-        new ApiResponse(200, {
-            user: createdUserWithoutSensitiveFields
-        },
-            "User registered successfully!")
-    );
-
 });
 
 // login
@@ -264,15 +274,15 @@ const changeUserAvatar = asyncHandler(async (req, res) => {
 
     // delete previous avatar from cloudinary
     const previousAvatar = user.avatar;
-    if (previousAvatar.key) {
-        await deleteOnCloudinary(previousAvatar.key);
+    if (previousAvatar) {
+        await deleteOnCloudinary(previousAvatar);
     }
 
     // upload new avatar on cloudinary
     const avatar = await uploadOnCloudinary(avatarFilePath);
 
     // save avatar in db
-    user.avatar = { key: avatar?.public_id, url: avatar?.url };
+    user.avatar = avatar?.url
     await user.save({ validateBeforeSave: false });
 
     return res.status(200).json(new ApiResponse(200, { user },
@@ -293,15 +303,15 @@ const changeUserCoverImage = asyncHandler(async (req, res) => {
 
     // delete previous cover image from cloudinary
     const previousCoverImage = user.coverImage;
-    if (previousCoverImage.key) {
-        await deleteOnCloudinary(previousCoverImage.key);
+    if (previousCoverImage) {
+        await deleteOnCloudinary(previousCoverImage);
     }
 
     // upload new cover image on cloudinary
     const coverImage = await uploadOnCloudinary(coverImageFilePath);
 
     // save avatar in db
-    user.coverImage = { key: coverImage?.public_id, url: coverImage?.url };
+    user.coverImage = coverImage?.url
     await user.save({ validateBeforeSave: false });
 
     return res.status(200).json(new ApiResponse(200, { user },

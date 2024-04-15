@@ -76,7 +76,7 @@ export default function Subscribers() {
               >
                 <Avatar
                   fullName={subscriberChannel?.fullName}
-                  url={subscriberChannel?.avatar?.url}
+                  url={subscriberChannel?.avatar}
                   className="md:h-14 md:w-14 w-10 h-10 flex-shrink-0"
                 />
                 <div className="flex flex-grow flex-col gap-1 truncate">

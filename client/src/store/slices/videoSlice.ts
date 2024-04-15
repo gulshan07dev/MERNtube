@@ -15,8 +15,8 @@ export interface Video {
   _id: string;
   title: string;
   description?: string;
-  thumbnail: { key: string; url: string };
-  videoFile: { key: string; url: string };
+  thumbnail: string;
+  videoFile: string
   duration: number;
   views: number;
   isPublished: boolean;

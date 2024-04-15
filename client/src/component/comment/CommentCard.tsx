@@ -89,7 +89,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
     <div className="group/item flex gap-2">
       <div className="flex flex-grow gap-2">
         <Avatar
-          url={comment?.owner?.avatar?.url}
+          url={comment?.owner?.avatar}
           fullName={comment.owner.fullName}
           className="h-10 w-10"
           onClick={() => navigate(`/c/${comment?.owner?.username}`)}
