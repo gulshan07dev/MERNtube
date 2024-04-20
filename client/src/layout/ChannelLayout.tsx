@@ -92,7 +92,7 @@ export default function ChannelLayout() {
               {/* Channel cover image */}
               <div className="w-full md:h-44 h-28 rounded-2xl overflow-hidden">
                 <img
-                  src={channel?.coverImage || "/default-cover.png"}
+                  src={channel?.coverImage || "/default-cover.webp"}
                   className="w-full h-full object-cover"
                   alt="coverImage"
                 />
@@ -102,7 +102,7 @@ export default function ChannelLayout() {
                 <Avatar
                   url={channel?.avatar}
                   fullName={channel?.fullName}
-                  className="md:h-36 h-20 md:w-36 w-20"
+                  className="md:h-36 h-20 md:w-36 w-20 md:text-[100px] text-[45px]"
                 />
 
                 <div className="flex flex-col gap-1">
@@ -141,22 +141,23 @@ export default function ChannelLayout() {
           <div className="w-full flex overflow-x-scroll overflow-y-visible no-scrollbar md:gap-10 gap-7 relative ">
             {channelTabsLink.map(({ label, slug }) => (
               // Render channel tabs
-              <Link
-                to={slug}
-                key={slug}
+              <button
                 className={twMerge(
                   "pb-2 text-base text-zinc-500 dark:text-[#AAAAAA] font-semibold font-poppins transition-all",
+                  "disabled:opacity-70 disabled:animate-pulse",
                   location.pathname === slug &&
                     "text-black dark:text-white relative after:content-[''] after:absolute after:z-[2] after:-bottom-0 after:-left-[7.5px] after:w-[calc(100%+15px)] after:h-[2px] after:bg-black dark:after:bg-white"
                 )}
+                disabled={isLoading}
               >
-                <button
-                  className="disabled:opacity-70 disabled:animate-pulse"
-                  disabled={isLoading}
+                <Link
+                  to={slug}
+                  key={slug}
+                  className={isLoading ? "pointer-events-none" : ""}
                 >
                   {label}
-                </button>
-              </Link>
+                </Link>
+              </button>
             ))}
           </div>
           <hr className="absolute bottom-0 w-full border-0 rounded-md h-[1px]  bg-gray-300 dark:bg-gray-600" />
