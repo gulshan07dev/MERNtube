@@ -39,7 +39,7 @@ export default function Login() {
   return (
     <Layout
       showNavigationBar={false}
-      className="flex justify-center md:pt-24 pt-14 pb-7"
+      className="flex justify-center items-center pb-7"
     >
       <AuthForm
         type={AuthFormType.LOGIN}

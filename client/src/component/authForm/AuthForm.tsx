@@ -22,8 +22,8 @@ interface AuthInputs {
   email?: string;
   usernameOrEmail?: string;
   password?: string;
-  avatar?: File;
-  coverImage?: File;
+  avatar?: File | null;
+  coverImage?: File | null;
 }
 
 export enum AuthFormType {
@@ -53,7 +53,6 @@ export default function AuthForm({
 
   const handleFormSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     handleSubmit(authInputs);
   };
 
@@ -64,9 +63,11 @@ export default function AuthForm({
   }, [state]);
 
   return (
-    <div className="flex flex-col gap-3 justify-center w-[450px] max-w-[93%] before:content-[''] before:fixed before:z-0 before:h-[90vh] before:w-[12vw] max-md:before:w-[25vw] before:bg-gradient-to-tr before:from-violet-400 before:via-violet-500 before:to-violet-300 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-45 md:before:opacity-55 before:opacity-70 after:content-[''] after:fixed after:z-[1] after:h-[100vh] after:w-[100vw] after:top-0 after:left-0 after:right-0 after:bottom-0 after:bg-transparent after:backdrop-blur-3xl">
+    <div className="relative flex flex-col gap-3 justify-center w-[450px] max-w-[93%] before:content-[''] before:fixed before:z-0 before:h-[90vh] before:w-[12vw] max-md:before:w-[25vw] before:bg-gradient-to-tr before:from-violet-400 before:via-violet-500 before:to-violet-300 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-45 md:before:opacity-55 before:opacity-70 after:content-[''] after:fixed after:z-[1] after:h-[100vh] after:w-[100vw] after:top-0 after:left-0 after:right-0 after:bottom-0 after:bg-transparent after:backdrop-blur-3xl">
       {/* showing error */}
-      {error && <ErrorMessage errorMessage={error} />}
+      {error && (
+        <ErrorMessage errorMessage={error} className="relative z-[2]" />
+      )}
 
       <form
         onSubmit={handleFormSubmit}
@@ -85,16 +86,14 @@ export default function AuthForm({
             <div className="w-full flex flex-col items-center -mt-7">
               <FileUpload
                 label="Cover Image"
-                defaultImageSrc="/default-cover.png"
+                defaultImageSrc="/default-cover.webp"
                 accept=".png, .jpeg, .jpg"
                 fileType="image"
                 ref={coverImageRef}
                 className="h-24 w-full rounded-md object-cover border-2 border-dashed border-blue-500 overflow-hidden"
+                disabled={isLoading}
                 onChange={(file) =>
-                  setAuthInputs((prev: any) => ({
-                    ...prev,
-                    coverImage: file,
-                  }))
+                  setAuthInputs((prev) => ({ ...prev, coverImage: file }))
                 }
               />
               <FileUpload
@@ -104,11 +103,9 @@ export default function AuthForm({
                 fileType="image"
                 ref={avatarRef}
                 className="h-16 w-16 rounded-full object-cover -mt-8 border-2 border-white overflow-hidden"
+                disabled={isLoading}
                 onChange={(file) =>
-                  setAuthInputs((prev: any) => ({
-                    ...prev,
-                    avatar: file,
-                  }))
+                  setAuthInputs((prev) => ({ ...prev, avatar: file }))
                 }
               />
             </div>
@@ -118,11 +115,9 @@ export default function AuthForm({
               label="Full Name"
               type="text"
               value={authInputs.fullName}
+              disabled={isLoading}
               onChange={(e) =>
-                setAuthInputs((prev) => ({
-                  ...prev,
-                  fullName: e.target.value,
-                }))
+                setAuthInputs((prev) => ({ ...prev, fullName: e.target.value }))
               }
             />
 
@@ -131,11 +126,9 @@ export default function AuthForm({
               label="email"
               type="email"
               value={authInputs.email}
+              disabled={isLoading}
               onChange={(e) =>
-                setAuthInputs((prev) => ({
-                  ...prev,
-                  email: e.target.value,
-                }))
+                setAuthInputs((prev) => ({ ...prev, email: e.target.value }))
               }
             />
           </>
@@ -145,6 +138,7 @@ export default function AuthForm({
             label="Username or Email"
             type="text"
             value={authInputs.usernameOrEmail}
+            disabled={isLoading}
             onChange={(e) =>
               setAuthInputs((prev) => ({
                 ...prev,
@@ -159,17 +153,14 @@ export default function AuthForm({
           label="Password"
           type="password"
           value={authInputs.password}
+          disabled={isLoading}
           onChange={(e) =>
-            setAuthInputs((prev) => ({
-              ...prev,
-              password: e.target.value,
-            }))
+            setAuthInputs((prev) => ({ ...prev, password: e.target.value }))
           }
         />
 
         <div className="flex justify-between items-center md:gap-4 gap-2 mt-5">
           {/* link */}
-
           <button
             type="button"
             className="w-1/2 text-sm max-sm:text-[13.5px] text-gray-600 dark:text-slate-400 hover:text-gray-800 font-medium font-Noto_sans"

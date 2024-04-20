@@ -16,6 +16,7 @@ interface FileUploadProps {
   onChange?: (file: File | null) => void;
   accept?: string;
   className?: string;
+  disabled?: boolean;
   fileType?: "image" | "video";
 }
 
@@ -28,6 +29,7 @@ const FileUpload = React.forwardRef(
       onChange = () => {},
       accept = "",
       className = "",
+      disabled,
       fileType = "image",
     }: FileUploadProps,
     ref: RefObject<HTMLInputElement> | ForwardedRef<HTMLInputElement> | any
@@ -61,7 +63,7 @@ const FileUpload = React.forwardRef(
           className="flex items-center justify-center h-full w-full cursor-pointer overflow-hidden"
           role="button"
           title={label}
-          onClick={() => ref?.current?.click()}
+          onClick={() => !disabled && ref?.current?.click()}
         >
           {filePreview ? (
             fileType === "video" ? (

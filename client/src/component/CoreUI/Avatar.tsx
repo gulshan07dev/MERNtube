@@ -13,19 +13,20 @@ export default function Avatar({
 }) {
   return (
     <div
-      className={twMerge("rounded-full overflow-hidden", className)}
+      className={twMerge(
+        "rounded-full overflow-hidden",
+        "text-lg bg-blue-500 text-white font-roboto",
+        className
+      )}
       role="button"
       onClick={onClick}
     >
       {fullName && !url ? (
-        <span
-          className="h-full w-full grid place-items-center text-lg
-         bg-blue-500 text-white font-roboto"
-        >
+        <span className="h-full w-full grid place-items-center text-inherit">
           {fullName[0].toUpperCase()}
         </span>
       ) : (
-        <img src={url || "/default-avatar.webp"} alt="avatar" />
+        <img src={url || "/default-avatar.webp"} alt="avatar" className="h-full w-full" />
       )}
     </div>
   );
