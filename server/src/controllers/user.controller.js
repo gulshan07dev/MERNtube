@@ -56,6 +56,14 @@ const registerUser = asyncHandler(async (req, res) => {
         avatar = avatarLocalPath ? await uploadOnCloudinary(avatarLocalPath) : undefined;
         coverImage = coverImageLocalPath ? await uploadOnCloudinary(coverImageLocalPath) : undefined;
 
+        if(avatarLocalPath && !avatar) {
+            throw new ApiError(500, "Failed to upload avatar!")
+        }
+
+        if(coverImageLocalPath && !coverImage) {
+            throw new ApiError(500, "Failed to upload coverImage!")
+        }
+
         // Save user in the database
         const user = await User.create({
             username,
