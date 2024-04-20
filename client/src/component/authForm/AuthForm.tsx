@@ -17,7 +17,7 @@ interface AuthFormProps {
   state?: {};
 }
 
-interface AuthInputs {
+export interface AuthInputs {
   fullName?: string;
   email?: string;
   usernameOrEmail?: string;

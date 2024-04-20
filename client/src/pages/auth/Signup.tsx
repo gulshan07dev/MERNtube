@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import Layout from "@/layout/Layout";
-import AuthForm, { AuthFormType } from "@/component/authForm/AuthForm";
+import AuthForm, { AuthFormType, AuthInputs } from "@/component/authForm/AuthForm";
 import useActionHandler from "@/hooks/useActionHandler";
 import { registerUser } from "@/store/slices/authSlice";
 
@@ -24,13 +24,7 @@ export default function Signup() {
     password,
     avatar,
     coverImage,
-  }: {
-    fullName?: string;
-    email?: string;
-    password?: string;
-    avatar?: File;
-    coverImage?: File;
-  }) => {
+  }: AuthInputs) => {
     if (!fullName || !email || !password) {
       return toast.error("All fields are required!");
     }
@@ -45,7 +39,11 @@ export default function Signup() {
 
     if (isSuccess) {
       navigate("/auth/login", {
-        state: { usernameOrEmail: email, password, redirectPath: redirectPath || undefined },
+        state: {
+          usernameOrEmail: email,
+          password,
+          redirectPath: redirectPath || undefined,
+        },
       });
     }
   };

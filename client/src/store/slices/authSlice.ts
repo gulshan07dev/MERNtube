@@ -37,8 +37,8 @@ const registerUser = createAsyncThunk(
       fullName: string;
       email: string;
       password: string;
-      avatar?: File;
-      coverImage?: File;
+      avatar?: File | null | undefined;
+      coverImage?: File | null | undefined;
     },
     { rejectWithValue }
   ) => {
