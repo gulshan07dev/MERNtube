@@ -48,7 +48,7 @@ const Home: React.FC = () => {
 
   // fetch initial videos
   useEffect(() => {
-    if (videos.length) return;
+    if (currPage > 1) return;
     fetchVideos(1);
   }, [sortType]);
 
