@@ -100,7 +100,7 @@ export default function VideoPlayer() {
   return (
     <Layout
       byDefaultSidebarHidden={true}
-      className="w-full flex gap-6 max-xl:flex-col max-xl:gap-14 md:px-8 md:pt-7 max-md:pb-16 pb-3"
+      className="w-full flex gap-6 max-xl:flex-col max-xl:gap-14"
     >
       {videoFetchingError ? (
         <ErrorDialog
@@ -118,13 +118,13 @@ export default function VideoPlayer() {
             ) : (
               <video
                 src={video?.videoFile}
-                className="md:h-[400px] sm:h-[300px] h-[180px] w-full shadow-[10px_25px_150px_#e3e3e3] dark:shadow-[10px_25px_150px_#252525]"
+                className="md:h-[400px] sm:h-[300px] h-[180px] w-full rounded-md shadow-[10px_25px_150px_#e3e3e3] dark:shadow-[10px_25px_150px_#252525]"
                 controls
               />
             )}
 
             {/* video details */}
-            <div className="w-full flex flex-col gap-5 md:px-3 max-md:px-3.5 pt-3">
+            <div className="w-full flex flex-col gap-5 px-1 pt-3">
               {/* title */}
               {isFetchingVideo || !video ? (
                 <Skeleton className="w-[80%] h-8 mt-5" />
@@ -267,7 +267,7 @@ export default function VideoPlayer() {
           {/* comments */}
           <div
             className={twMerge(
-              "xl:w-[645px] w-full rounded-md min-h-full pb-5 px-3 max-md:px-3.5 dark:md:bg-[#0f0f0f]",
+              "xl:w-[645px] w-full rounded-md px-1 dark:md:bg-[#0f0f0f]",
               !isFetchingVideo &&
                 video && [
                   "md:shadow-[10px_25px_150px_#e3e3e3] md:dark:shadow-[50px_-15px_150px_#333333] md:px-4",
