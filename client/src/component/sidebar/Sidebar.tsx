@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineHome } from "react-icons/ai";
@@ -18,6 +18,7 @@ import Divider from "../Divider";
 import SidebarToggleBtn from "./SidebarToggleBtn";
 import Logo from "../CoreUI/Logo";
 import Avatar from "../CoreUI/Avatar";
+import useScroll from "@/hooks/useScroll";
 
 const Sidebar = ({
   byDefaultSidebarHidden = false,
@@ -27,6 +28,7 @@ const Sidebar = ({
   const dispatch: AppDispatch = useDispatch();
   const { user, isLoggedIn } = useSelector((state: RootState) => state?.auth);
   const { isOpen } = useSelector((state: RootState) => state.sidebar);
+  const bottomNavigationBar = useRef<HTMLDivElement>(null);
 
   const onSidebarToggle = () => {
     isOpen ? dispatch(onClose()) : dispatch(onOpen());
@@ -123,6 +125,17 @@ const Sidebar = ({
     []
   );
 
+  const handleScrollDown = () => {
+    bottomNavigationBar.current?.classList.add("max-md:bottom-[-60px]");
+  };
+
+  const handleScrollUp = () => {
+    bottomNavigationBar.current?.classList.remove("max-md:bottom-[-60px]");
+    bottomNavigationBar.current?.classList.add("max-md:bottom-0");
+  };
+
+  useScroll(handleScrollDown, handleScrollUp);
+
   return (
     <>
       <aside
@@ -153,10 +166,11 @@ const Sidebar = ({
 
           {/* Menu Items */}
           <div
+            ref={bottomNavigationBar}
             className={twMerge(
               "flex md:flex-col gap-2.5",
               "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white dark:max-md:bg-dark_bg max-md:border dark:max-md:border-[#121212] max-md:items-center max-md:transition-all",
-              isOpen && ["max-md:bottom-[-100%]"]
+              isOpen && ["max-md:bottom-[-60px]"]
             )}
           >
             {menuItems.map(

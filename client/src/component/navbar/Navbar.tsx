@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
 import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useRef } from "react";
 
+import type { RootState } from "@/store/store";
 import Logo from "../CoreUI/Logo";
 import SearchBar from "./SearchBar";
 import Avatar from "../CoreUI/Avatar";
@@ -8,9 +10,8 @@ import Button from "../CoreUI/Button";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import LogoutBtn from "./LogoutBtn";
 import SidebarToggleBtn from "../sidebar/SidebarToggleBtn";
-
-import type { RootState } from "@/store/store";
 import Skeleton from "../Skeleton";
+import useScroll from "@/hooks/useScroll";
 
 const Navbar = ({
   showSidebarToggleBtn,
@@ -19,16 +20,29 @@ const Navbar = ({
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const navbar = useRef<HTMLDivElement>(null);
   const { user: appLoading } = useSelector(
     (state: RootState) => state.appLoading
   );
   const { isLoggedIn, user } = useSelector((state: RootState) => state.auth);
 
+  const handleScrollDown = () => {
+    navbar.current?.classList.add("max-md:top-[-60px]");
+  };
+
+  const handleScrollUp = () => {
+    navbar.current?.classList.remove("max-md:top-[-60px]");
+    navbar.current?.classList.add("max-md:top-0");
+  };
+
+  useScroll(handleScrollDown, handleScrollUp);
+
   return (
     <nav
-      className={`w-full h-[60px] bg-white dark:bg-dark_bg flex justify-between items-center sticky top-0 z-50 md:px-7 md:pl-4 px-3`}
+      className={`w-full h-[60px] bg-white dark:bg-dark_bg flex justify-between items-center sticky top-0 z-50 transition-[top] md:px-7 md:pl-4 px-3`}
       role="navigation"
       aria-label="Primary Navigation"
+      ref={navbar}
     >
       {/* Left Section */}
       <div className="flex items-center gap-3">
