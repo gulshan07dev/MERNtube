@@ -10,8 +10,8 @@ export default function Create() {
   ];
 
   return (
-    <Layout className="flex justify-center">
-      <Tabs tabs={tabs} className="max-w-full lg:w-full" />
+    <Layout>
+      <Tabs tabs={tabs} className="max-w-full w-full" />
     </Layout>
   );
 }

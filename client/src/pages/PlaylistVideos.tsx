@@ -281,7 +281,7 @@ export default function PlaylistVideos() {
                 No more playlists to show !!!
               </p>
             }
-            className="lg:w-[70%] w-full min-h-full flex flex-col gap-2 px-1 pb-10"
+            className="lg:w-[70%] w-full flex flex-col gap-2"
           >
             {!playlistVideos?.length &&
             totalVideos === 0 &&
