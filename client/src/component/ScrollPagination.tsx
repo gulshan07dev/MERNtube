@@ -36,43 +36,32 @@ const ScrollPagination = ({
   children,
   className,
 }: ScrollPaginationProps) => {
-  const handleScroll = () => {
-    const container = document.getElementById("main-container");
-
-    if (!container || loading || currentPage >= totalPages || !hasNextPage) {
+  const handleScroll = (e: any) => {
+    if (loading || currentPage >= totalPages || !hasNextPage) {
       return;
     }
 
-    if (
-      container.scrollTop + container.clientHeight >=
-      container.scrollHeight - container.clientHeight
-    ) {
+    const scrollHeight = e.target.documentElement.scrollHeight;
+    const currentHeight =
+      e.target.documentElement.scrollTop + window.innerHeight;
+
+    if (currentHeight + 1 >= scrollHeight) {
       loadNextPage();
     }
   };
 
   useEffect(() => {
-    const container = document.getElementById("main-container");
-
-    if (container && paginationType === "infinite-scroll") {
-      container.addEventListener("scroll", handleScroll);
+    if (paginationType === "infinite-scroll") {
+      window.addEventListener("scroll", handleScroll);
 
       return () => {
-        container.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("scroll", handleScroll);
       };
     }
   }, [currentPage, loading, hasNextPage, totalPages]);
 
   return (
-    <div
-      className={twMerge(
-        "w-full flex flex-col",
-        paginationType === "infinite-scroll" && [
-          "min-h-screen pb-5 max-md:pb-24",
-        ],
-        className
-      )}
-    >
+    <div className={twMerge("w-full flex flex-col gap-3", className)}>
       {error ? (
         <ErrorDialog
           errorMessage={error}
