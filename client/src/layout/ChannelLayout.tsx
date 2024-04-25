@@ -73,7 +73,7 @@ export default function ChannelLayout() {
   );
 
   return (
-    <Layout className="md:px-4 px-2 flex flex-col gap-6">
+    <Layout className="flex flex-col gap-6">
       {error ? (
         // Display error message if there's an error
         <ErrorDialog
@@ -142,6 +142,7 @@ export default function ChannelLayout() {
             {channelTabsLink.map(({ label, slug }) => (
               // Render channel tabs
               <button
+                key={slug}
                 className={twMerge(
                   "pb-2 text-base text-zinc-500 dark:text-[#AAAAAA] font-semibold font-poppins transition-all",
                   "disabled:opacity-70 disabled:animate-pulse",
@@ -152,7 +153,7 @@ export default function ChannelLayout() {
               >
                 <Link
                   to={slug}
-                  key={slug}
+                  preventScrollReset
                   className={isLoading ? "pointer-events-none" : ""}
                 >
                   {label}

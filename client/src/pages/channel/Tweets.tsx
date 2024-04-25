@@ -75,7 +75,7 @@ export default function Tweets() {
           No more tweets to show !!!
         </p>
       }
-      className={`pb-20 lg:w-[75%] w-full min-h-screen ${
+      className={`lg:w-[75%] w-full ${
         error ? "min-h-full pt-10" : ""
       }`}
     >
