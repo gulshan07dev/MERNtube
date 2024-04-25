@@ -38,8 +38,8 @@ export default function Login() {
 
   return (
     <Layout
-      showNavigationBar={false}
-      className="flex justify-center items-center pb-7"
+      showNavigation={false}
+      className="flex justify-center items-center"
     >
       <AuthForm
         type={AuthFormType.LOGIN}

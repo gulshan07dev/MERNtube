@@ -5,7 +5,7 @@ import WatchHistorySettings from "@/component/settings/watchHistory/WatchHistory
 
 const Settings = () => {
   return (
-    <Layout className="flex flex-col gap-10 md:px-8 px-3 pt-4">
+    <Layout className="flex flex-col gap-10">
       <h1 className="text-3xl text-black dark:text-white font-bold font-hedvig_letters">
         Settings
       </h1>

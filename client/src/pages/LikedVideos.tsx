@@ -29,7 +29,7 @@ export default function LikedVideos() {
     handleFetchLikedVideos(1);
   }, []);
   return (
-    <Layout className="flex flex-col gap-7 max-lg:gap-5 md:px-7 md:py-5 p-3.5">
+    <Layout className="flex flex-col gap-7 max-lg:gap-5">
       <h1 className="text-4xl font-roboto font-semibold text-[#0F0F0F] dark:text-[#F1F1F1]">
         Liked videos
       </h1>

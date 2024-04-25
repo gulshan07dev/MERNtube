@@ -39,7 +39,7 @@ export default function Subscriptions() {
     handleFetchSubscribedChannelLists(1);
   }, [user?._id]);
   return (
-    <Layout className="md:px-7 md:py-5 p-3.5">
+    <Layout>
       <ScrollPagination
         paginationType="infinite-scroll"
         currentPage={currentPage}

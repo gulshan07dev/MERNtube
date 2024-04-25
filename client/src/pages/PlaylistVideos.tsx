@@ -138,7 +138,7 @@ export default function PlaylistVideos() {
   }, [playlistId, playlist?._id, sortType]);
 
   return (
-    <Layout className="w-full flex max-lg:flex-col max-lg:gap-7 min-h-full gap-3 md:py-5 md:px-4">
+    <Layout className="w-full flex max-lg:flex-col max-lg:gap-7 gap-3">
       {playlistFetchingError ? (
         <ErrorDialog
           errorMessage={playlistFetchingError}
@@ -153,7 +153,7 @@ export default function PlaylistVideos() {
           ) : (
             <div
               className={twMerge(
-                "lg:w-[30%] w-full lg:h-[85vh] flex lg:flex-col md:flex-row md:gap-5 lg:justify-start md:justify-center flex-col gap-y-1 p-5 lg:top-5 lg:sticky lg:overflow-y-scroll rounded-lg max-md:rounded-none",
+                "lg:w-[30%] w-full lg:h-[calc(100vh-85px)] flex lg:flex-col md:flex-row md:gap-5 lg:justify-start md:justify-center flex-col gap-y-1 p-5 lg:sticky lg:top-[72px] lg:overflow-y-scroll rounded-lg max-md:rounded-none",
                 !playlist?.playlistThumbnail
                   ? "bg-none"
                   : [

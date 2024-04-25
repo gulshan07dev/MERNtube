@@ -50,8 +50,8 @@ export default function Signup() {
 
   return (
     <Layout
-      showNavigationBar={false}
-      className="flex justify-center md:pt-5 pt-3 pb-7"
+      showNavigation={false}
+      className="flex justify-center"
     >
       <AuthForm
         type={AuthFormType.SIGNUP}

@@ -146,7 +146,7 @@ export default function WatchHistory() {
 
         {/* watch history settings */}
         {!error && (
-          <div className="lg:w-[470px] w-full h-fit bg-slate-50 dark:bg-[#252525] rounded-md lg:sticky lg:top-[88px] lg:py-24 lg:px-5 px-3 py-3">
+          <div className="lg:w-[470px] w-full h-fit bg-slate-50 dark:bg-[#252525] rounded-md lg:sticky lg:top-[180px] lg:py-24 lg:px-5 px-3 py-3">
             <div className="flex flex-col justify-start items-start gap-3">
               <ClearWatchHistory />
               <ToggleWatchHistoryPauseStatus />
