@@ -29,7 +29,6 @@
 
 body {
   width: 100vw;
-  min-height: 100vh;
   overflow-x: hidden;
   font-family: "Roboto", sans-serif;
 }
@@ -70,15 +69,15 @@ body.dark .scrollbar-show-on-hover:hover::-webkit-scrollbar-thumb {
     width: 6px;
   }
 
-  ::-webkit-scrollbar-track {
-    background: transparent;
+  body.dark::-webkit-scrollbar-track {
+    background: black;
   }
 
   ::-webkit-scrollbar-thumb {
     background: #cc02ff;
   }
 
-  body.dark ::-webkit-scrollbar-thumb {
+  body.dark::-webkit-scrollbar-thumb {
     background: #b8b8b8;
   }
 }

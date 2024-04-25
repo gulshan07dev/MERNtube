@@ -13,9 +13,9 @@
 
 body {
   width: 100vw;
-  min-height: 100vh;
   overflow-x: hidden;
   font-family: "Roboto", sans-serif;
+  background: red;
 }
 
 #sidebar::-webkit-scrollbar {

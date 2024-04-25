@@ -22,7 +22,15 @@ export default function MenuLink({
   const dispatch = useDispatch();
   const { isOpen } = useSelector((state: RootState) => state.sidebar);
   return (
-    <NavLink to={`${slug}`} onClick={() => isOpen && dispatch(onClose())}>
+    <NavLink
+      to={`${slug}`}
+      onClick={() => isOpen && dispatch(onClose())}
+      onDoubleClick={() => {
+        if (window.location.pathname === slug) {
+          window.scroll({ top: 0, behavior: "auto" });
+        }
+      }}
+    >
       {({ isActive }) => (
         <button
           className={twMerge(

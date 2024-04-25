@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 
-import { navHeight } from "@/constant";
 import Logo from "../CoreUI/Logo";
 import SearchBar from "./SearchBar";
 import Avatar from "../CoreUI/Avatar";
@@ -27,8 +26,7 @@ const Navbar = ({
 
   return (
     <nav
-      className={`w-full bg-white dark:bg-dark_bg flex justify-between items-center md:px-7 md:pl-4 px-3`}
-      style={{ height: navHeight }}
+      className={`w-full h-[60px] bg-white dark:bg-dark_bg flex justify-between items-center sticky top-0 z-50 md:px-7 md:pl-4 px-3`}
       role="navigation"
       aria-label="Primary Navigation"
     >

@@ -13,7 +13,6 @@ import { MdCloudUpload } from "react-icons/md";
 
 import { AppDispatch, RootState } from "@/store/store";
 import { onClose, onOpen } from "@/store/slices/sidebarSlice";
-import { sidebarWidth } from "@/constant";
 import MenuLink from "./MenuLink";
 import Divider from "../Divider";
 import SidebarToggleBtn from "./SidebarToggleBtn";
@@ -129,22 +128,21 @@ const Sidebar = ({
       <aside
         id="sidebar"
         className={twMerge(
-          "h-full bg-white dark:bg-dark_bg max-lg:fixed lg:sticky top-0 z-50 overflow-y-scroll scrollbar-show-on-hover",
+          "lg:h-[calc(100vh-60px)] h-screen w-[245px] lg:pt-2 bg-white dark:bg-dark_bg max-lg:fixed lg:sticky lg:top-[60px] top-0 z-[100] overflow-y-scroll scrollbar-show-on-hover",
           "transition-[left] duration-500 delay-0",
           isOpen ? ["max-lg:left-0"] : ["max-lg:left-[-100%]"],
           byDefaultSidebarHidden
             ? isOpen
-              ? ["lg:fixed lg:left-0"]
-              : ["lg:fixed left-[-100%]"]
+              ? ["lg:h-screen lg:fixed lg:top-0 lg:left-0"]
+              : ["lg:h-screen lg:fixed lg:top-0 left-[-100%]"]
             : ["lg:sticky lg:left-0"]
         )}
-        style={{ width: sidebarWidth }}
         role="navigation"
       >
         <div className={twMerge("px-2 pb-2 flex flex-col gap-2.5")}>
           <div
             className={twMerge(
-              "sticky top-0 pt-2 px-2 bg-white dark:bg-dark_bg items-center gap-3 hidden",
+              "sticky top-0 pt-2 px-2 mb-2 bg-white dark:bg-dark_bg items-center gap-3 hidden",
               isOpen && ["max-lg:flex"],
               byDefaultSidebarHidden && ["lg:flex"]
             )}
@@ -200,7 +198,7 @@ const Sidebar = ({
       {/* overlay */}
       <div
         className={twMerge(
-          "fixed z-[49] top-0 left-0 right-0 bottom-0 w-screen h-screen hidden",
+          "fixed z-[51] top-0 left-0 right-0 bottom-0 w-screen h-screen hidden",
           "bg-white opacity-30",
           isOpen && "max-lg:block",
           byDefaultSidebarHidden && isOpen && "block"
