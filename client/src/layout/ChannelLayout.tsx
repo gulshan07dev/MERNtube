@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet, useParams, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
@@ -6,17 +6,25 @@ import Layout from "./Layout";
 import useActionHandler from "@/hooks/useActionHandler";
 import { getChannel } from "@/store/slices/authSlice";
 import Avatar from "@/component/CoreUI/Avatar";
+import UpdateAvatarDialog from "@/component/channel/UpdateAvatarDialog";
 import Skeleton from "@/component/Skeleton";
 import SubscribeBtn from "@/component/subscription/SubscribeBtn";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import ErrorDialog from "@/component/error/ErrorDialog";
 import { abbreviateNumber } from "js-abbreviation-number";
+import Button from "@/component/CoreUI/Button";
+import { FaEdit, FaRegEdit } from "react-icons/fa";
+import UpdateCoverImageDialog from "@/component/channel/UpdateCoverImageDialog";
 
 export default function ChannelLayout() {
   const { username } = useParams();
   const location = useLocation();
-  let { channel } = useSelector((state: RootState) => state?.auth);
+  let { channel, user } = useSelector((state: RootState) => state?.auth);
+  const [isUpdateAvatarDialogOpen, setIsUpdateAvatarDialogOpen] =
+    useState(false);
+  const [isUpdateCoverImageDialogOpen, setIsUpdateCoverImageDialogOpen] =
+    useState(false);
 
   const { error, isLoading, handleAction } = useActionHandler({
     action: getChannel,
@@ -90,20 +98,63 @@ export default function ChannelLayout() {
           ) : (
             <>
               {/* Channel cover image */}
-              <div className="w-full md:h-44 h-28 rounded-2xl overflow-hidden">
+              <div className="relative group w-full md:h-44 h-28 rounded-2xl overflow-hidden">
                 <img
-                  src={channel?.coverImage || "/default-cover.webp"}
+                  src={
+                    (channel?._id === user?._id
+                      ? user?.coverImage
+                      : channel?.coverImage) || "/default-cover.webp"
+                  }
                   className="w-full h-full object-cover"
                   alt="coverImage"
                 />
+                {/* update cover image - btn */}
+                {user?._id === channel?._id && (
+                  <>
+                    <Button
+                      btnType="icon-btn"
+                      onClick={() => setIsUpdateCoverImageDialogOpen(true)}
+                      className="absolute right-2 top-2 md:text-4xl text-3xl bg-slate-200 dark:bg-slate-800"
+                    >
+                      <FaEdit />
+                    </Button>
+                    <UpdateCoverImageDialog
+                      open={isUpdateCoverImageDialogOpen}
+                      handleClose={() => setIsUpdateCoverImageDialogOpen(false)}
+                    />
+                  </>
+                )}
               </div>
+
               {/* Display channel details once loaded */}
               <div className="flex md:gap-14 gap-5">
-                <Avatar
-                  url={channel?.avatar}
-                  fullName={channel?.fullName}
-                  className="md:h-36 h-20 md:w-36 w-20 md:text-[100px] text-[45px]"
-                />
+                <div className="relative group">
+                  <Avatar
+                    url={
+                      channel?._id === user?._id
+                        ? user?.avatar
+                        : channel?.avatar
+                    }
+                    fullName={channel?.fullName}
+                    className="md:h-36 h-20 md:w-36 w-20 md:text-[100px] text-[45px]"
+                  />
+                  {/* update avatar - btn */}
+                  {user?._id === channel?._id && (
+                    <>
+                      <Button
+                        btnType="icon-btn"
+                        onClick={() => setIsUpdateAvatarDialogOpen(true)}
+                        className="hidden group-hover:flex absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%] h-full w-full md:text-8xl text-3xl group-hover:bg-[#ffffff50] dark:group-hover:bg-[#040d1250]"
+                      >
+                        <FaRegEdit />
+                      </Button>
+                      <UpdateAvatarDialog
+                        open={isUpdateAvatarDialogOpen}
+                        handleClose={() => setIsUpdateAvatarDialogOpen(false)}
+                      />
+                    </>
+                  )}
+                </div>
 
                 <div className="flex flex-col gap-1">
                   {/* Channel name */}

@@ -145,7 +145,7 @@ const changeAccountDetails = createAsyncThunk(
 
 const changeUserAvatar = createAsyncThunk(
   "/users/change-avatar",
-  async (data: { avatar: File }, { rejectWithValue }) => {
+  async (data: { avatar: File | null }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.patch("/users/change-avatar", data, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -162,7 +162,7 @@ const changeUserAvatar = createAsyncThunk(
 
 const changeCoverImage = createAsyncThunk(
   "/users/change-coverImage",
-  async (data: { coverImage: File }, { rejectWithValue }) => {
+  async (data: { coverImage: File | null }, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.patch("/users/change-coverImage", data, {
         headers: { "Content-Type": "multipart/form-data" },
