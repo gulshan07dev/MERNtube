@@ -14,7 +14,7 @@ import EmptyMessage from "@/component/EmptyMessage";
 const Home: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [sortType, setSortType] = useState<"desc" | "acc">("desc");
-  const limit = 6;
+  const limit = 9;
   const {
     loading,
     error,
@@ -25,15 +25,25 @@ const Home: React.FC = () => {
     hasNextPage,
   } = useSelector((state: RootState) => state.video);
 
-  const fetchVideos = (page: number) => {
+  const fetchVideos = (page: number, type?: "desc" | "acc") => {
     if (page === 1) {
       dispatch(setVideos([]));
     }
-    dispatch(getAllVideos({ page, limit, sortBy: "createdAt", sortType }));
+    dispatch(
+      getAllVideos({
+        page,
+        limit,
+        sortBy: "createdAt",
+        sortType: type || sortType,
+      })
+    );
   };
 
   const handleSortTypeChange = (type: "desc" | "acc") => {
-    setSortType(type);
+    if (sortType !== type) {
+      setSortType(() => type);
+      fetchVideos(1, type);
+    }
   };
 
   const renderSkeletons = () => {
@@ -48,12 +58,12 @@ const Home: React.FC = () => {
 
   // fetch initial videos
   useEffect(() => {
-    if (currPage > 1) return;
+    if (currPage > 0) return;
     fetchVideos(1);
-  }, [sortType]);
+  }, []);
 
   return (
-    <Layout className="lg:pl-8 max-lg:px-5">
+    <Layout>
       <ScrollPagination
         paginationType="infinite-scroll"
         loadNextPage={() => fetchVideos(currPage + 1)}
@@ -71,7 +81,7 @@ const Home: React.FC = () => {
           </p>
         }
       >
-        <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3">
+        <div className="w-full bg-white dark:bg-dark_bg flex  gap-3">
           {["desc", "acc"].map((type) => (
             <Button
               key={type}
