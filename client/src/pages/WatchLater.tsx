@@ -31,10 +31,7 @@ export default function WatchLater() {
     handleFetchWatchLaterVideos(1);
   }, []);
   return (
-    <Layout className="flex flex-col gap-7 max-lg:gap-5 md:px-7 md:py-5 p-3.5">
-      <h1 className="text-4xl font-roboto font-semibold text-[#0F0F0F] dark:text-[#F1F1F1]">
-        Watch Later
-      </h1>
+    <Layout className="flex flex-col gap-7 max-lg:gap-5">
       <ScrollPagination
         paginationType="infinite-scroll"
         currentPage={currentPage}
@@ -46,10 +43,7 @@ export default function WatchLater() {
         loading={loading}
         totalPages={totalPages}
         totalItems={totalVideos}
-        className={twMerge(
-          "flex flex-grow flex-col gap-3",
-          error && "min-h-full"
-        )}
+        className={twMerge("flex flex-grow flex-col gap-3")}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
             No more watch history to show !!!
@@ -66,9 +60,14 @@ export default function WatchLater() {
             buttonOnClick={() => handleFetchWatchLaterVideos(1)}
           />
         ) : (
-          watchLaterVideos?.map(({ watchLaterVideo: video }) => (
-            <WatchLaterVideoCard key={video?._id} video={video} />
-          ))
+          <>
+            <h1 className="text-4xl font-roboto font-semibold text-[#0F0F0F] dark:text-[#F1F1F1]">
+              Watch Later
+            </h1>
+            {watchLaterVideos?.map(({ watchLaterVideo: video }) => (
+              <WatchLaterVideoCard key={video?._id} video={video} />
+            ))}
+          </>
         )}
       </ScrollPagination>
     </Layout>

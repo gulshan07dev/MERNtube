@@ -13,7 +13,7 @@ const ErrorDialog = ({
   icon?: JSX.Element;
 }) => {
   return (
-    <div className="p-10 flex flex-col gap-10 justify-center items-center m-auto">
+    <div className="px-10 py-14 flex flex-col gap-10 justify-center items-center m-auto">
       <span className="-mt-16 text-7xl text-red-600 shadow-md rounded-full">
         {icon}
       </span>

@@ -1,13 +1,13 @@
-import Avatar from "@/component/CoreUI/Avatar";
-import ScrollPagination from "@/component/ScrollPagination";
-import ErrorDialog from "@/component/error/ErrorDialog";
-import SubscribeBtn from "@/component/subscription/SubscribeBtn";
-import { getUserChannelSubscribers } from "@/store/slices/subscriptionSlice";
-import { AppDispatch, RootState } from "@/store/store";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { twMerge } from "tailwind-merge";
+
+import { AppDispatch, RootState } from "@/store/store";
+import ScrollPagination from "@/component/ScrollPagination";
+import Avatar from "@/component/CoreUI/Avatar";
+import ErrorDialog from "@/component/error/ErrorDialog";
+import SubscribeBtn from "@/component/subscription/SubscribeBtn";
+import { getUserChannelSubscribers } from "@/store/slices/subscriptionSlice";
 
 export default function Subscribers() {
   const dispatch: AppDispatch = useDispatch();
@@ -47,7 +47,6 @@ export default function Subscribers() {
       loading={loading || !channel}
       totalPages={totalPages}
       totalItems={totalChannels}
-      className={twMerge(error && "min-h-full pt-10")}
       endMessage={
         <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
           No more subscriber to show !!!

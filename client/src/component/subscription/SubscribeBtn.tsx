@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
-import { FaUserPlus } from "react-icons/fa";
+import { FaChartBar, FaUserPlus } from "react-icons/fa";
 
 import Button from "../CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import { toggleSubscription } from "@/store/slices/subscriptionSlice";
 
 import { RootState } from "@/store/store";
+import { useNavigate } from "react-router-dom";
 
 export default function SubscribeBtn({
   isSubscribed,
@@ -18,6 +19,7 @@ export default function SubscribeBtn({
   channelId: string;
   className?: string;
 }) {
+  const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [subscribed, setSubscribed] = useState(isSubscribed);
 
@@ -40,7 +42,7 @@ export default function SubscribeBtn({
       isLarge={false}
       disabled={isLoading}
       className={twMerge(
-        "text-base text-white bg-[#f10b64] px-4 rounded-full mt-2",
+        "text-base text-white bg-[#f10b64] px-4 rounded-full",
         className
       )}
       onClick={handleSubscribe}
@@ -48,6 +50,13 @@ export default function SubscribeBtn({
       {isLoading ? "subscribing..." : subscribed ? "Un subscribe" : "subscribe"}
     </Button>
   ) : (
-    <></>
+    <Button
+      className="rounded-full text-[15px] font-roboto py-2"
+      isGradientBg
+      icon={<FaChartBar size={20} />}
+      onClick={() => navigate("/dashboard")}
+    >
+      Dashboard
+    </Button>
   );
 }

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { twMerge } from "tailwind-merge";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -51,7 +50,6 @@ export default function Subscriptions() {
         loading={loading || !user?._id}
         totalPages={totalPages}
         totalItems={totalChannels}
-        className={twMerge("pb-10", error && "min-h-full")}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
             No more subscribed channels to show !!!
@@ -68,8 +66,8 @@ export default function Subscriptions() {
             buttonOnClick={() => handleFetchSubscribedChannelLists(1)}
           />
         ) : (
-          <div className="flex flex-col gap-1 pb-4">
-            <h1 className="text-4xl mb-4 font-roboto font-semibold text-[#0F0F0F] dark:text-[#F1F1F1]">
+          <div className="flex flex-col gap-3">
+            <h1 className="text-4xl mb-1 font-roboto font-semibold text-[#0F0F0F] dark:text-[#F1F1F1]">
               Subscriptions
             </h1>
             {subscribedChannelLists.map(

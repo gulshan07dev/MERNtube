@@ -30,9 +30,6 @@ export default function LikedVideos() {
   }, []);
   return (
     <Layout className="flex flex-col gap-7 max-lg:gap-5">
-      <h1 className="text-4xl font-roboto font-semibold text-[#0F0F0F] dark:text-[#F1F1F1]">
-        Liked videos
-      </h1>
       <ScrollPagination
         paginationType="infinite-scroll"
         currentPage={currentPage}
@@ -44,10 +41,7 @@ export default function LikedVideos() {
         loading={loading}
         totalPages={totalPages}
         totalItems={totalVideos}
-        className={twMerge(
-          "flex flex-grow flex-col gap-3",
-          error && "min-h-full"
-        )}
+        className={twMerge("flex flex-grow flex-col gap-3")}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
             No more liked videos to show !!!
@@ -64,9 +58,14 @@ export default function LikedVideos() {
             buttonOnClick={() => handleFetchLikedVideos(1)}
           />
         ) : (
-          likedVideos?.map(({ likedVideos: video }) => (
-            <LikedVideoCard key={video?._id} video={video} />
-          ))
+          <>
+            <h1 className="text-4xl font-roboto font-semibold text-[#0F0F0F] dark:text-[#F1F1F1]">
+              Liked videos
+            </h1>
+            {likedVideos?.map(({ likedVideos: video }) => (
+              <LikedVideoCard key={video?._id} video={video} />
+            ))}
+          </>
         )}
       </ScrollPagination>
     </Layout>

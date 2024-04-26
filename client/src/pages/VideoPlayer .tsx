@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { abbreviateNumber } from "js-abbreviation-number";
 import TimeAgo from "react-timeago";
-import { FaChartBar, FaShare } from "react-icons/fa";
+import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
 import Layout from "@/layout/Layout";
@@ -40,7 +40,7 @@ export default function VideoPlayer() {
   const [isVideoAddedToWatchHistory, setIsVideoAddedToWatchHistory] =
     useState(false);
   const { video } = useSelector((state: RootState) => state?.video);
-  const { channel, user } = useSelector((state: RootState) => state?.auth);
+  const { channel } = useSelector((state: RootState) => state?.auth);
 
   const {
     isLoading: isFetchingVideo,
@@ -170,16 +170,6 @@ export default function VideoPlayer() {
                       isSubscribed={channel?.isSubscribed}
                       className="md:text-[14px] md:py-1.5 md:px-3"
                     />
-                    {channel?._id === user?._id && (
-                      <Button
-                        className="rounded-lg text-[15px] font-roboto py-2"
-                        isGradientBg
-                        icon={<FaChartBar size={20} />}
-                        onClick={() => navigate("/dashboard")}
-                      >
-                        Dashboard
-                      </Button>
-                    )}
                   </div>
                 )}
 
