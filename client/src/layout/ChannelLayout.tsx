@@ -166,10 +166,10 @@ export default function ChannelLayout() {
                   </h1>
 
                   {/* Username and subscriber/video count */}
-                  <p className="md:text-lg text-sm text-zinc-600 dark:text-[#AAAAAA] font-semibold leading-tight">
+                  <p className="md:text-lg text-sm text-zinc-600 dark:text-[#AAAAAA] font-semibold">
                     {channel?.username}
                   </p>
-                  <p className="md:text-lg text-sm text-zinc-600 dark:text-[#AAAAAA] font-semibold leading-loose">
+                  <p className="md:text-lg text-sm mb-3 text-zinc-600 dark:text-[#AAAAAA] font-semibold">
                     {abbreviateNumber(channel?.subscriberCount || 0, 1)}{" "}
                     {channel?.subscriberCount || 0 <= 1
                       ? "Subscriber"

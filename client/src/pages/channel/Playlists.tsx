@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { twMerge } from "tailwind-merge";
 import { BiPlusCircle } from "react-icons/bi";
 
 import { RootState } from "@/store/store";
@@ -80,7 +79,6 @@ export default function Playlists() {
           No more playlists to show !!!
         </p>
       }
-      className={twMerge(error && "min-h-full pt-10")}
     >
       <div className="flex justify-between max-md:pb-3 px-3">
         <h2 className="max-md:self-center md:text-lg text-base font-semibold text-zinc-800 dark:text-slate-200 font-Noto_sans">

@@ -75,9 +75,7 @@ export default function Tweets() {
           No more tweets to show !!!
         </p>
       }
-      className={`lg:w-[75%] w-full ${
-        error ? "min-h-full pt-10" : ""
-      }`}
+      className={`lg:w-[75%] w-full`}
     >
       <div className="w-full flex flex-col gap-10 max-lg:items-center max-lg:px-1 py-5">
         {!tweets.length && totalDocs === 0 && totalPages === 1 && !isLoading ? (
