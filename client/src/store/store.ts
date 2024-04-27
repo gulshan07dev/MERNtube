@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit"
+
 import authSlice from "./slices/authSlice";
 import subscriptionSlice from "./slices/subscriptionSlice";
 import videoSlice from "./slices/videoSlice";
@@ -10,6 +11,7 @@ import likeSlice from "./slices/likeSlice";
 import commentSlice from "./slices/commentSlice";
 import sidebarSlice from "./slices/sidebarSlice";
 import appLoadingSlice from "./slices/appLoadingSlice";
+import dashboardSlice from "./slices/dashboardSlice";
 
 const store = configureStore({
     reducer: {
@@ -22,8 +24,9 @@ const store = configureStore({
         like: likeSlice,
         comment: commentSlice,
         playlist: playlistSlice,
+        dashboard: dashboardSlice,
         sidebar: sidebarSlice,
-        appLoading: appLoadingSlice
+        appLoading: appLoadingSlice,
     },
     devTools: import.meta.env.MODE === "development"
 })

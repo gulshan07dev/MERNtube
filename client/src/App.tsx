@@ -26,6 +26,7 @@ import WatchLater from "./pages/WatchLater";
 import LikedVideos from "./pages/LikedVideos";
 import SendFeedback from "./pages/SendFeedback";
 import Subscriptions from "./pages/Subscriptions";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -118,6 +119,10 @@ function App() {
               element: <Subscribers />,
             },
           ],
+        },
+        {
+          path: "/dashboard",
+          element: <Dashboard />
         },
         {
           path: "feed/subscriptions",

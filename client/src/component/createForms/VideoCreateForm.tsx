@@ -63,25 +63,20 @@ export default function VideoCreateForm() {
       inputs={
         <>
           <div className="flex gap-7 max-lg:flex-col">
-            <div className="lg:w-1/2 w-full flex flex-col gap-7">
-              <Input
-                label="Title"
-                type="text"
-                value={formData?.title}
-                maxTextSize={60}
-                required={true}
-                onChange={(e) => handleInputChange("title", e.target.value)}
-              />
-              <TextAreaInput
-                label="Description"
-                rows={4}
-                isOptional={true}
-                maxTextSize={500}
-                value={formData?.description}
-                onChange={(e) =>
-                  handleInputChange("description", e.target.value)
+            <div className="lg:w-[48%]  w-full flex flex-col gap-7">
+              {/* video file */}
+              <FileUpload
+                icon={<FaUpload />}
+                label="choose your video"
+                fileType="video"
+                accept="video/mp4"
+                onChange={(file) =>
+                  handleInputChange("videoFile", file || null)
                 }
+                ref={videoFileRef}
+                className="lg:h-[250px] md:h-[300px] h-[200px] border-dashed border-blue-500"
               />
+
               <Input
                 label="Thumbnail"
                 type="file"
@@ -93,18 +88,27 @@ export default function VideoCreateForm() {
                 ref={thumbnailRef}
               />
             </div>
-            <div className="lg:w-1/2 w-full flex flex-col gap-7">
-              {/* video file */}
-              <FileUpload
-                icon={<FaUpload />}
-                label="choose your video"
-                fileType="video"
-                accept="video/mp4"
-                onChange={(file) => handleInputChange("videoFile", file || null)}
-                ref={videoFileRef}
-                className="md:h-[245px] h-[200px] border-dashed border-blue-500"
+            <div className="flex-grow flex flex-col gap-7">
+              {/* video title */}
+              <Input
+                label="Title"
+                type="text"
+                value={formData?.title}
+                maxTextSize={60}
+                required={true}
+                onChange={(e) => handleInputChange("title", e.target.value)}
               />
-
+              {/* video description */}
+              <TextAreaInput
+                label="Description"
+                rows={4}
+                isOptional={true}
+                maxTextSize={500}
+                value={formData?.description}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
+              />
               {/* is published - checkbox */}
               <CheckBox
                 label="Is Published"

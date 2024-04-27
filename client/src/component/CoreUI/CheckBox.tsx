@@ -17,7 +17,7 @@ export default function CheckBox({
       <label
         htmlFor={label}
         title={label}
-        className="font-roboto font-normal text-lg text-gray-500 leading-tight"
+        className="font-roboto font-normal text-lg text-gray-500 dark:text-slate-200 leading-tight"
       >
         {label}
       </label>
