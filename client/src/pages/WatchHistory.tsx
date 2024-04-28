@@ -59,7 +59,7 @@ export default function WatchHistory() {
       if (diff < 7) {
         return date.toLocaleDateString("en-US", { weekday: "long" });
       } else {
-        return date.toLocaleDateString();
+        return date.toLocaleDateString("en-GB");
       }
     }
   }, []);
