@@ -1,4 +1,4 @@
-import Layout from "@/layout/Layout";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   FaEye,
@@ -6,22 +6,20 @@ import {
   FaThumbsUp,
   FaVideo,
   FaSyncAlt,
-  FaEdit,
-  FaTrash,
 } from "react-icons/fa";
 
 import { RootState } from "@/store/store";
+import Layout from "@/layout/Layout";
 import useActionHandler from "@/hooks/useActionHandler";
 import {
   getChannelStats,
   getChannelVideos,
 } from "@/store/slices/dashboardSlice";
-import { useEffect } from "react";
 import StatCard from "@/component/dashboard/StatCard";
 import Button from "@/component/CoreUI/Button";
 import ErrorDialog from "@/component/error/ErrorDialog";
 import Skeleton from "@/component/Skeleton";
-import ToggleButton from "@/component/CoreUI/ToggleButton";
+import ChannelVideosTableRow from "@/component/dashboard/ChannelVideosTableRow";
 
 export default function Dashboard() {
   const { user } = useSelector((state: RootState) => state?.auth);
@@ -137,8 +135,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* videos table */}
+      {/* channel videos: edit, delete and update video status with pagination */}
       <div className="w-full flex flex-col border border-gray-300">
+        {/* videos table */}
         <div className="flex flex-col gap-6 r">
           <div className="flex gap-3 items-center px-5 py-3">
             <Button
@@ -150,7 +149,7 @@ export default function Dashboard() {
               <FaSyncAlt />
             </Button>
             <h2 className="text-xl font-semibold text-black dark:text-white font-Noto_sans">
-              channelVideos
+              channel Videos
             </h2>
           </div>
           {channelVideosFetchingError ? (
@@ -161,8 +160,11 @@ export default function Dashboard() {
                 className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
                 aria-label="Channel Videos"
               >
-                <thead className="ext-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
+                <thead className="md:text-lg text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-white">
+                  <tr className="whitespace-nowrap">
+                    <th scope="col" className="px-6 py-3">
+                      Status
+                    </th>
                     <th scope="col" className="px-6 py-3">
                       Status
                     </th>
@@ -181,53 +183,8 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {channelVideos?.map((video, idx) => (
-                    <tr
-                      key={idx}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                      <td className="px-6 py-4">
-                        <ToggleButton
-                          value={video?.isPublished}
-                          onChange={() => {}}
-                          aria-label={
-                            video?.isPublished ? "Published" : "Unpublished"
-                          }
-                        />
-                      </td>
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={video?.thumbnail}
-                            alt="Video Thumbnail"
-                            className="h-4 w-8"
-                          />
-                          <p>{video?.title}</p>
-                        </div>
-                      </th>
-
-                      <td className="px-6 py-4">
-                        <span className="p-2 rounded-full border text-green-500">
-                          {video?.videoLikesCount} likes
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        {new Date(video?.createdAt).toLocaleDateString("en-GB")}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-1">
-                          <Button btnType="icon-btn" aria-label="Edit Video">
-                            <FaEdit />
-                          </Button>
-                          <Button btnType="icon-btn" aria-label="Delete Video">
-                            <FaTrash />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
+                  {channelVideos?.map((video) => (
+                    <ChannelVideosTableRow key={video?._id} video={video} />
                   ))}
                 </tbody>
               </table>

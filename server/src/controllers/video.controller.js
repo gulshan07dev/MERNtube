@@ -1,4 +1,6 @@
 import { Video } from "../models/video.model.js";
+import { Like } from "../models/like.model.js";
+import { Comment } from "../models/comment.model.js";
 import { User } from "../models/user.model.js";
 import { Types } from "mongoose";
 import { isValidObjectId } from "mongoose";
@@ -79,7 +81,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     let thumbnail;
     try {
         // Check if any field is empty
-        if (![title, description].every(Boolean)) {
+        if (!title) {
             throw new ApiError(400, "All fields are required");
         }
 
@@ -350,6 +352,15 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
     // Delete record from the database
     await Video.findByIdAndDelete(videoId);
+
+    // Delete all the likes and comments associated to this video
+    await Like.deleteMany({ video: videoId });
+    await Comment.deleteMany({video: videoId})
+
+    // Delete likes associated with comments
+    const comments = await Comment.find({ video: videoId }).select('_id');
+    const commentIds = comments.map(comment => comment._id);
+    await Like.deleteMany({ comment: { $in: commentIds } });
 
     return res.status(200).json(new ApiResponse(
         200,

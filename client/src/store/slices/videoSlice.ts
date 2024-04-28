@@ -14,15 +14,15 @@ interface QueryParams {
 export interface Video {
   _id: string;
   title: string;
-  description?: string;
+  description: string;
   thumbnail: string;
-  videoFile: string
+  videoFile: string;
   duration: number;
   views: number;
   isPublished: boolean;
-  owner: User;
-  videoLikesCount: number;
-  isLiked: boolean;
+  owner?: User;
+  videoLikesCount?: number;
+  isLiked?: boolean;
   createdAt: Date;
 }
 
@@ -132,6 +132,36 @@ const getAllVideos = createAsyncThunk(
   }
 );
 
+const deleteVideo = createAsyncThunk(
+  "/videos/delete/videoId",
+  async (videoId: string, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.delete(`/videos/${videoId}`);
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+const toggleVideoPublicStatus = createAsyncThunk(
+  "/videos/toggle-status/videoId",
+  async (videoId: string, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post(`/videos/toggle-status/${videoId}`);
+      return res?.data;
+    } catch (error: any) {
+      if (!error.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
 const videoSlice = createSlice({
   name: "video",
   initialState,
@@ -145,7 +175,7 @@ const videoSlice = createSlice({
       .addCase(getVideoByVideoId.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.video = null
+        state.video = null;
       })
       .addCase(getVideoByVideoId.fulfilled, (state, action) => {
         state.loading = false;
@@ -181,4 +211,11 @@ const videoSlice = createSlice({
 
 export default videoSlice.reducer;
 export const { setVideos } = videoSlice.actions;
-export { createVideo, updateVideo, getVideoByVideoId, getAllVideos };
+export {
+  createVideo,
+  updateVideo,
+  getVideoByVideoId,
+  getAllVideos,
+  deleteVideo,
+  toggleVideoPublicStatus,
+};
