@@ -178,9 +178,9 @@ export default function VideoPlayer() {
                   <div className="flex gap-2 max-sm:gap-3 pl-3 w-fit max-md:w-full whitespace-nowrap max-md:overflow-x-scroll max-md:no-scrollbar">
                     {/* like button */}
                     <LikeBtn
-                      contentId={video._id}
-                      isLiked={video.isLiked}
-                      likeCount={video.videoLikesCount}
+                      contentId={video?._id}
+                      isLiked={Boolean(video?.isLiked)}
+                      likeCount={video?.videoLikesCount || 0}
                       toggleLikeAction={toggleVideoLike}
                     />
                     {/* share button */}
