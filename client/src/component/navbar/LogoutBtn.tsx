@@ -20,6 +20,7 @@ export default function LogoutBtn({ className = "" }: { className?: string }) {
 
     if (isSuccess) {
       navigate("/");
+      window.location.reload()
     }
   };
   return (
