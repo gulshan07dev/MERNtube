@@ -62,10 +62,6 @@ function App() {
       element: <Home />,
     },
     {
-      path: "send-feedback",
-      element: <SendFeedback />,
-    },
-    {
       path: "settings",
       element: <Settings />,
     },
@@ -122,7 +118,11 @@ function App() {
         },
         {
           path: "/dashboard",
-          element: <Dashboard />
+          element: <Dashboard />,
+        },
+        {
+          path: "send-feedback",
+          element: <SendFeedback />,
         },
         {
           path: "feed/subscriptions",

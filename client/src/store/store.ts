@@ -12,6 +12,7 @@ import commentSlice from "./slices/commentSlice";
 import sidebarSlice from "./slices/sidebarSlice";
 import appLoadingSlice from "./slices/appLoadingSlice";
 import dashboardSlice from "./slices/dashboardSlice";
+import feedbackSlice from "./slices/feedbackSlice";
 
 const store = configureStore({
     reducer: {
@@ -25,6 +26,7 @@ const store = configureStore({
         comment: commentSlice,
         playlist: playlistSlice,
         dashboard: dashboardSlice,
+        feedback: feedbackSlice,
         sidebar: sidebarSlice,
         appLoading: appLoadingSlice,
     },
