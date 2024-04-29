@@ -135,7 +135,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* channel videos: edit, delete and update video status with pagination */}
+      {/* channel videos: edit, delete and update video status */}
       <div className="w-full flex flex-col border border-gray-300">
         {/* videos table */}
         <div className="flex flex-col gap-6 r">
@@ -190,7 +190,9 @@ export default function Dashboard() {
               </table>
             </div>
           ) : (
-            <p>loading videos</p>
+            Array.from({ length: 10 }).map((_, idx) => (
+              <Skeleton key={idx} className="h-12 mx-4" />
+            ))
           )}
         </div>
       </div>
