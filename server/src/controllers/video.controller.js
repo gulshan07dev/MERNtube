@@ -310,6 +310,18 @@ const getAllVideos = asyncHandler(async (req, res) => {
         }
     })
 
+    // project required field
+    pipeline.push({
+        $project: {
+            title: 1,
+            thumbnail: 1,
+            owner: 1,
+            views: 1,
+            duration: 1,
+            createdAt: 1,
+        }
+    })
+
     const aggregate = Video.aggregate(pipeline)
 
     Video.aggregatePaginate(aggregate, { page, limit })
@@ -343,11 +355,11 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
     // Delete video & thumbnail from cloudinary
     if (video.videoFile) {
-        await deleteOnCloudinary(video.videoFile.key, "video");
+        await deleteOnCloudinary(video.videoFile, "video");
     }
 
     if (video.thumbnail) {
-        await deleteOnCloudinary(video.thumbnail.key);
+        await deleteOnCloudinary(video.thumbnail);
     }
 
     // Delete record from the database

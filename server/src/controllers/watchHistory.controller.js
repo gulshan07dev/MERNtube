@@ -8,7 +8,7 @@ import { Types, isValidObjectId } from "mongoose";
 // add video to watch history
 const addVideoToWatchHistory = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    const {user} = req;
+    const { user } = req;
 
     // Check if Invalid videoId
     if (!isValidObjectId(videoId)) {
@@ -17,7 +17,7 @@ const addVideoToWatchHistory = asyncHandler(async (req, res) => {
 
     // Check video exist or not
     const isVideoExist = await Video.findById(videoId)
-    if(!isVideoExist) {
+    if (!isVideoExist) {
         throw new ApiError(404, "Video not found!")
     }
 
@@ -114,9 +114,7 @@ const getWatchHistoryVideos = asyncHandler(async (req, res) => {
 
     const aggregate = WatchHistory.aggregate([
         {
-            $match: {
-                owner: new Types.ObjectId(userId)
-            }
+            $match: { owner: new Types.ObjectId(userId) },
         },
         {
             $lookup: {
@@ -148,9 +146,22 @@ const getWatchHistoryVideos = asyncHandler(async (req, res) => {
                                 $first: "$owner"
                             }
                         }
+                    },
+                    {
+                        $project: {
+                            title: 1,
+                            thumbnail: 1,
+                            owner: 1,
+                            views: 1,
+                            duration: 1,
+                            createdAt: 1,
+                        }
                     }
                 ]
             }
+        },
+        {
+            $match: { "watchHistoryVideo._id": { "$exists": true } }
         },
         {
             $sort: {

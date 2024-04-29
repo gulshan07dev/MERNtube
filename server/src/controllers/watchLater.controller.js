@@ -96,6 +96,11 @@ const getUserWatchLater = asyncHandler(async (req, res) => {
                 as: "watchLaterVideo",
                 pipeline: [
                     {
+                        $match: {
+                            isPublished: true
+                        }
+                    },
+                    {
                         $lookup: {
                             from: "users",
                             localField: "owner",
@@ -118,9 +123,22 @@ const getUserWatchLater = asyncHandler(async (req, res) => {
                                 $first: "$owner"
                             }
                         }
+                    },
+                    {
+                        $project: {
+                            title: 1,
+                            thumbnail: 1,
+                            owner: 1,
+                            views: 1,
+                            duration: 1,
+                            createdAt: 1,
+                        }
                     }
                 ]
             }
+        },
+        {
+            $match: { "watchLaterVideo._id": { "$exists": true } }
         },
         {
             $sort: {

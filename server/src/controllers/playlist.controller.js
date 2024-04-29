@@ -273,11 +273,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 // get user playlist videos
 const getUserPlaylistVideos = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
-    let { page = 1, limit = 10, orderBy, sortBy, sortType } = req.query;
-
-    // Validate page and limit
-    page = parseInt(page);
-    limit = parseInt(limit);
+    const { page = 1, limit = 10, orderBy, sortBy, sortType } = req.query;
 
     // Check if Invalid playlistId
     if (!isValidObjectId(playlistId)) {
@@ -293,12 +289,7 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
     const pipeline = [];
 
     pipeline.push({
-        $match: {
-            $and: [
-                { playlistId: new Types.ObjectId(playlistId) },
-                { addedBy: new Types.ObjectId(req.user._id) },
-            ]
-        }
+        $match: { playlistId: new Types.ObjectId(playlistId) },
     });
 
     if (playlist.owner.toString() === req.user._id.toString()) {
@@ -331,6 +322,16 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
                             owner: {
                                 $first: "$owner"
                             }
+                        }
+                    },
+                    {
+                        $project: {
+                            title: 1,
+                            thumbnail: 1,
+                            owner: 1,
+                            views: 1,
+                            duration: 1,
+                            createdAt: 1,
                         }
                     }
                 ]
@@ -365,11 +366,26 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
                                 }
                             ]
                         }
+                    },
+                    {
+                        $project: {
+                            title: 1,
+                            thumbnail: 1,
+                            owner: 1,
+                            views: 1,
+                            duration: 1,
+                            createdAt: 1,
+                        }
                     }
                 ]
             }
         });
     }
+
+    // match playlistVideo - if video has been deleted by the owner
+    pipeline.push({
+        $match: { "playlistVideo._id": { "$exists": true } }
+    })
 
     // sorting
     if (orderBy) {
@@ -427,7 +443,7 @@ const getUserPlaylistVideos = asyncHandler(async (req, res) => {
             return res.status(200).json(new ApiResponse(
                 200,
                 { result },
-                "Fetched videos successfully"
+                "Fetched playlist videos successfully"
             ));
         })
         .catch(function (error) {
