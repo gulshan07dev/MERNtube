@@ -10,7 +10,7 @@ import {
   getVideoComment,
 } from "@/store/slices/commentSlice";
 import useActionHandler from "@/hooks/useActionHandler";
-import EmptyMessage from "../EmptyMessage";
+import EmptyMessage from "../error/EmptyMessage";
 
 interface CommentBoxProps {
   contentId: string;

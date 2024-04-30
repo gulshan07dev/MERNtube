@@ -7,7 +7,7 @@ import { getUserTweets, setTweets } from "@/store/slices/tweetSlice";
 import useActionHandler from "@/hooks/useActionHandler";
 import TweetCard from "@/component/tweet/TweetCard";
 import TweetSkeleton from "@/component/tweet/TweetSkeleton";
-import EmptyMessage from "@/component/EmptyMessage";
+import EmptyMessage from "@/component/error/EmptyMessage";
 
 export default function Tweets() {
   const dispatch: AppDispatch = useDispatch();

@@ -6,7 +6,7 @@ import { RootState } from "@/store/store";
 import ScrollPagination from "@/component/ScrollPagination";
 import { Playlist, getUserPlaylists } from "@/store/slices/playlistSlice";
 import useActionHandler from "@/hooks/useActionHandler";
-import EmptyMessage from "@/component/EmptyMessage";
+import EmptyMessage from "@/component/error/EmptyMessage";
 import PlaylistSkeleton from "@/component/playlist/PlaylistSkeleton";
 import PlaylistCard from "@/component/playlist/PlaylistCard";
 import CreatePlaylistDialog from "@/component/playlist/CreatePlaylistDialog";

@@ -20,6 +20,7 @@ import Button from "@/component/CoreUI/Button";
 import ErrorDialog from "@/component/error/ErrorDialog";
 import Skeleton from "@/component/Skeleton";
 import ChannelVideosTableRow from "@/component/dashboard/ChannelVideosTableRow";
+import ErrorMessage from "@/component/error/ErrorMessage";
 
 export default function Dashboard() {
   const { user } = useSelector((state: RootState) => state?.auth);
@@ -60,9 +61,7 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (!channelVideos.length) {
-      fetchChannelVideos();
-    }
+    fetchChannelVideos();
   }, []);
 
   return (
@@ -136,7 +135,7 @@ export default function Dashboard() {
       </div>
 
       {/* channel videos: edit, delete and update video status */}
-      <div className="w-full flex flex-col border border-gray-300">
+      <div className="w-full flex flex-col border border-gray-300" id="your-videos">
         {/* videos table */}
         <div className="flex flex-col gap-6 r">
           <div className="flex gap-3 items-center px-5 py-3">
@@ -155,40 +154,44 @@ export default function Dashboard() {
           {channelVideosFetchingError ? (
             <ErrorDialog errorMessage={channelVideosFetchingError} />
           ) : !isFetchingChannelVideos ? (
-            <div className="w-full relative overflow-x-auto">
-              <table
-                className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                aria-label="Channel Videos"
-              >
-                <thead className="md:text-lg text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-white">
-                  <tr className="whitespace-nowrap">
-                    <th scope="col" className="px-6 py-3">
-                      Status
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Status
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Video
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Rating
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Date Uploaded
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {channelVideos?.map((video) => (
-                    <ChannelVideosTableRow key={video?._id} video={video} />
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            channelVideos?.length === 0 ? (
+              <ErrorMessage errorMessage="You have not been uploaded any video yet!" className="mx-4 w-auto mb-7" />
+            ) : (
+              <div className="w-full relative overflow-x-auto">
+                <table
+                  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                  aria-label="Channel Videos"
+                >
+                  <thead className="md:text-lg text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-white">
+                    <tr className="whitespace-nowrap">
+                      <th scope="col" className="px-6 py-3">
+                        Status
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Status
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Video
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Rating
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Date Uploaded
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {channelVideos?.map((video) => (
+                      <ChannelVideosTableRow key={video?._id} video={video} />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
           ) : (
             Array.from({ length: 10 }).map((_, idx) => (
               <Skeleton key={idx} className="h-12 mx-4" />

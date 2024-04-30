@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import VideoCard from "@/component/video/VideoCard";
 import VideoSkeleton from "@/component/video/VideoSkeleton";
 import Button from "@/component/CoreUI/Button";
-import EmptyMessage from "@/component/EmptyMessage";
+import EmptyMessage from "@/component/error/EmptyMessage";
 
 const Home: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -86,46 +86,52 @@ const Home: React.FC = () => {
         </p>
       }
     >
-      <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3">
-        {["desc", "acc"].map((type) => (
-          <Button
-            key={type}
-            isLarge={false}
-            onClick={() => handleSortTypeChange(type as "acc" | "desc")}
-            className={twMerge(
-              "rounded-lg bg-gray-200 dark:bg-[#272727] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
-              "hover:opacity-100",
-              sortType === type && sortBy === "createdAt"
-                ? ["bg-black text-white dark:bg-white dark:text-black"]
-                : ["hover:bg-gray-300 dark:hover:bg-[#353535]"]
-            )}
-          >
-            {type === "desc" ? "Newest" : "Oldest"}
-          </Button>
-        ))}
-        <Button
-          isLarge={false}
-          onClick={() => handleSortBy("views")}
-          className={twMerge(
-            "rounded-lg bg-gray-200 dark:bg-[#272727] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
-            "hover:opacity-100",
-            sortBy === "views"
-              ? ["bg-black text-white dark:bg-white dark:text-black"]
-              : ["hover:bg-gray-300 dark:hover:bg-[#353535]"]
-          )}
-        >
-          Popular
-        </Button>
-      </div>
       <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
-        {!videos && totalDocs === 0 && totalPages === 1 && !loading ? (
+        {!videos.length && totalDocs === 0 && totalPages === 1 && !loading ? (
           <EmptyMessage
             message="empty videos"
             buttonText="fetch again"
             onRefresh={() => fetchVideos(1)}
           />
         ) : (
-          videos?.map((item) => <VideoCard key={item?._id} data={item} />)
+          <>
+            {/* video sorting based on newest, oldest, and popular */}
+            <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3">
+              {["desc", "acc"].map((type) => (
+                <Button
+                  key={type}
+                  isLarge={false}
+                  onClick={() => handleSortTypeChange(type as "acc" | "desc")}
+                  className={twMerge(
+                    "rounded-lg bg-gray-200 dark:bg-[#272727] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
+                    "hover:opacity-100",
+                    sortType === type && sortBy === "createdAt"
+                      ? ["bg-black text-white dark:bg-white dark:text-black"]
+                      : ["hover:bg-gray-300 dark:hover:bg-[#353535]"]
+                  )}
+                >
+                  {type === "desc" ? "Newest" : "Oldest"}
+                </Button>
+              ))}
+              <Button
+                isLarge={false}
+                onClick={() => handleSortBy("views")}
+                className={twMerge(
+                  "rounded-lg bg-gray-200 dark:bg-[#272727] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
+                  "hover:opacity-100",
+                  sortBy === "views"
+                    ? ["bg-black text-white dark:bg-white dark:text-black"]
+                    : ["hover:bg-gray-300 dark:hover:bg-[#353535]"]
+                )}
+              >
+                Popular
+              </Button>
+            </div>
+            {/* videos */}
+            {videos?.map((item) => (
+              <VideoCard key={item?._id} data={item} />
+            ))}
+          </>
         )}
         {(loading || !channel?._id) && renderSkeletons()}
       </div>

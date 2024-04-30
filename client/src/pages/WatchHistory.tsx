@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import Layout from "@/layout/Layout";
 import ScrollPagination from "@/component/ScrollPagination";
 import { getWatchHistory } from "@/store/slices/watchHistorySlice";
-import ErrorDialog from "@/component/error/ErrorDialog";
+import EmptyMessage from "@/component/error/EmptyMessage";
 import WatchHistoryVideoCard from "@/component/watchHistory/WatchHistoryVideoCard";
 import WatchHistoryVideoSkeleton from "@/component/watchHistory/WatchHistoryVideoSkeleton";
 import ClearWatchHistory from "@/component/settings/watchHistory/ClearWatchHistory";
@@ -109,10 +109,10 @@ export default function WatchHistory() {
         totalVideos === 0 &&
         totalPages === 1 &&
         !loading ? (
-          <ErrorDialog
-            errorMessage="empty history!"
-            buttonLabel="Try again"
-            buttonOnClick={() => handleFetchWatchHistory(1)}
+          <EmptyMessage
+            message="empty history!"
+            buttonText="Try again"
+            onRefresh={() => handleFetchWatchHistory(1)}
           />
         ) : (
           <>

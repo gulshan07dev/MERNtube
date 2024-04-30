@@ -17,7 +17,6 @@ import MenuLink from "./MenuLink";
 import Divider from "../Divider";
 import SidebarToggleBtn from "./SidebarToggleBtn";
 import Logo from "../CoreUI/Logo";
-import Avatar from "../CoreUI/Avatar";
 import useScroll from "@/hooks/useScroll";
 
 const Sidebar = ({
@@ -50,15 +49,9 @@ const Sidebar = ({
         active: true,
       },
       {
-        label: "You",
-        icon: (
-          <Avatar
-            fullName={user?.fullName}
-            url={user?.avatar}
-            className="h-7 w-7"
-          />
-        ),
-        slug: "/you",
+        label: "Your channel",
+        icon: <FaHouseUser />,
+        slug: `/c/${user?.username}`,
         active: true,
       },
     ],
@@ -68,12 +61,6 @@ const Sidebar = ({
   const userMenu = useMemo(
     () => [
       {
-        label: "Your channel",
-        icon: <FaHouseUser />,
-        slug: `/c/${user?.username}`,
-        active: isLoggedIn,
-      },
-      {
         label: "History",
         icon: <RiHistoryFill />,
         slug: "/feed/history",
@@ -82,7 +69,7 @@ const Sidebar = ({
       {
         label: "Your videos",
         icon: <RiVideoLine />,
-        slug: "/your-videos",
+        slug: "/dashboard#your-videos",
         active: true,
       },
       {

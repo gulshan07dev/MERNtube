@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import Layout from "@/layout/Layout";
 import ScrollPagination from "@/component/ScrollPagination";
 import { AppDispatch, RootState } from "@/store/store";
-import ErrorDialog from "@/component/error/ErrorDialog";
+import EmptyMessage from "@/component/error/EmptyMessage";
 import { getLikedVideos } from "@/store/slices/likeSlice";
 import LikedVideoCard from "@/component/likedVideo/LikedVideoCard";
 
@@ -52,10 +52,10 @@ export default function LikedVideos() {
         totalVideos === 0 &&
         totalPages === 1 &&
         !loading ? (
-          <ErrorDialog
-            errorMessage="empty liked videos!"
-            buttonLabel="Try again"
-            buttonOnClick={() => handleFetchLikedVideos(1)}
+          <EmptyMessage
+            message="empty liked videos!"
+            buttonText="Try again"
+            onRefresh={() => handleFetchLikedVideos(1)}
           />
         ) : (
           <>

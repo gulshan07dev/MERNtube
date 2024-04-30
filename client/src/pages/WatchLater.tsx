@@ -6,7 +6,7 @@ import Layout from "@/layout/Layout";
 import ScrollPagination from "@/component/ScrollPagination";
 import { AppDispatch, RootState } from "@/store/store";
 import { getUserWatchLaterVideos } from "@/store/slices/watchLaterSlice";
-import ErrorDialog from "@/component/error/ErrorDialog";
+import EmptyMessage from "@/component/error/EmptyMessage";
 import WatchLaterVideoCard from "@/component/watchLater/WatchLaterVideoCard";
 
 export default function WatchLater() {
@@ -54,10 +54,10 @@ export default function WatchLater() {
         totalVideos === 0 &&
         totalPages === 1 &&
         !loading ? (
-          <ErrorDialog
-            errorMessage="empty history!"
-            buttonLabel="Try again"
-            buttonOnClick={() => handleFetchWatchLaterVideos(1)}
+          <EmptyMessage
+            message="empty history!"
+            buttonText="Try again"
+            onRefresh={() => handleFetchWatchLaterVideos(1)}
           />
         ) : (
           <>
