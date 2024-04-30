@@ -23,6 +23,29 @@ const playlistSchema = new Schema({
 
 }, { timestamps: true })
 
+const playlistVideoSchema = new Schema({
+    playlistId: {
+        type: Schema.Types.ObjectId,
+        ref: "Playlist",
+        required: true
+    },
+    videoId: {
+        type: Schema.Types.ObjectId,
+        ref: "Video",
+        required: true
+    },
+    addedBy: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    }
+
+}, { timestamps: true })
+
 playlistSchema.plugin(mongooseAggregatePaginate)
 
+playlistVideoSchema.index({ playlistId: 1, videoId: 1 }, { unique: true });
+playlistVideoSchema.plugin(mongooseAggregatePaginate)
+
 export const Playlist = model("Playlist", playlistSchema);
+export const PlaylistVideo = model("PlaylistVideo", playlistVideoSchema);

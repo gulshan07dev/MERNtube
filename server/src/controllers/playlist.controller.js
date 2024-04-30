@@ -1,5 +1,4 @@
-import { Playlist } from "../models/playlist.model.js"
-import { PlaylistVideo } from "../models/playlistVideo.model.js"
+import { Playlist, PlaylistVideo } from "../models/playlist.model.js"
 import { User } from "../models/user.model.js"
 import { Video } from "../models/video.model.js"
 import { Types, isValidObjectId } from "mongoose"
