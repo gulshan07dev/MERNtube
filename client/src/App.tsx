@@ -6,7 +6,7 @@ import AuthRequired from "./helper/auth/AuthRequired";
 import AuthNotRequired from "./helper/auth/AuthNotRequired";
 import { getCurrentUser, refreshAccessToken } from "./store/slices/authSlice";
 import { AppDispatch } from "./store/store";
-import { setUserLoading } from "./store/slices/appLoadingSlice";
+import { setAppLoading } from "./store/slices/appLoadingSlice";
 import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
@@ -33,7 +33,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      dispatch(setUserLoading(true));
+      dispatch(setAppLoading(true));
 
       const res = await dispatch(getCurrentUser());
 
@@ -45,7 +45,7 @@ function App() {
         await dispatch(getCurrentUser());
       }
 
-      dispatch(setUserLoading(false));
+      dispatch(setAppLoading(false));
     })();
   }, []);
 

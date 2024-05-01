@@ -26,6 +26,7 @@ const Sidebar = ({
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const { user, isLoggedIn } = useSelector((state: RootState) => state?.auth);
+  const { isAppLoading } = useSelector((state: RootState) => state?.appLoading);
   const { isOpen } = useSelector((state: RootState) => state.sidebar);
   const bottomNavigationBar = useRef<HTMLDivElement>(null);
 
@@ -52,7 +53,7 @@ const Sidebar = ({
         label: "Your channel",
         icon: <FaHouseUser />,
         slug: `/c/${user?.username}`,
-        active: isLoggedIn && user,
+        active: isLoggedIn,
       },
     ],
     []
@@ -139,62 +140,68 @@ const Sidebar = ({
         )}
         role="navigation"
       >
-        <div className={twMerge("px-2 pb-2 flex flex-col gap-2.5")}>
-          <div
-            className={twMerge(
-              "sticky top-0 pt-2 px-2 mb-2 bg-white dark:bg-dark_bg items-center gap-3 hidden",
-              isOpen && ["max-lg:flex"],
-              byDefaultSidebarHidden && ["lg:flex"]
-            )}
-          >
-            <SidebarToggleBtn />
-            <Logo />
-          </div>
+        {!isAppLoading && (
+          <div className={twMerge("px-2 pb-2 flex flex-col gap-2.5")}>
+            <div
+              className={twMerge(
+                "sticky top-0 pt-2 px-2 mb-2 bg-white dark:bg-dark_bg items-center gap-3 hidden",
+                isOpen && ["max-lg:flex"],
+                byDefaultSidebarHidden && ["lg:flex"]
+              )}
+            >
+              <SidebarToggleBtn />
+              <Logo />
+            </div>
 
-          {/* Menu Items */}
-          <div
-            ref={bottomNavigationBar}
-            className={twMerge(
-              "flex md:flex-col gap-2.5",
-              "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white dark:max-md:bg-dark_bg max-md:border dark:max-md:border-[#121212] max-md:items-center max-md:transition-all",
-              isOpen && ["max-md:bottom-[-60px]"]
-            )}
-          >
-            {menuItems.map(
+            {/* Menu Items */}
+            <div
+              ref={bottomNavigationBar}
+              className={twMerge(
+                "flex md:flex-col gap-2.5",
+                "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white dark:max-md:bg-dark_bg max-md:border dark:max-md:border-[#121212] max-md:items-center max-md:transition-all",
+                isOpen && ["max-md:bottom-[-60px]"]
+              )}
+            >
+              {menuItems.map(
+                (menuItem) =>
+                  menuItem.active && (
+                    <MenuLink
+                      key={menuItem.slug}
+                      {...menuItem}
+                      className="max-md:flex-col max-md:justify-center max-md:items-center
+                    max-md:gap-1 max-md:w-[20vw] max-md:text-xs"
+                    />
+                  )
+              )}
+            </div>
+            <Divider className="max-md:hidden" />
+
+            {/* User Menu */}
+            {userMenu.map(
               (menuItem) =>
                 menuItem.active && (
-                  <MenuLink
-                    key={menuItem.slug}
-                    {...menuItem}
-                    className="max-md:flex-col max-md:justify-center max-md:items-center
-                    max-md:gap-1 max-md:w-[20vw] max-md:text-xs"
-                  />
+                  <MenuLink key={menuItem.slug} {...menuItem} />
                 )
             )}
+            <Divider />
+
+            {/* Miscellaneous Menu */}
+            {miscellaneousMenu.map(
+              (menuItem) =>
+                menuItem.active && (
+                  <MenuLink key={menuItem.slug} {...menuItem} />
+                )
+            )}
+            <Divider />
+
+            <div className="px-3 pb-3">
+              <p className="text-sm font-hedvig_letters text-gray-700 dark:text-white leading-none">
+                Made With <span className="text-lg text-red-600">❤</span>
+                <br /> <span className="pl-3 font-Noto_sans">By Gulshan</span>
+              </p>
+            </div>
           </div>
-          <Divider className="max-md:hidden" />
-
-          {/* User Menu */}
-          {userMenu.map(
-            (menuItem) =>
-              menuItem.active && <MenuLink key={menuItem.slug} {...menuItem} />
-          )}
-          <Divider />
-
-          {/* Miscellaneous Menu */}
-          {miscellaneousMenu.map(
-            (menuItem) =>
-              menuItem.active && <MenuLink key={menuItem.slug} {...menuItem} />
-          )}
-          <Divider />
-
-          <div className="px-3 pb-3">
-            <p className="text-sm font-hedvig_letters text-gray-700 dark:text-white leading-none">
-              Made With <span className="text-lg text-red-600">❤</span>
-              <br /> <span className="pl-3 font-Noto_sans">By Gulshan</span>
-            </p>
-          </div>
-        </div>
+        )}
       </aside>
       {/* overlay */}
       <div

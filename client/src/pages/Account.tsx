@@ -8,20 +8,16 @@ import { RootState } from "@/store/store";
 import Loader from "@/component/Loader";
 
 export default function Account() {
-  const { user: appLoading } = useSelector(
-    (state: RootState) => state.appLoading
-  );
+  const { isAppLoading } = useSelector((state: RootState) => state.appLoading);
 
   const tabs = [
     { label: "Account", component: <UpdateAccountDetailsForm /> },
     { label: "Password", component: <UpdatePasswordForm /> },
   ];
 
-  return appLoading ? (
-    <Loader />
-  ) : (
-    <Layout className="flex justify-center md:items-center max-md:mt-16">
-      <Tabs tabs={tabs} />
+  return (
+    <Layout className="flex justify-center items-center">
+      {isAppLoading ? <Loader /> : <Tabs tabs={tabs} />}
     </Layout>
   );
 }
