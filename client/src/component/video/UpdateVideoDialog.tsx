@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import Modal from "../CoreUI/Modal";
 import useForm from "@/hooks/useForm";
@@ -21,7 +21,7 @@ export default function UpdateVideoDialog({
   onUpdate,
 }: UpdateVideoDialogProps) {
   const thumbnailRef = useRef(null);
-  const { formData, handleInputChange } = useForm<{
+  const { formData, resetForm, handleInputChange } = useForm<{
     title: string;
     description: string;
     thumbnail: File | null;
@@ -45,10 +45,15 @@ export default function UpdateVideoDialog({
       data: formData,
     });
     if (isSuccess && !error) {
+      resetForm();
       handleClose();
       onUpdate(resData?.updatedVideo as Video);
     }
   };
+
+  useEffect(() => {
+    resetForm();
+  }, [open]);
   return (
     <Modal
       open={open}
@@ -57,7 +62,10 @@ export default function UpdateVideoDialog({
       description="update your video by providing new title, description, or thumbnail"
       submitLabel={isLoading ? "loading..." : "Update Video"}
       onSubmit={handleSubmitForm}
-      isSubmitButtonDisabled={formData?.title === video?.title}
+      isSubmitButtonDisabled={
+        formData?.title === video?.title &&
+        formData?.description === video?.description
+      }
       isLoading={isLoading}
       className="flex flex-col gap-4"
     >
