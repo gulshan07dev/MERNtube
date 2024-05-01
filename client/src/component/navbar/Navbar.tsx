@@ -21,9 +21,7 @@ const Navbar = ({
   const location = useLocation();
   const navigate = useNavigate();
   const navbar = useRef<HTMLDivElement>(null);
-  const { user: appLoading } = useSelector(
-    (state: RootState) => state.appLoading
-  );
+  const { isAppLoading } = useSelector((state: RootState) => state.appLoading);
   const { isLoggedIn, user } = useSelector((state: RootState) => state.auth);
 
   const handleScrollDown = () => {
@@ -62,7 +60,7 @@ const Navbar = ({
         {/* Display user information or login/signup buttons */}
         {isLoggedIn ? (
           // If user is logged in, show user Dropdown menu
-          appLoading ? (
+          isAppLoading ? (
             <Skeleton className="w-10 h-10 rounded-full" />
           ) : (
             <DropdownMenu
@@ -117,7 +115,7 @@ const Navbar = ({
             </DropdownMenu>
           )
         ) : // If user is not logged in, show login/signup buttons
-        appLoading ? (
+        isAppLoading ? (
           <div className="flex gap-2">
             <Skeleton className="h-8 w-16 rounded-md" />
             <Skeleton className="h-8 w-16 rounded-md" />
