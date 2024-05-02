@@ -36,5 +36,18 @@ const videoSchema = new Schema({
     }
 }, { timestamps: true })
 
+const viewSchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
+    video: {
+        type: Schema.Types.ObjectId,
+        ref: "Video"
+    }
+}, { timestamps: true });
+
+
 videoSchema.plugin(mongooseAggregatePaginate)
 export const Video = model("Video", videoSchema)
+export const View = model("View", viewSchema);

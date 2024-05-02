@@ -1,4 +1,4 @@
-import { Video } from "../models/video.model.js";
+import { Video, View } from "../models/video.model.js";
 import { Like } from "../models/like.model.js";
 import { Comment } from "../models/comment.model.js";
 import { User } from "../models/user.model.js";
@@ -148,6 +148,7 @@ const updateVideo = asyncHandler(async (req, res) => {
 
 // get video by videoId
 const getVideoById = asyncHandler(async (req, res) => {
+    const userId = req.user._id
     const { videoId } = req.params;
 
     // check if Invalid videoId
@@ -194,7 +195,7 @@ const getVideoById = asyncHandler(async (req, res) => {
                 },
                 isLiked: {
                     $cond: {
-                        if: { $in: [req.user?._id, "$videoLikes.owner"] },
+                        if: { $in: [userId, "$videoLikes.owner"] },
                         then: true,
                         else: false
                     }
@@ -209,6 +210,14 @@ const getVideoById = asyncHandler(async (req, res) => {
 
     if (!video[0]?.isPublished) {
         throw new ApiError(400, "This video is private!")
+    }
+
+    // increase the view count, If the user hasn't viewed the video
+    const existingView = await View.findOne({ user: userId, video: videoId });
+
+    if (!existingView) {
+        await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } });
+        await View.create({ user: userId, video: videoId });
     }
 
     return res.status(200).json(new ApiResponse(
@@ -367,7 +376,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
     // Delete all the likes and comments associated to this video
     await Like.deleteMany({ video: videoId });
-    await Comment.deleteMany({video: videoId})
+    await Comment.deleteMany({ video: videoId })
 
     // Delete likes associated with comments
     const comments = await Comment.find({ video: videoId }).select('_id');
