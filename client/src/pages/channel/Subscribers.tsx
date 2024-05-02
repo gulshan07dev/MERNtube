@@ -90,7 +90,7 @@ export default function Subscribers() {
               {user?._id !== subscriberChannel?._id && (
                 <SubscribeBtn
                   channelId={subscriberChannel?._id}
-                  isSubscribed={true}
+                  isSubscribed={subscriberChannel?.isSubscribed}
                   className="max-sm:text-[13px] max-sm:py-1.5 max-sm:px-3"
                 />
               )}

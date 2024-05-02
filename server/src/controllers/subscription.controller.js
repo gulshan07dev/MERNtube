@@ -80,7 +80,27 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
                 as: "subscriberList",
                 pipeline: [
                     {
+                        $lookup: {
+                            from: "subscriptions",
+                            localField: "_id",
+                            foreignField: "channel",
+                            as: "subscribers"
+                        }
+                    },
+                    {
+                        $addFields: {
+                            isSubscribed: {
+                                $cond: {
+                                    if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+                                    then: true,
+                                    else: false
+                                }
+                            }
+                        }
+                    },
+                    {
                         $project: {
+                            isSubscribed: 1,
                             username: 1,
                             fullName: 1,
                             avatar: 1
@@ -120,7 +140,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 // get channel list to which user has subscribed
 const getSubscribedChannels = asyncHandler(async (req, res) => {
     const { subscriberId } = req.params;
-    const {page = 1, limit = 10} = req.query;
+    const { page = 1, limit = 10 } = req.query;
 
     // check if Invalid subscriberId
     if (!isValidObjectId(subscriberId)) {
@@ -170,16 +190,16 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
         }
     ])
 
-    Subscription.aggregatePaginate(aggregate, {page, limit})
-    .then(function (result) {
-        return res.status(200).json(new ApiResponse(
-            200,
-            { result }
-        ))
-    })
-    .catch(function (error) {
-        throw error
-    })
+    Subscription.aggregatePaginate(aggregate, { page, limit })
+        .then(function (result) {
+            return res.status(200).json(new ApiResponse(
+                200,
+                { result }
+            ))
+        })
+        .catch(function (error) {
+            throw error
+        })
 })
 
 export {
