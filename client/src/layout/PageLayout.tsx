@@ -8,7 +8,7 @@ interface PageLayoutProps {
 
 const PageLayout: React.FC<PageLayoutProps> = ({ children, className }) => {
   return (
-    <main className={twMerge("flex flex-grow", className)}>{children}</main>
+    <main className={twMerge("w-full flex flex-grow", className)}>{children}</main>
   );
 };
 

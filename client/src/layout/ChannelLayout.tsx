@@ -16,7 +16,7 @@ import Button from "@/component/CoreUI/Button";
 import { FaEdit, FaRegEdit } from "react-icons/fa";
 import UpdateCoverImageDialog from "@/component/channel/UpdateCoverImageDialog";
 
-export default function ChannelLayout() {
+const ChannelLayout: React.FC = () => {
   const { username } = useParams();
   const location = useLocation();
   let { channel, user } = useSelector((state: RootState) => state?.auth);
@@ -80,7 +80,7 @@ export default function ChannelLayout() {
   );
 
   return (
-    <main className="flex-grow flex flex-col gap-6">
+    <main className="w-full flex flex-col flex-grow gap-6">
       {error ? (
         // Display error message if there's an error
         <ErrorDialog
@@ -90,7 +90,7 @@ export default function ChannelLayout() {
         />
       ) : (
         // Render channel details if no error
-        <div className="w-full relative flex flex-col gap-8">
+        <section className="w-full relative flex flex-col gap-8">
           {isLoading ? (
             // Use ChannelLayoutSkeleton component while loading
             <ChannelLayoutSkeleton />
@@ -212,9 +212,11 @@ export default function ChannelLayout() {
             ))}
           </div>
           <hr className="absolute bottom-0 w-full border-0 rounded-md h-[1px]  bg-gray-300 dark:bg-gray-600" />
-        </div>
+        </section>
       )}
       {!error && <Outlet />}
     </main>
   );
-}
+};
+
+export default ChannelLayout;
