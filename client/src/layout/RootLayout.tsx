@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
 import { twMerge } from "tailwind-merge";
-import { ScrollRestoration } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 
-import Navbar from "../component/navbar/Navbar";
-import Sidebar from "../component/sidebar/Sidebar";
+import Navbar from "./navbar/Navbar";
+import Sidebar from "./sidebar/Sidebar";
 
-interface LayoutProps {
-  children: React.ReactNode;
-  className?: string;
+interface RootLayoutProps {
   byDefaultSidebarHidden?: boolean;
   showNavigation?: boolean;
 }
@@ -16,9 +14,7 @@ export function scrollToTop() {
   window.scroll({ top: 0, behavior: "smooth" });
 }
 
-const Layout: React.FC<LayoutProps> = ({
-  children,
-  className = "",
+const RootLayout: React.FC<RootLayoutProps> = ({
   byDefaultSidebarHidden = false,
   showNavigation = true,
 }) => {
@@ -48,16 +44,15 @@ const Layout: React.FC<LayoutProps> = ({
         <section
           className={twMerge(
             "w-full flex flex-grow",
-            "md:px-8 px-3 py-3 max-md:pb-20",
-            className
+            "md:px-8 px-3 py-3 max-md:pb-20"
           )}
         >
           <ScrollRestoration />
-          {children}
+          <Outlet />
         </section>
       </main>
     </>
   );
 };
 
-export default Layout;
+export default RootLayout;
