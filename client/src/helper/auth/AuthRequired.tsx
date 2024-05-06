@@ -1,4 +1,4 @@
-import DeniedAccess from "@/component/DeniedAccess";
+import DeniedAccess from "@/pages/DeniedAccess";
 import { useSelector } from "react-redux";
 import { Outlet, useLocation } from "react-router-dom";
 
