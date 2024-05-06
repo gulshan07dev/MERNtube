@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, Outlet, useParams, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import Layout from "./Layout";
 import useActionHandler from "@/hooks/useActionHandler";
 import { getChannel } from "@/store/slices/authSlice";
 import Avatar from "@/component/CoreUI/Avatar";
@@ -81,7 +80,7 @@ export default function ChannelLayout() {
   );
 
   return (
-    <Layout className="flex flex-col gap-6">
+    <main className="flex-grow flex flex-col gap-6">
       {error ? (
         // Display error message if there's an error
         <ErrorDialog
@@ -216,6 +215,6 @@ export default function ChannelLayout() {
         </div>
       )}
       {!error && <Outlet />}
-    </Layout>
+    </main>
   );
 }
