@@ -6,7 +6,7 @@ import { abbreviateNumber } from "js-abbreviation-number";
 import { MdDelete } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import { RootState } from "@/store/store";
 import {
   deletePlaylist,
@@ -138,7 +138,7 @@ export default function PlaylistVideos() {
   }, [playlistId, playlist?._id, sortType]);
 
   return (
-    <Layout className="w-full flex max-lg:flex-col max-lg:gap-7 gap-3">
+    <PageLayout className="w-full flex max-lg:flex-col max-lg:gap-7 gap-3">
       {playlistFetchingError ? (
         <ErrorDialog
           errorMessage={playlistFetchingError}
@@ -328,6 +328,6 @@ export default function PlaylistVideos() {
           </ScrollPagination>
         </>
       )}
-    </Layout>
+    </PageLayout>
   );
 }

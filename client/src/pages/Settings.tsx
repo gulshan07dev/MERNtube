@@ -1,11 +1,11 @@
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import SettingsCategory from "@/component/settings/SettingsCategory";
 import PreferencesSettings from "@/component/settings/preferences/PreferencesSettings";
 import WatchHistorySettings from "@/component/settings/watchHistory/WatchHistorySettings";
 
 const Settings = () => {
   return (
-    <Layout className="flex flex-col gap-10">
+    <PageLayout className="flex flex-col gap-10">
       <h1 className="text-3xl text-black dark:text-white font-bold font-hedvig_letters">
         Settings
       </h1>
@@ -20,7 +20,7 @@ const Settings = () => {
           </p>
         </SettingsCategory>
       </div>
-    </Layout>
+    </PageLayout>
   );
 };
 

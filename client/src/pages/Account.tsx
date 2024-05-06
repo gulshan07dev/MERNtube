@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import UpdateAccountDetailsForm from "@/component/accountForms/UpdateAccountDetailsForm";
 import UpdatePasswordForm from "@/component/accountForms/UpdatePasswordForm";
 import Tabs from "@/component/Tabs";
@@ -16,8 +16,8 @@ export default function Account() {
   ];
 
   return (
-    <Layout className="flex justify-center items-center">
+    <PageLayout className="flex justify-center items-center">
       {isAppLoading ? <Loader /> : <Tabs tabs={tabs} />}
-    </Layout>
+    </PageLayout>
   );
 }

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
 import { AppDispatch, RootState } from "@/store/store";
 import { getUserWatchLaterVideos } from "@/store/slices/watchLaterSlice";
@@ -31,7 +31,7 @@ export default function WatchLater() {
     handleFetchWatchLaterVideos(1);
   }, []);
   return (
-    <Layout className="flex flex-col gap-7 max-lg:gap-5">
+    <PageLayout className="flex flex-col gap-7 max-lg:gap-5">
       <ScrollPagination
         paginationType="infinite-scroll"
         currentPage={currentPage}
@@ -70,6 +70,6 @@ export default function WatchLater() {
           </>
         )}
       </ScrollPagination>
-    </Layout>
+    </PageLayout>
   );
 }

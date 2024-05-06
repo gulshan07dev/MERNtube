@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import Tabs from "@/component/Tabs";
 import VideoCreateForm from "@/component/createForms/VideoCreateForm";
 import TweetCreateForm from "@/component/createForms/TweetCreateForm";
@@ -16,12 +16,12 @@ export default function Create() {
   ];
 
   return (
-    <Layout>
+    <PageLayout>
       {isAppLoading ? (
         <Loader />
       ) : (
         <Tabs tabs={tabs} className="max-w-full w-full" />
       )}
-    </Layout>
+    </PageLayout>
   );
 }

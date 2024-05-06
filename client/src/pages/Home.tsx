@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
 import { getAllVideos, setVideos } from "@/store/slices/videoSlice";
 import { AppDispatch, RootState } from "@/store/store";
@@ -63,7 +63,7 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <Layout>
+    <PageLayout>
       <ScrollPagination
         paginationType="infinite-scroll"
         loadNextPage={() => fetchVideos(currPage + 1)}
@@ -82,7 +82,7 @@ const Home: React.FC = () => {
         }
       >
         <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
-          {!videos.length && totalDocs === 0 && totalPages === 1 && !loading ? (
+          {!videos.length && totalDocs === 0 && totalPages === 0 && !loading ? (
             <EmptyMessage
               message="empty videos"
               buttonText="fetch again"
@@ -117,7 +117,7 @@ const Home: React.FC = () => {
           {loading && renderSkeletons()}
         </div>
       </ScrollPagination>
-    </Layout>
+    </PageLayout>
   );
 };
 

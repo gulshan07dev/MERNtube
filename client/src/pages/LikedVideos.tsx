@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
 import { AppDispatch, RootState } from "@/store/store";
 import EmptyMessage from "@/component/error/EmptyMessage";
@@ -29,7 +29,7 @@ export default function LikedVideos() {
     handleFetchLikedVideos(1);
   }, []);
   return (
-    <Layout className="flex flex-col gap-7 max-lg:gap-5">
+    <PageLayout className="flex flex-col gap-7 max-lg:gap-5">
       <ScrollPagination
         paginationType="infinite-scroll"
         currentPage={currentPage}
@@ -68,6 +68,6 @@ export default function LikedVideos() {
           </>
         )}
       </ScrollPagination>
-    </Layout>
+    </PageLayout>
   );
 }

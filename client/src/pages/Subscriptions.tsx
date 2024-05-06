@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import { AppDispatch, RootState } from "@/store/store";
 import ScrollPagination from "@/component/ScrollPagination";
 import ErrorDialog from "@/component/error/ErrorDialog";
@@ -38,7 +38,7 @@ export default function Subscriptions() {
     handleFetchSubscribedChannelLists(1);
   }, [user?._id]);
   return (
-    <Layout>
+    <PageLayout>
       <ScrollPagination
         paginationType="infinite-scroll"
         currentPage={currentPage}
@@ -105,6 +105,6 @@ export default function Subscriptions() {
           </div>
         )}
       </ScrollPagination>
-    </Layout>
+    </PageLayout>
   );
 }

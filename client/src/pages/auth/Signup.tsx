@@ -1,8 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import Layout from "@/layout/Layout";
-import AuthForm, { AuthFormType, AuthInputs } from "@/component/authForm/AuthForm";
+import PageLayout from "@/layout/PageLayout";
+import AuthForm, {
+  AuthFormType,
+  AuthInputs,
+} from "@/component/authForm/AuthForm";
 import useActionHandler from "@/hooks/useActionHandler";
 import { registerUser } from "@/store/slices/authSlice";
 
@@ -49,10 +52,7 @@ export default function Signup() {
   };
 
   return (
-    <Layout
-      showNavigation={false}
-      className="flex justify-center"
-    >
+    <PageLayout className="flex justify-center">
       <AuthForm
         type={AuthFormType.SIGNUP}
         title="Create an account"
@@ -60,6 +60,6 @@ export default function Signup() {
         isLoading={isLoading}
         error={error}
       />
-    </Layout>
+    </PageLayout>
   );
 }

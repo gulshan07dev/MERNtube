@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import AuthForm, { AuthFormType } from "@/component/authForm/AuthForm";
 import useActionHandler from "@/hooks/useActionHandler";
 import { loginUser } from "@/store/slices/authSlice";
@@ -37,10 +37,7 @@ export default function Login() {
   };
 
   return (
-    <Layout
-      showNavigation={false}
-      className="flex justify-center items-center"
-    >
+    <PageLayout className="flex justify-center items-center">
       <AuthForm
         type={AuthFormType.LOGIN}
         title="Login account"
@@ -49,6 +46,6 @@ export default function Login() {
         error={error}
         state={location.state}
       />
-    </Layout>
+    </PageLayout>
   );
 }

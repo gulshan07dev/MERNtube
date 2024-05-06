@@ -7,7 +7,7 @@ import TimeAgo from "react-timeago";
 import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import useActionHandler from "@/hooks/useActionHandler";
 import { AppDispatch, RootState } from "@/store/store";
 import { getVideoByVideoId } from "@/store/slices/videoSlice";
@@ -98,8 +98,7 @@ export default function VideoPlayer() {
   }, [isFetchingVideo, video?.owner?.username]);
 
   return (
-    <Layout
-      byDefaultSidebarHidden={true}
+    <PageLayout
       className="w-full flex gap-6 max-xl:flex-col max-xl:gap-14"
     >
       {videoFetchingError ? (
@@ -272,6 +271,6 @@ export default function VideoPlayer() {
           </div>
         </>
       )}
-    </Layout>
+    </PageLayout>
   );
 }

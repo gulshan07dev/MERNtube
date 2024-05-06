@@ -1,8 +1,9 @@
- 
+import PageLayout from "@/layout/PageLayout";
+
 export default function Channel() {
   return (
-   <div className="dark:text-white">
-    This is channel home page
-   </div>
-  )
+    <PageLayout className="dark:text-white">
+      This is channel home page
+    </PageLayout>
+  );
 }

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
 import { AppDispatch, RootState } from "@/store/store";
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
 import { getWatchHistory } from "@/store/slices/watchHistorySlice";
 import EmptyMessage from "@/component/error/EmptyMessage";
@@ -85,7 +85,7 @@ export default function WatchHistory() {
   }, [watchHistories]);
 
   return (
-    <Layout className="flex lg:gap-7 max-lg:flex-col-reverse max-lg:gap-5">
+    <PageLayout className="flex lg:gap-7 max-lg:flex-col-reverse max-lg:gap-5">
       {/* history videos categorized with day/dates */}
       <ScrollPagination
         paginationType="infinite-scroll"
@@ -150,6 +150,6 @@ export default function WatchHistory() {
           </div>
         </div>
       )}
-    </Layout>
+    </PageLayout>
   );
 }

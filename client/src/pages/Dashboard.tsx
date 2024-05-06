@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 
 import { RootState } from "@/store/store";
-import Layout from "@/layout/Layout";
+import PageLayout from "@/layout/PageLayout";
 import useActionHandler from "@/hooks/useActionHandler";
 import {
   getChannelStats,
@@ -65,7 +65,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <Layout byDefaultSidebarHidden className="flex flex-col gap-10">
+    <PageLayout className="flex flex-col gap-10">
       <header>
         <div className="font-roboto font-semibold flex gap-2 flex-wrap leading-tight">
           <h1 className="text-2xl text-black dark:text-white leading-none">
@@ -135,7 +135,10 @@ export default function Dashboard() {
       </div>
 
       {/* channel videos: edit, delete and update video status */}
-      <div className="w-full flex flex-col border border-gray-300" id="your-videos">
+      <div
+        className="w-full flex flex-col border border-gray-300"
+        id="your-videos"
+      >
         {/* videos table */}
         <div className="flex flex-col gap-6 r">
           <div className="flex gap-3 items-center px-5 py-3">
@@ -148,14 +151,17 @@ export default function Dashboard() {
               <FaSyncAlt />
             </Button>
             <h2 className="text-xl font-semibold text-black dark:text-white font-Noto_sans">
-              channel Videos
+              your Videos
             </h2>
           </div>
           {channelVideosFetchingError ? (
             <ErrorDialog errorMessage={channelVideosFetchingError} />
           ) : !isFetchingChannelVideos ? (
             channelVideos?.length === 0 ? (
-              <ErrorMessage errorMessage="You have not been uploaded any video yet!" className="mx-4 w-auto mb-7" />
+              <ErrorMessage
+                errorMessage="You have not been uploaded any video yet!"
+                className="mx-4 w-auto mb-7"
+              />
             ) : (
               <div className="w-full relative overflow-x-auto">
                 <table
@@ -199,6 +205,6 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-    </Layout>
+    </PageLayout>
   );
 }

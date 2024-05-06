@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import PageLayout from "@/layout/PageLayout";
 import { AppDispatch, RootState } from "@/store/store";
 import ScrollPagination from "@/component/ScrollPagination";
 import { getUserTweets, setTweets } from "@/store/slices/tweetSlice";
@@ -59,36 +60,41 @@ export default function Tweets() {
   }, [channel?._id]);
 
   return (
-    <ScrollPagination
-      paginationType="view-more"
-      loadNextPage={() => fetchUserTweets(currPage + 1)}
-      refreshHandler={() => fetchUserTweets(1)}
-      dataLength={tweets.length}
-      loading={isLoading}
-      error={error}
-      currentPage={currPage}
-      totalItems={totalDocs}
-      totalPages={totalPages}
-      hasNextPage={hasNextPage}
-      endMessage={
-        <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
-          No more tweets to show !!!
-        </p>
-      }
-      className={`lg:w-[75%] w-full`}
-    >
-      <div className="w-full flex flex-col gap-10 max-lg:items-center max-lg:px-1 py-5">
-        {!tweets.length && totalDocs === 0 && totalPages === 1 && !isLoading ? (
-          <EmptyMessage
-            message="empty tweets"
-            buttonText="fetch again"
-            onRefresh={() => fetchUserTweets(1)}
-          />
-        ) : (
-          tweets?.map((tweet) => <TweetCard key={tweet?._id} tweet={tweet} />)
-        )}
-        {(isLoading || !channel?._id) && renderSkeletons()}
-      </div>
-    </ScrollPagination>
+    <PageLayout>
+      <ScrollPagination
+        paginationType="view-more"
+        loadNextPage={() => fetchUserTweets(currPage + 1)}
+        refreshHandler={() => fetchUserTweets(1)}
+        dataLength={tweets.length}
+        loading={isLoading}
+        error={error}
+        currentPage={currPage}
+        totalItems={totalDocs}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        endMessage={
+          <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
+            No more tweets to show !!!
+          </p>
+        }
+        className={`lg:w-[75%] w-full`}
+      >
+        <div className="w-full flex flex-col gap-10 max-lg:items-center max-lg:px-1 py-5">
+          {!tweets.length &&
+          totalDocs === 0 &&
+          totalPages === 1 &&
+          !isLoading ? (
+            <EmptyMessage
+              message="empty tweets"
+              buttonText="fetch again"
+              onRefresh={() => fetchUserTweets(1)}
+            />
+          ) : (
+            tweets?.map((tweet) => <TweetCard key={tweet?._id} tweet={tweet} />)
+          )}
+          {(isLoading || !channel?._id) && renderSkeletons()}
+        </div>
+      </ScrollPagination>
+    </PageLayout>
   );
 }
