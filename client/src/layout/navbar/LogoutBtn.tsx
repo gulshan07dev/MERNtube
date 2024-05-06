@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import Button from "../CoreUI/Button";
+import Button from "../../component/CoreUI/Button";
 import useActionHandler from "@/hooks/useActionHandler";
 import { logoutUser } from "@/store/slices/authSlice";
 
@@ -11,8 +11,8 @@ export default function LogoutBtn({ className = "" }: { className?: string }) {
   const { isLoading, handleAction } = useActionHandler({
     action: logoutUser,
     toastMessages: {
-      loadingMessage: "Logout..."
-    }
+      loadingMessage: "Logout...",
+    },
   });
 
   const handleLogout = async () => {
@@ -20,7 +20,7 @@ export default function LogoutBtn({ className = "" }: { className?: string }) {
 
     if (isSuccess) {
       navigate("/");
-      window.location.reload()
+      window.location.reload();
     }
   };
   return (

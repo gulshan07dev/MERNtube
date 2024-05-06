@@ -3,14 +3,14 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useRef } from "react";
 
 import type { RootState } from "@/store/store";
-import Logo from "../CoreUI/Logo";
+import Logo from "@/component/CoreUI/Logo";
 import SearchBar from "./SearchBar";
-import Avatar from "../CoreUI/Avatar";
-import Button from "../CoreUI/Button";
-import DropdownMenu from "../CoreUI/DropdownMenu";
+import Avatar from "@/component/CoreUI/Avatar";
+import Button from "@/component/CoreUI/Button";
+import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import LogoutBtn from "./LogoutBtn";
 import SidebarToggleBtn from "../sidebar/SidebarToggleBtn";
-import Skeleton from "../Skeleton";
+import Skeleton from "@/component/Skeleton";
 import useScroll from "@/hooks/useScroll";
 
 const Navbar = ({
