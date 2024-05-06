@@ -14,9 +14,9 @@ import { MdCloudUpload } from "react-icons/md";
 import { AppDispatch, RootState } from "@/store/store";
 import { onClose, onOpen } from "@/store/slices/sidebarSlice";
 import MenuLink from "./MenuLink";
-import Divider from "@/component/Divider"
+import Divider from "../../component/Divider";
 import SidebarToggleBtn from "./SidebarToggleBtn";
-import Logo from "@/component/CoreUI/Logo";
+import Logo from "../../component/CoreUI/Logo";
 import useScroll from "@/hooks/useScroll";
 
 const Sidebar = ({
@@ -56,7 +56,7 @@ const Sidebar = ({
         active: isLoggedIn,
       },
     ],
-    []
+    [user?.username, isLoggedIn]
   );
 
   const userMenu = useMemo(
@@ -86,7 +86,7 @@ const Sidebar = ({
         active: true,
       },
     ],
-    [user, isLoggedIn]
+    []
   );
 
   const miscellaneousMenu = useMemo(
@@ -129,22 +129,23 @@ const Sidebar = ({
       <aside
         id="sidebar"
         className={twMerge(
-          "lg:h-[calc(100vh-60px)] h-screen w-[245px] lg:pt-2 bg-white dark:bg-dark_bg max-lg:fixed lg:sticky lg:top-[60px] top-0 z-[100] overflow-y-scroll scrollbar-show-on-hover",
+          "lg:h-[calc(100vh-60px)] h-screen w-[245px] bg-white dark:bg-dark_bg max-lg:fixed lg:sticky lg:top-[60px] top-0 z-[100] overflow-y-scroll scrollbar-show-on-hover",
           "transition-[left] duration-500 delay-0",
           isOpen ? ["max-lg:left-0"] : ["max-lg:left-[-100%]"],
+          byDefaultSidebarHidden && ["lg:h-screen lg:fixed lg:top-0"],
           byDefaultSidebarHidden
             ? isOpen
-              ? ["lg:h-screen lg:fixed lg:top-0 lg:left-0"]
-              : ["lg:h-screen lg:fixed lg:top-0 left-[-100%]"]
+              ? ["lg:left-0"]
+              : ["left-[-100%]"]
             : ["lg:sticky lg:left-0"]
         )}
         role="navigation"
       >
         {!isAppLoading && (
-          <div className={twMerge("px-2 pb-2 flex flex-col gap-2.5")}>
+          <div className={twMerge("md:px-3 px-3 pb-2 flex flex-col gap-2.5")}>
             <div
               className={twMerge(
-                "sticky top-0 pt-2 px-2 mb-2 bg-white dark:bg-dark_bg items-center gap-3 hidden",
+                "h-[60px] sticky top-0 bg-white dark:bg-dark_bg items-center md:gap-3 gap-1 hidden",
                 isOpen && ["max-lg:flex"],
                 byDefaultSidebarHidden && ["lg:flex"]
               )}
@@ -159,7 +160,8 @@ const Sidebar = ({
               className={twMerge(
                 "flex md:flex-col gap-2.5",
                 "max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[60px] max-md:justify-evenly max-md:bg-white dark:max-md:bg-dark_bg max-md:border dark:max-md:border-[#121212] max-md:items-center max-md:transition-all",
-                isOpen && ["max-md:bottom-[-60px]"]
+                isOpen && ["max-md:bottom-[-60px]"],
+                !byDefaultSidebarHidden && ["lg:mt-2"]
               )}
             >
               {menuItems.map(
