@@ -14,9 +14,9 @@ import { MdCloudUpload } from "react-icons/md";
 import { AppDispatch, RootState } from "@/store/store";
 import { onClose, onOpen } from "@/store/slices/sidebarSlice";
 import MenuLink from "./MenuLink";
-import Divider from "../Divider";
+import Divider from "@/component/Divider"
 import SidebarToggleBtn from "./SidebarToggleBtn";
-import Logo from "../CoreUI/Logo";
+import Logo from "@/component/CoreUI/Logo";
 import useScroll from "@/hooks/useScroll";
 
 const Sidebar = ({
