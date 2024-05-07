@@ -100,7 +100,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     }
 
     // Toggle like
-    const tweetLike = await Like.findOne({ tweet: tweetId });
+    const tweetLike = await Like.findOne({ tweet: tweetId, owner: userId });
 
     let unlike;
     let like;
@@ -108,10 +108,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     if (tweetLike) {
         unlike = await Like.deleteOne({ tweet: tweetId, owner: userId });
     } else {
-        like = await Like.create({
-            tweet: tweetId,
-            owner: userId
-        });
+        like = await Like.create({ tweet: tweetId, owner: userId });
     }
 
     return res.status(200).json(new ApiResponse(
