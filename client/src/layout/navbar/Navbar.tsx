@@ -37,23 +37,21 @@ const Navbar = ({
 
   return (
     <nav
-      className={`w-full h-[60px] bg-white dark:bg-dark_bg flex justify-between items-center sticky top-0 z-50 transition-[top] md:px-7 md:pl-4 px-3`}
+      className={`w-full h-[60px] bg-white dark:bg-dark_bg flex justify-between items-center sticky top-0 z-50 transition-[top] md:px-7 md:pl-5 px-3`}
       role="navigation"
       aria-label="Primary Navigation"
       ref={navbar}
     >
       {/* Left Section */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1">
         <SidebarToggleBtn
-          className={showSidebarToggleBtn ? "lg:block" : "lg:hidden"}
+          className={showSidebarToggleBtn ? "lg:flex" : "lg:hidden"}
         />
         <Logo />
       </div>
 
       {/* Center Section */}
-      <div className="max-sm:hidden">
-        <SearchBar />
-      </div>
+      <SearchBar />
 
       {/* Right Section */}
       <div className="flex items-center gap-1">

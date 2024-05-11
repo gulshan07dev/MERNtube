@@ -1,4 +1,11 @@
-import { ReactElement, ReactNode, useRef, useState } from "react";
+import React, {
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 
 import useClickOutside from "@/hooks/useClickOutside";
 import { twMerge } from "tailwind-merge";
@@ -23,13 +30,19 @@ const DropdownMenu = ({
     setIsOpen(false);
   };
 
+  const handleDropdownButtonClick = useCallback((e: MouseEvent) => {
+    e.stopPropagation();
+    handleToggle()
+  }, []);
+
   useClickOutside({ ref: dropdownRef, callback: handleClose });
 
   return (
     <div className={twMerge("relative", className)} ref={dropdownRef}>
-      <div onClick={handleToggle} className="cursor-pointer">
-        {triggerButton}
-      </div>
+      {React.cloneElement(triggerButton, {
+        onClick: handleDropdownButtonClick,
+      })}
+
       {isOpen && (
         <div
           className="absolute z-[49] right-0 mt-1 transition-opacity

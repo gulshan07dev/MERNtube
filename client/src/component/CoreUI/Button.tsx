@@ -7,7 +7,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactElement;
   isLarge?: Boolean;
   isGradientBg?: boolean;
-  onClick?: () => void;
   className?: string;
 }
 

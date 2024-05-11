@@ -23,6 +23,7 @@ import LikedVideos from "../pages/LikedVideos";
 import SendFeedback from "../pages/SendFeedback";
 import Subscriptions from "../pages/Subscriptions";
 import Dashboard from "../pages/Dashboard";
+import SearchResult from "@/pages/search/SearchResult";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "search",
+        element: <SearchResult />,
       },
       {
         element: <AuthRequired />,

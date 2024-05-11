@@ -53,7 +53,10 @@ const Modal: React.FC<ModalProps> = ({
     <>
       {open &&
         createPortal(
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-15 backdrop-blur-[3px]">
+          <div
+            className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-15 backdrop-blur-[3px]"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div
               ref={ModalRef}
               className={twMerge(
