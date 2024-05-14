@@ -56,11 +56,11 @@ const registerUser = asyncHandler(async (req, res) => {
         avatar = avatarLocalPath ? await uploadOnCloudinary(avatarLocalPath) : undefined;
         coverImage = coverImageLocalPath ? await uploadOnCloudinary(coverImageLocalPath) : undefined;
 
-        if(avatarLocalPath && !avatar) {
+        if (avatarLocalPath && !avatar) {
             throw new ApiError(500, "Failed to upload avatar!")
         }
 
-        if(coverImageLocalPath && !coverImage) {
+        if (coverImageLocalPath && !coverImage) {
             throw new ApiError(500, "Failed to upload coverImage!")
         }
 
@@ -283,11 +283,18 @@ const changeUserAvatar = asyncHandler(async (req, res) => {
     // delete previous avatar from cloudinary
     const previousAvatar = user.avatar;
     if (previousAvatar) {
-        await deleteOnCloudinary(previousAvatar);
+        const isPreviousAvatarDeleted = await deleteOnCloudinary(previousAvatar);
+        if (!isPreviousAvatarDeleted) {
+            throw new ApiError(500, "Failed to update avatar!")
+        }
     }
 
     // upload new avatar on cloudinary
     const avatar = await uploadOnCloudinary(avatarFilePath);
+
+    if (!avatar) {
+        throw new ApiError(500, "Failed to update avatar!")
+    }
 
     // save avatar in db
     user.avatar = avatar?.url
@@ -312,11 +319,18 @@ const changeUserCoverImage = asyncHandler(async (req, res) => {
     // delete previous cover image from cloudinary
     const previousCoverImage = user.coverImage;
     if (previousCoverImage) {
-        await deleteOnCloudinary(previousCoverImage);
+        const isPreviousCoverImageDeleted = await deleteOnCloudinary(previousCoverImage);
+        if (!isPreviousCoverImageDeleted) {
+            throw new ApiError(500, "Failed to update cover image!")
+        }
     }
 
     // upload new cover image on cloudinary
     const coverImage = await uploadOnCloudinary(coverImageFilePath);
+
+    if (!coverImage) {
+        throw new ApiError(500, "Failed to update cover image!")
+    }
 
     // save avatar in db
     user.coverImage = coverImage?.url

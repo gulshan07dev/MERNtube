@@ -29,6 +29,6 @@ export const deleteOnCloudinary = async (url, resource_type = "image") => {
             resource_type
         });
     } catch (error) {
-        throw error
+        return null
     }
 }
