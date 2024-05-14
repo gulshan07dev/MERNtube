@@ -49,12 +49,12 @@ const SearchVideoCard = ({ video }: { video: Video }) => {
               to={`/c/${video?.owner?.username}/videos`}
               onClick={(e) => e.stopPropagation()}
               title={video?.owner?.username}
-              className="group flex gap-2 items-center py-3 w-fit"
+              className="group flex gap-2 items-center md:py-3 pt-1 w-fit"
             >
               <Avatar
                 fullName={video?.owner?.fullName}
                 url={video?.owner?.avatar}
-                className="h-8 w-8 flex-shrink-0"
+                className="md:h-8 md:w-8 h-7 w-7 flex-shrink-0"
               />
               <p className="line-clamp-1 group-hover:text-black dark:group-hover:text-white">
                 {video?.owner?.fullName}

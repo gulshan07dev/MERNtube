@@ -18,6 +18,7 @@ export default function SearchBar() {
       return;
     }
     navigate(`/search?query=${searchInputRef.current?.value}`);
+    searchInputRef.current.blur()
   };
 
   return (
@@ -74,7 +75,7 @@ export default function SearchBar() {
       </div>
 
       {/* for mobile devices. open search input button */}
-      <div className="hidden max-md:flex flex-grow justify-end px-5 bg-none">
+      <div className="hidden max-md:flex flex-grow justify-end pr-3 bg-none">
         <Button
           btnType="icon-btn"
           className="bg-slate-100 hover:bg-slate-200 dark:bg-[#303030] hover:dark:bg-[#474747]"

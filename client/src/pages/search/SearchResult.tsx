@@ -73,7 +73,7 @@ function SearchResult() {
           </p>
         }
       >
-        <div className="w-full flex flex-col md:gap-7 gap-3">
+        <div className="w-full flex flex-col md:gap-7 gap-2">
           {!searchResults.length &&
           totalVideos === 0 &&
           totalPages === 1 &&
