@@ -86,7 +86,6 @@ function SearchResult() {
               ))}
             </>
           )}
-          {isLoading && <p>loading...</p>}
         </div>
       </ScrollPagination>
     </PageLayout>

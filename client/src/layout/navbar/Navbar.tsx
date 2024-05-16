@@ -45,7 +45,7 @@ const Navbar = ({
       {/* Left Section */}
       <div className="flex items-center gap-1">
         <SidebarToggleBtn
-          className={showSidebarToggleBtn ? "lg:flex" : "lg:hidden"}
+          className={!showSidebarToggleBtn ? "lg:hidden" : ""}
         />
         <Logo />
       </div>
