@@ -1,13 +1,14 @@
 import { useRef } from "react";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "@/store/store";
 import Modal from "../CoreUI/Modal";
 import FileUpload from "../FileUpload";
 import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { changeUserAvatar } from "@/store/slices/authSlice";
+import useService from "@/hooks/useService";
+import AuthService from "@/services/authService";
+import { setUser } from "@/store/slices/authSlice";
 
 interface UpdateAvatarDialogProps {
   open: boolean;
@@ -18,6 +19,7 @@ export default function UpdateAvatarDialog({
   open,
   handleClose,
 }: UpdateAvatarDialogProps) {
+  const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const avatarRef = useRef<HTMLInputElement | null>(null);
 
@@ -29,20 +31,23 @@ export default function UpdateAvatarDialog({
     initialFormState: { avatar: null },
   });
 
-  const { isLoading, handleAction } = useActionHandler({
-    action: changeUserAvatar,
-    isShowToastMessage: true,
-    toastMessages: { loadingMessage: "Updating avatar..." },
-  });
+  const { isLoading, handler: changeUserAvatar } = useService(
+    AuthService.changeUserAvatar,
+    {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "Updating avatar..." },
+    }
+  );
 
   const onSubmit = async () => {
     if (!formData.avatar) {
       return toast.error("Avatar is required!");
     }
 
-    const { isSuccess, error } = await handleAction(formData);
+    const { success, error, responseData } = await changeUserAvatar(formData);
 
-    if (isSuccess && !error) {
+    if (success && !error) {
+      dispatch(setUser({ avatar: responseData?.data?.user?.avatar}));
       handleClose();
       resetForm();
     }

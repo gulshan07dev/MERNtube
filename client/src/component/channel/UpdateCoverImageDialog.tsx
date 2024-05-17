@@ -1,13 +1,14 @@
 import { useRef } from "react";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "@/store/store";
 import Modal from "../CoreUI/Modal";
 import FileUpload from "../FileUpload";
 import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { changeCoverImage } from "@/store/slices/authSlice";
+import useService from "@/hooks/useService";
+import AuthService from "@/services/authService";
+import { setUser } from "@/store/slices/authSlice";
 
 interface UpdateCoverImageDialogProps {
   open: boolean;
@@ -18,6 +19,7 @@ export default function UpdateCoverImageDialog({
   open,
   handleClose,
 }: UpdateCoverImageDialogProps) {
+  const dispatch = useDispatch()
   const { user } = useSelector((state: RootState) => state.auth);
   const coverImageRef = useRef<HTMLInputElement | null>(null);
 
@@ -29,20 +31,23 @@ export default function UpdateCoverImageDialog({
     initialFormState: { coverImage: null },
   });
 
-  const { isLoading, handleAction } = useActionHandler({
-    action: changeCoverImage,
-    isShowToastMessage: true,
-    toastMessages: { loadingMessage: "Updating cover image..." },
-  });
+  const { isLoading, handler: changeCoverImage } = useService(
+    AuthService.changeCoverImage,
+    {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "Updating cover image..." },
+    }
+  );
 
   const onSubmit = async () => {
     if (!formData.coverImage) {
       return toast.error("Cover Image is required!");
     }
 
-    const { isSuccess, error } = await handleAction(formData);
+    const { success, error, responseData } = await changeCoverImage(formData);
 
-    if (isSuccess && !error) {
+    if (success && !error) {
+      dispatch(setUser({coverImage: responseData?.data?.user?.coverImage}))
       handleClose();
       resetForm();
     }
