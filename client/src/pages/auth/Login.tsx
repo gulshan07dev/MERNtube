@@ -3,19 +3,24 @@ import toast from "react-hot-toast";
 
 import PageLayout from "@/layout/PageLayout";
 import AuthForm, { AuthFormType } from "@/component/authForm/AuthForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { loginUser } from "@/store/slices/authSlice";
+import useService from "@/hooks/useService";
+import AuthService from "@/services/authService";
+import { useDispatch } from "react-redux";
+import { login } from "@/store/slices/authSlice";
 
 export default function Login() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const redirectPath = location.state?.redirectPath;
 
-  const { isLoading, error, handleAction } = useActionHandler({
-    action: loginUser,
-    toastMessages: {
-      loadingMessage: "Logging in...",
-    },
+  const {
+    isLoading,
+    error,
+    handler: loginUser,
+  } = useService(AuthService.loginUser, {
+    isShowToastMessage: true,
+    toastMessages: { loadingMessage: "Logging in..." },
   });
 
   const handleLogin = async ({
@@ -29,9 +34,13 @@ export default function Login() {
       return toast.error("All fields are required!");
     }
 
-    const { isSuccess } = await handleAction({ usernameOrEmail, password });
+    const { success, responseData } = await loginUser({
+      usernameOrEmail,
+      password,
+    });
 
-    if (isSuccess) {
+    if (success) {
+      dispatch(login(responseData?.data.user));
       navigate(redirectPath ? redirectPath : "/");
     }
   };
@@ -43,7 +52,7 @@ export default function Login() {
         title="Login account"
         handleSubmit={handleLogin}
         isLoading={isLoading}
-        error={error}
+        error={error?.message}
         state={location.state}
       />
     </PageLayout>

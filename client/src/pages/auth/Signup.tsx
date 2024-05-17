@@ -6,19 +6,21 @@ import AuthForm, {
   AuthFormType,
   AuthInputs,
 } from "@/component/authForm/AuthForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { registerUser } from "@/store/slices/authSlice";
+import AuthService from "@/services/authService";
+import useService from "@/hooks/useService";
 
 export default function Signup() {
   const location = useLocation();
   const navigate = useNavigate();
   const redirectPath = location?.state?.redirectPath;
 
-  const { error, isLoading, handleAction } = useActionHandler({
-    action: registerUser,
-    toastMessages: {
-      loadingMessage: "Creating your account...",
-    },
+  const {
+    isLoading,
+    error,
+    handler: registerUser,
+  } = useService(AuthService.registerUser, {
+    isShowToastMessage: true,
+    toastMessages: { loadingMessage: "Creating your account" },
   });
 
   const handleSignup = async ({
@@ -32,7 +34,7 @@ export default function Signup() {
       return toast.error("All fields are required!");
     }
 
-    const { isSuccess } = await handleAction({
+    const { success } = await registerUser({
       fullName,
       email,
       password,
@@ -40,7 +42,7 @@ export default function Signup() {
       coverImage,
     });
 
-    if (isSuccess) {
+    if (success) {
       navigate("/auth/login", {
         state: {
           usernameOrEmail: email,
@@ -58,7 +60,7 @@ export default function Signup() {
         title="Create an account"
         handleSubmit={handleSignup}
         isLoading={isLoading}
-        error={error}
+        error={error?.message}
       />
     </PageLayout>
   );
