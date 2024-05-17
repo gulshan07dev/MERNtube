@@ -216,20 +216,20 @@ const changeUserPassword = asyncHandler(async (req, res) => {
 // change Account details
 const changeAccountDetails = asyncHandler(async (req, res) => {
     const { username, fullName } = req.body;
+
+    // Check if at least one field is provided
+    if (!fullName && !username) {
+        throw new ApiError(400, "fullName or username is required!")
+    }
+
     const updateFields = {};
 
-    if (username) {
+    if (username && req.user.username !== username) {
         updateFields.username = username;
     }
 
     if (fullName) {
         updateFields.fullName = fullName;
-    }
-
-    // Check if at least one field is provided
-    if (Object.keys(updateFields).length === 0) {
-        throw new ApiError(400,
-            "At least one field (username or fullName) is required");
     }
 
     // fullName must be at least 3 char and less than 21 char
