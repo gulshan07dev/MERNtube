@@ -1,21 +1,24 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Form from "@/component/CoreUI/Form";
 import Input from "@/component/CoreUI/Input";
 import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { changeAccountDetails } from "@/store/slices/authSlice";
-
 import { RootState } from "@/store/store";
+import AuthService from "@/services/authService";
+import useService from "@/hooks/useService";
+import { setUser } from "@/store/slices/authSlice";
 
 const UpdateAccountDetailsForm = () => {
+  const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state?.auth);
 
-  const { error, isLoading, handleAction } = useActionHandler({
-    action: changeAccountDetails,
-    toastMessages: {
-      loadingMessage: "Updating...",
-    },
+  const {
+    error,
+    isLoading,
+    handler: changeAccountDetails,
+  } = useService(AuthService.changeAccountDetails, {
+    isShowToastMessage: true,
+    toastMessages: { loadingMessage: "Updating..." },
   });
 
   const initialAccountDetails = {
@@ -27,10 +30,13 @@ const UpdateAccountDetailsForm = () => {
   });
 
   const onSubmit = async () => {
-    if (formData.username === user?.username) {
-      return await handleAction({ fullName: formData.fullName });
+    const { success, responseData } = await changeAccountDetails({
+      ...formData,
+      username: user?.username === formData.username ? "" : formData.username,
+    });
+    if (success) {
+      dispatch(setUser(responseData?.data.user));
     }
-    return await handleAction(formData);
   };
 
   return (
@@ -44,7 +50,7 @@ const UpdateAccountDetailsForm = () => {
         (user?.username === formData.username &&
           user?.fullName === formData.fullName)
       }
-      error={error}
+      error={error?.message}
       inputs={
         <>
           <Input

@@ -3,15 +3,17 @@ import toast from "react-hot-toast";
 import Form from "@/component/CoreUI/Form";
 import Input from "@/component/CoreUI/Input";
 import useForm from "@/hooks/useForm";
-import { changeUserPassword } from "@/store/slices/authSlice";
-import useActionHandler from "@/hooks/useActionHandler";
+import useService from "@/hooks/useService";
+import AuthService from "@/services/authService";
 
 const UpdatePasswordForm = () => {
-  const { error, isLoading, handleAction } = useActionHandler({
-    action: changeUserPassword,
-    toastMessages: {
-      loadingMessage: "Updating...",
-    },
+  const {
+    error,
+    isLoading,
+    handler: changeUserPassword,
+  } = useService(AuthService.changeUserPassword, {
+    isShowToastMessage: true,
+    toastMessages: { loadingMessage: "Updating..." },
   });
 
   const initialUserPassword = { oldPassword: "", newPassword: "" };
@@ -24,9 +26,9 @@ const UpdatePasswordForm = () => {
       return toast.error("All fields are required!");
     }
 
-    const { isSuccess } = await handleAction(formData);
+    const { success } = await changeUserPassword(formData);
 
-    if (isSuccess) {
+    if (success) {
       resetForm();
     }
   };
@@ -38,7 +40,7 @@ const UpdatePasswordForm = () => {
       submitButtonLabel="Save changes"
       isLoading={isLoading}
       isButtonDisabled={isLoading || !Object.values(formData).every(Boolean)}
-      error={error}
+      error={error?.message}
       inputs={
         <>
           <Input
