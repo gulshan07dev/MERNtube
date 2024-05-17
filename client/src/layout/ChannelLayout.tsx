@@ -1,37 +1,44 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useParams, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
+import { abbreviateNumber } from "js-abbreviation-number";
+import { FaEdit, FaRegEdit } from "react-icons/fa";
 
-import useActionHandler from "@/hooks/useActionHandler";
-import { getChannel } from "@/store/slices/authSlice";
+import { RootState } from "@/store/store";
+import useService from "@/hooks/useService";
+import AuthService from "@/services/authService";
+import { setChannel } from "@/store/slices/authSlice";
+import Skeleton from "@/component/Skeleton";
+import Button from "@/component/CoreUI/Button";
 import Avatar from "@/component/CoreUI/Avatar";
 import UpdateAvatarDialog from "@/component/channel/UpdateAvatarDialog";
-import Skeleton from "@/component/Skeleton";
-import SubscribeBtn from "@/component/subscription/SubscribeBtn";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-import ErrorDialog from "@/component/error/ErrorDialog";
-import { abbreviateNumber } from "js-abbreviation-number";
-import Button from "@/component/CoreUI/Button";
-import { FaEdit, FaRegEdit } from "react-icons/fa";
 import UpdateCoverImageDialog from "@/component/channel/UpdateCoverImageDialog";
+import SubscribeBtn from "@/component/subscription/SubscribeBtn";
+import ErrorDialog from "@/component/error/ErrorDialog";
 
 const ChannelLayout: React.FC = () => {
+  const dispatch = useDispatch();
   const { username } = useParams();
   const location = useLocation();
   let { channel, user } = useSelector((state: RootState) => state?.auth);
-  const [isUpdateAvatarDialogOpen, setIsUpdateAvatarDialogOpen] =
-    useState(false);
-  const [isUpdateCoverImageDialogOpen, setIsUpdateCoverImageDialogOpen] =
-    useState(false);
+  const [modalOpen, setModalOpen] = useState<
+    "update_avatar_dialog" | "update_cover_image_dialog" | null
+  >(null);
 
-  const { error, isLoading, handleAction } = useActionHandler({
-    action: getChannel,
-    isShowToastMessage: false,
-  });
+  const {
+    error,
+    isLoading,
+    handler: getChannel,
+  } = useService(AuthService.getChannel);
 
   async function fetchChannel() {
-    await handleAction(username);
+    if (username) {
+      const { success, responseData } = await getChannel({ username });
+      if (success) {
+        dispatch(setChannel(responseData?.data?.channel));
+      }
+    }
   }
 
   useEffect(() => {
@@ -84,7 +91,7 @@ const ChannelLayout: React.FC = () => {
       {error ? (
         // Display error message if there's an error
         <ErrorDialog
-          errorMessage={error}
+          errorMessage={error?.message}
           buttonLabel="Try again"
           buttonOnClick={fetchChannel}
         />
@@ -112,14 +119,14 @@ const ChannelLayout: React.FC = () => {
                   <>
                     <Button
                       btnType="icon-btn"
-                      onClick={() => setIsUpdateCoverImageDialogOpen(true)}
+                      onClick={() => setModalOpen("update_cover_image_dialog")}
                       className="absolute right-2 top-2 md:text-4xl text-3xl bg-slate-200 dark:bg-slate-800"
                     >
                       <FaEdit />
                     </Button>
                     <UpdateCoverImageDialog
-                      open={isUpdateCoverImageDialogOpen}
-                      handleClose={() => setIsUpdateCoverImageDialogOpen(false)}
+                      open={modalOpen === "update_cover_image_dialog"}
+                      handleClose={() => setModalOpen(null)}
                     />
                   </>
                 )}
@@ -142,14 +149,14 @@ const ChannelLayout: React.FC = () => {
                     <>
                       <Button
                         btnType="icon-btn"
-                        onClick={() => setIsUpdateAvatarDialogOpen(true)}
+                        onClick={() => setModalOpen("update_avatar_dialog")}
                         className="hidden group-hover:flex absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%] h-full w-full md:text-8xl text-3xl group-hover:bg-[#ffffff50] dark:group-hover:bg-[#040d1250]"
                       >
                         <FaRegEdit />
                       </Button>
                       <UpdateAvatarDialog
-                        open={isUpdateAvatarDialogOpen}
-                        handleClose={() => setIsUpdateAvatarDialogOpen(false)}
+                        open={modalOpen === "update_avatar_dialog"}
+                        handleClose={() => setModalOpen(null)}
                       />
                     </>
                   )}
