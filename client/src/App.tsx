@@ -2,28 +2,39 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 
-import { getCurrentUser, refreshAccessToken } from "./store/slices/authSlice";
 import { AppDispatch } from "./store/store";
+import { login, logout } from "./store/slices/authSlice";
 import { setAppLoading } from "./store/slices/appLoadingSlice";
+import AuthService from "./services/authService";
+import useService from "./hooks/useService";
 import router from "./routes";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
+  const { handler: getCurrentUser } = useService(AuthService.getCurrentUser);
+  const { handler: refreshAccessToken } = useService(
+    AuthService.refreshAccessToken
+  );
 
   useEffect(() => {
     (async () => {
       dispatch(setAppLoading(true));
+      const { success, responseData } = await getCurrentUser();
 
-      const res = await dispatch(getCurrentUser());
-
-      if (!res?.payload?.success) {
+      if (success) {
+        dispatch(login(responseData?.data.user));
+      } else {
         // If there's an error, try refreshing the access token
-        await dispatch(refreshAccessToken());
+        const { success } = await refreshAccessToken();
 
         // Retry fetching the current user after refreshing the token
-        await dispatch(getCurrentUser());
+        if (success) {
+          const { responseData } = await getCurrentUser();
+          dispatch(login(responseData?.data.user));
+        } else {
+          dispatch(logout());
+        }
       }
-
       dispatch(setAppLoading(false));
     })();
   }, []);
