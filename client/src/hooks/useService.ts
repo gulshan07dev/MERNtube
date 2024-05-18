@@ -53,7 +53,7 @@ const useService = <TArgs extends any[], TResult>(
         ? toast.loading(loadingMessage)
         : null;
 
-    try { 
+    try {
       const response: any = await serviceFunction(...args);
       const responseData = response.data as ResponseData;
 
@@ -71,8 +71,8 @@ const useService = <TArgs extends any[], TResult>(
     } catch (error: any) {
       const responseError = error.response?.data as ErrorResponse;
       const message =
-        responseError.errors && Object.values(responseError.errors).length
-          ? Object.values(responseError.errors)[0]?.message
+        responseError?.errors && Object.values(responseError?.errors).length
+          ? Object.values(responseError?.errors)[0]?.message
           : responseError?.message || error?.message || "Something went wrong";
 
       setErrorResponse({
