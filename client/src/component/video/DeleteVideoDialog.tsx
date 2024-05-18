@@ -1,7 +1,7 @@
-import useActionHandler from "@/hooks/useActionHandler";
 import Modal from "../CoreUI/Modal";
+import VideoService from "@/services/videoService";
+import useService from "@/hooks/useService";
 import Button from "../CoreUI/Button";
-import { deleteVideo } from "@/store/slices/videoSlice";
 
 interface DeleteVideoDialogProps {
   open: boolean;
@@ -16,17 +16,18 @@ export default function DeleteVideoDialog({
   videoId,
   onDelete,
 }: DeleteVideoDialogProps) {
-  const { isLoading: isDeleting, handleAction: deleteVideoAction } =
-    useActionHandler({
-      action: deleteVideo,
+  const { isLoading: isDeleting, handler: deleteVideo } = useService(
+    VideoService.deleteVideo,
+    {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "deleting video..." },
-    });
+    }
+  );
 
   const handleDeleteVideo = async () => {
-    const { error, isSuccess } = await deleteVideoAction(videoId);
+    const { error, success } = await deleteVideo(videoId);
 
-    if (!error && isSuccess) {
+    if (!error && success) {
       handleClose();
       onDelete(true);
     } else {

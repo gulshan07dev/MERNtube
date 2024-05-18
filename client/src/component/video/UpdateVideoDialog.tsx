@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 
 import Modal from "../CoreUI/Modal";
+import VideoService from "@/services/videoService";
+import useService from "@/hooks/useService";
+import { Video } from "@/store/slices/videoSlice";
 import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { Video, updateVideo } from "@/store/slices/videoSlice";
 import Input from "../CoreUI/Input";
 import FileUpload from "../FileUpload";
 
@@ -33,21 +34,23 @@ export default function UpdateVideoDialog({
     },
   });
 
-  const { isLoading, handleAction } = useActionHandler({
-    action: updateVideo,
-    isShowToastMessage: true,
-    toastMessages: { loadingMessage: "updating video..." },
-  });
+  const { isLoading, handler: updateVideo } = useService(
+    VideoService.updateVideo,
+    {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "Updating video..." },
+    }
+  );
 
   const handleSubmitForm = async () => {
-    const { isSuccess, error, resData } = await handleAction({
+    const { success, error, responseData } = await updateVideo({
       videoId: video?._id,
       data: formData,
     });
-    if (isSuccess && !error) {
+    if (success && !error) {
       resetForm();
       handleClose();
-      onUpdate(resData?.updatedVideo as Video);
+      onUpdate(responseData?.data?.updatedVideo as Video);
     }
   };
 
