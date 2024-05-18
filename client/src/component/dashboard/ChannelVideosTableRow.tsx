@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { abbreviateNumber } from "js-abbreviation-number";
-
-import useActionHandler from "@/hooks/useActionHandler";
-import { Video, toggleVideoPublicStatus } from "@/store/slices/videoSlice";
-import ToggleButton from "../CoreUI/ToggleButton";
-import Button from "../CoreUI/Button";
+ 
+import VideoService from "@/services/videoService";
+import useService from "@/hooks/useService";
+import { Video } from "@/store/slices/videoSlice";
 import DeleteVideoDialog from "../video/DeleteVideoDialog";
 import UpdateVideoDialog from "../video/UpdateVideoDialog";
+import ToggleButton from "../CoreUI/ToggleButton";
+import Button from "../CoreUI/Button";
 
 export default function ChannelVideosTableRow({ video }: { video: Video }) {
   const [videoDetails, setVideoDetails] = useState(video);
@@ -17,21 +18,18 @@ export default function ChannelVideosTableRow({ video }: { video: Video }) {
 
   const {
     isLoading: isTogglingVideoStatus,
-    handleAction: handleToggleVideoStatusAction,
-  } = useActionHandler({
-    action: toggleVideoPublicStatus,
+    handler: toggleVideoPublishStatus,
+  } = useService(VideoService.toggleVideoPublishStatus, {
     isShowToastMessage: true,
     toastMessages: {
       loadingMessage: `toggling video status to ${!videoDetails?.isPublished}`,
     },
   });
 
-  const toggleVideoStatus = async () => {
+  const handleToggleVideoPublishStatus = async () => {
     setVideoDetails((prev) => ({ ...prev, isPublished: !prev.isPublished }));
-    const { isSuccess } = await handleToggleVideoStatusAction(
-      videoDetails?._id
-    );
-    if (!isSuccess) {
+    const { success } = await toggleVideoPublishStatus(videoDetails?._id);
+    if (!success) {
       setVideoDetails((prev) => ({ ...prev, isPublished: !prev.isPublished }));
     }
   };
@@ -46,7 +44,7 @@ export default function ChannelVideosTableRow({ video }: { video: Video }) {
       <td className="px-6 py-4">
         <ToggleButton
           value={videoDetails?.isPublished}
-          onChange={toggleVideoStatus}
+          onChange={handleToggleVideoPublishStatus}
           disabled={isTogglingVideoStatus}
           aria-label={videoDetails?.isPublished ? "Published" : "Unpublished"}
         />
