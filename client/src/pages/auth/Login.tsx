@@ -41,7 +41,9 @@ export default function Login() {
 
     if (success) {
       dispatch(login(responseData?.data.user));
-      navigate(redirectPath ? redirectPath : "/");
+      setTimeout(() => {
+        navigate(redirectPath || "/");
+      }, 100);
     }
   };
 
