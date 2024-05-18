@@ -28,7 +28,7 @@ const SearchVideoCard = ({ video }: { video: Video }) => {
   return (
     <div
       onClick={() => navigate(`/watch/${video?._id}`)}
-      className="group/item w-full flex md:gap-3 gap-2.5 p-3 max-md:pr-0 max-md:pl-2 rounded-lg hover:bg-slate-200 dark:hover:bg-[#202020]"
+      className="group/item cursor-pointer w-full flex md:gap-3 gap-2.5 p-3 max-md:pr-0 max-md:pl-2 rounded-lg hover:bg-slate-200 dark:hover:bg-[#202020]"
     >
       <div className="flex flex-grow gap-3">
         <img

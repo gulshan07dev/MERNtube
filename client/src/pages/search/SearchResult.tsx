@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import PageLayout from "@/layout/PageLayout";
-import useActionHandler from "@/hooks/useActionHandler";
-import { Video, getAllVideos } from "@/store/slices/videoSlice";
+import VideoService from "@/services/videoService";
+import useService from "@/hooks/useService";
+import { Video } from "@/store/slices/videoSlice";
 import ScrollPagination from "@/component/ScrollPagination";
 import EmptyMessage from "@/component/error/EmptyMessage";
 import SearchVideoCard from "@/component/search/SearchVideoCard";
@@ -11,34 +12,44 @@ import SearchVideoCard from "@/component/search/SearchVideoCard";
 function SearchResult() {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalVideos, setTotalVideos] = useState(0);
-  const [hasNextPage, setHasNextPage] = useState(false);
+  const [paginationInfo, setPaginationInfo] = useState({
+    currentPage: 0,
+    totalPages: 1,
+    totalDocs: 1,
+    hasNextPage: true,
+  });
   const [searchResults, setSearchResults] = useState<Video[]>([]);
 
-  const { isLoading, error, handleAction } = useActionHandler({
-    action: getAllVideos,
-    isShowToastMessage: false,
-  });
+  const {
+    isLoading,
+    error,
+    handler: getAllVideos,
+  } = useService(VideoService.getAllVideos);
 
   const fetchSearchResults = async (query: string, page: number) => {
-    const { isSuccess, error, resData } = await handleAction({
+    if (page === 1) {
+      setSearchResults([]);
+    }
+
+    const { success, error, responseData } = await getAllVideos({
       query,
       page,
       limit: 10,
     });
 
-    if (isSuccess && !error) {
+    if (success && !error) {
+      const { page, totalPages, totalDocs, hasNextPage, docs } =
+        responseData?.data?.result;
+
       setSearchResults((prevSearchResults) =>
-        page === 1
-          ? resData.result.docs
-          : [...prevSearchResults, ...resData.result.docs]
+        page === 1 ? docs : [...prevSearchResults, ...docs]
       );
-      setCurrentPage(resData.result.page);
-      setTotalPages(resData.result.totalPages);
-      setTotalVideos(resData.result.totalDocs);
-      setHasNextPage(resData.result.hasNextPage);
+      setPaginationInfo({
+        currentPage: page,
+        totalPages,
+        totalDocs,
+        hasNextPage,
+      });
     }
   };
 
@@ -54,19 +65,21 @@ function SearchResult() {
   return (
     <PageLayout className="flex flex-col gap-7">
       <h1 className="text-lg font-nunito_sans text-zinc-800 dark:text-slate-100">
-        Search Results for "{searchQuery}"
+        {isLoading ? "Searching" : "Search"} Results for "{searchQuery}"
       </h1>
       <ScrollPagination
         paginationType="infinite-scroll"
-        loadNextPage={() => fetchSearchResults(searchQuery, currentPage + 1)}
+        loadNextPage={() =>
+          fetchSearchResults(searchQuery, paginationInfo?.currentPage + 1)
+        }
         refreshHandler={() => fetchSearchResults(searchQuery, 1)}
         dataLength={searchResults.length}
         loading={isLoading}
-        error={error}
-        currentPage={currentPage}
-        totalItems={totalVideos}
-        totalPages={totalPages}
-        hasNextPage={hasNextPage}
+        error={error?.message}
+        currentPage={paginationInfo.currentPage}
+        totalItems={paginationInfo.totalDocs}
+        totalPages={paginationInfo.totalPages}
+        hasNextPage={paginationInfo.hasNextPage}
         endMessage={
           <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
             No more search results to show !!!
@@ -75,8 +88,8 @@ function SearchResult() {
       >
         <div className="w-full flex flex-col md:gap-7 gap-2">
           {!searchResults.length &&
-          totalVideos === 0 &&
-          totalPages === 1 &&
+          paginationInfo.totalDocs === 0 &&
+          paginationInfo.totalPages === 1 &&
           !isLoading ? (
             <EmptyMessage message="empty search results, try search another" />
           ) : (
