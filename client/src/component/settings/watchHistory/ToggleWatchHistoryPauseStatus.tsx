@@ -6,10 +6,10 @@ import ToggleButton from "../../CoreUI/ToggleButton";
 import useActionHandler from "@/hooks/useActionHandler";
 import { toggleWatchHistoryPauseStatus } from "@/store/slices/watchHistorySlice";
 import { FaPause, FaPlayCircle } from "react-icons/fa";
-import { getCurrentUser } from "@/store/slices/authSlice";
+import { setUser } from "@/store/slices/authSlice";
 
 export default function ToggleWatchHistoryPauseStatus() {
-  const dispatch:AppDispatch = useDispatch()
+  const dispatch: AppDispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state?.auth);
   const [isWatchHistoryPaused, setIsWatchHistoryPaused] = useState(
     user?.isWatchHistoryPaused
@@ -25,8 +25,8 @@ export default function ToggleWatchHistoryPauseStatus() {
 
   const handleToggleWatchHistoryPauseStatus = async () => {
     const { isSuccess, error } = await handleAction();
-    const res = await dispatch(getCurrentUser())
-    if (isSuccess && !error && res.payload.success) {
+    if (isSuccess && !error) {
+      dispatch(setUser({ isWatchHistoryPaused: !isWatchHistoryPaused }));
       setIsWatchHistoryPaused((prev) => !prev);
     }
   };
@@ -34,7 +34,7 @@ export default function ToggleWatchHistoryPauseStatus() {
   return (
     <div className="flex w-full items-center justify-between gap-5">
       <h3 className="text-lg text-gray-700 dark:text-gray-300 flex gap-2 items-center">
-        {isWatchHistoryPaused ? <FaPlayCircle /> : <FaPause />} 
+        {isWatchHistoryPaused ? <FaPlayCircle /> : <FaPause />}
         {isWatchHistoryPaused ? "Resume watch history" : "Pause watch history"}
       </h3>
       <ToggleButton
