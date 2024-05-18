@@ -1,22 +1,20 @@
 import { useRef } from "react";
 import { FaUpload } from "react-icons/fa";
 
+import VideoService from "@/services/videoService";
+import useService from "@/hooks/useService";
 import Form from "@/component/CoreUI/Form";
 import Input from "@/component/CoreUI/Input";
 import TextAreaInput from "@/component/CoreUI/TextAreaInput";
 import CheckBox from "@/component/CoreUI/CheckBox";
 import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { createVideo } from "@/store/slices/videoSlice";
 import FileUpload from "../FileUpload";
 
 export default function VideoCreateForm() {
-  const { error, isLoading, handleAction } = useActionHandler({
-    action: createVideo,
-    toastMessages: {
-      loadingMessage: "Uploading video...",
-    },
-  });
+  const { error, isLoading, handler: createVideo } = useService(VideoService.createVideo, {
+    isShowToastMessage: true,
+    toastMessages: {loadingMessage: "Uploading video..."}
+  })
 
   const initialVideoDetails = {
     title: "",
@@ -32,9 +30,9 @@ export default function VideoCreateForm() {
   });
 
   const onSubmit = async () => {
-    const { isSuccess } = await handleAction(formData);
+    const { success } = await createVideo(formData);
 
-    if (isSuccess) {
+    if (success) {
       resetForm();
       if (videoFileRef.current) {
         videoFileRef.current.value = "";
@@ -59,7 +57,7 @@ export default function VideoCreateForm() {
         !formData.thumbnail
       }
       isLoading={isLoading}
-      error={error}
+      error={error?.message}
       inputs={
         <>
           <div className="flex gap-7 max-lg:flex-col">
