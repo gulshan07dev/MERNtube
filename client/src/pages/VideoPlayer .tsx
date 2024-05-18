@@ -8,35 +8,36 @@ import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
 import PageLayout from "@/layout/PageLayout";
-import useActionHandler from "@/hooks/useActionHandler";
+import VideoService from "@/services/videoService";
+import AuthService from "@/services/authService";
+import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
-import { getVideoByVideoId } from "@/store/slices/videoSlice";
-import { getChannel } from "@/store/slices/authSlice";
+import { setVideo } from "@/store/slices/videoSlice";
 import { toggleVideoLike } from "@/store/slices/likeSlice";
 import LikeBtn from "@/component/CoreUI/LikeBtn";
+import { addVideoToWatchHistory } from "@/store/slices/watchHistorySlice";
 import ShareDialog from "@/component/ShareDialog";
+import AddVideoToPlaylistDialog from "@/component/playlist/AddVideoToPlaylistDialog";
+import AddVideoToWatchLaterDialog from "@/component/watchLater/AddVideoToWatchLaterDialog";
 import SubscribeBtn from "@/component/subscription/SubscribeBtn";
 import CommentBox from "@/component/comment/CommentBox";
 import Skeleton from "@/component/Skeleton";
 import Avatar from "@/component/CoreUI/Avatar";
-import ErrorDialog from "@/component/error/ErrorDialog";
-import Button from "@/component/CoreUI/Button";
 import TextWithToggle from "@/component/CoreUI/TextWithToggle";
-import AddVideoToPlaylistDialog from "@/component/playlist/AddVideoToPlaylistDialog";
-import AddVideoToWatchLaterDialog from "@/component/watchLater/AddVideoToWatchLaterDialog";
-import { addVideoToWatchHistory } from "@/store/slices/watchHistorySlice";
+import Button from "@/component/CoreUI/Button";
+import ErrorDialog from "@/component/error/ErrorDialog";
+import { setChannel } from "@/store/slices/authSlice";
 
 export default function VideoPlayer() {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const { videoId } = useParams();
-  const [isShareVideoDialogOpen, setIsShareVideoDialogOpen] = useState(false);
-  const [isShowAddVideoToPlaylistDialog, setIsShowAddVideoToPlaylistDialog] =
-    useState(false);
-  const [
-    isShowAddVideoToWatchLaterDialog,
-    setIsShowAddVideoToWatchLaterDialog,
-  ] = useState(false);
+  const [modalOpen, setModalOpen] = useState<
+    | "share_video_dialog"
+    | "add_video_to_playlist_dialog"
+    | "add_video_to_watchlater_dialog"
+    | null
+  >(null);
   const [isVideoAddedToWatchHistory, setIsVideoAddedToWatchHistory] =
     useState(false);
   const { video } = useSelector((state: RootState) => state?.video);
@@ -45,27 +46,33 @@ export default function VideoPlayer() {
   const {
     isLoading: isFetchingVideo,
     error: videoFetchingError,
-    handleAction: handleFetchVideoAction,
-  } = useActionHandler({
-    action: getVideoByVideoId,
-    isShowToastMessage: false,
-  });
+    handler: getVideoByVideoId,
+  } = useService(VideoService.getVideoByVideoId);
 
   const fetchVideo = async () => {
-    await handleFetchVideoAction(videoId);
+    if (videoId) {
+      const { success, responseData } = await getVideoByVideoId(videoId);
+      if (success) {
+        dispatch(setVideo(responseData?.data?.video));
+      }
+    }
   };
 
   const {
     isLoading: isFetchingChannel,
     error: channelFetchingError,
-    handleAction: handleFetchChannelAction,
-  } = useActionHandler({
-    action: getChannel,
-    isShowToastMessage: false,
-  });
+    handler: getChannel,
+  } = useService(AuthService.getChannel);
 
   const fetchChannel = async (username: string) => {
-    await handleFetchChannelAction(username);
+    const { success, responseData } = await getChannel({ username });
+    if (success) {
+      dispatch(setChannel(responseData?.data?.channel));
+    }
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(null);
   };
 
   // fetch video
@@ -98,12 +105,10 @@ export default function VideoPlayer() {
   }, [isFetchingVideo, video?.owner?.username]);
 
   return (
-    <PageLayout
-      className="w-full flex gap-6 max-xl:flex-col max-xl:gap-14"
-    >
+    <PageLayout className="w-full flex gap-6 max-xl:flex-col max-xl:gap-14">
       {videoFetchingError ? (
         <ErrorDialog
-          errorMessage={videoFetchingError}
+          errorMessage={videoFetchingError?.message}
           buttonLabel="Try again"
           buttonOnClick={fetchVideo}
         />
@@ -147,9 +152,7 @@ export default function VideoPlayer() {
                         url={channel?.avatar}
                         className="size-10 flex-shrink-0"
                         onClick={() =>
-                          navigate(`/c/${channel?.username}`, {
-                            state: { channel },
-                          })
+                          navigate(`/c/${channel?.username}`)
                         }
                       />
                       <div className="flex flex-col flex-grow truncate">
@@ -186,13 +189,13 @@ export default function VideoPlayer() {
                     <Button
                       className="bg-slate-200 dark:bg-[#272727] text-black dark:text-white rounded-full hover:opacity-1 hover:bg-slate-300 dark:hover:bg-[#505050] py-2"
                       icon={<FaShare />}
-                      onClick={() => setIsShareVideoDialogOpen((prev) => !prev)}
+                      onClick={() => setModalOpen("share_video_dialog")}
                     >
                       <span className="lg:hidden">Share</span>
                     </Button>
                     <ShareDialog
-                      open={isShareVideoDialogOpen}
-                      handleClose={() => setIsShareVideoDialogOpen(false)}
+                      open={modalOpen === "share_video_dialog"}
+                      handleClose={handleModalClose}
                       url={document.URL}
                     />
                     {/* save to playlist button */}
@@ -200,16 +203,14 @@ export default function VideoPlayer() {
                       className="bg-slate-200 dark:bg-[#272727] text-black dark:text-white rounded-full hover:opacity-1 hover:bg-slate-300 dark:hover:bg-[#505050] py-2"
                       icon={<BiSolidPlaylist />}
                       onClick={() =>
-                        setIsShowAddVideoToPlaylistDialog((prev) => !prev)
+                        setModalOpen("add_video_to_playlist_dialog")
                       }
                     >
                       Save to Playlist
                     </Button>
                     <AddVideoToPlaylistDialog
-                      open={isShowAddVideoToPlaylistDialog}
-                      handleClose={() =>
-                        setIsShowAddVideoToPlaylistDialog(false)
-                      }
+                      open={modalOpen === "add_video_to_playlist_dialog"}
+                      handleClose={handleModalClose}
                       videoId={video?._id}
                     />
                     {/* save to watch later */}
@@ -217,16 +218,14 @@ export default function VideoPlayer() {
                       className="bg-slate-200 dark:bg-[#272727] text-black dark:text-white rounded-full hover:opacity-1 hover:bg-slate-300 dark:hover:bg-[#505050] py-2"
                       icon={<BiSolidPlaylist />}
                       onClick={() =>
-                        setIsShowAddVideoToWatchLaterDialog((prev) => !prev)
+                        setModalOpen("add_video_to_watchlater_dialog")
                       }
                     >
                       Save to watch Later
                     </Button>
                     <AddVideoToWatchLaterDialog
-                      open={isShowAddVideoToWatchLaterDialog}
-                      handleClose={() =>
-                        setIsShowAddVideoToWatchLaterDialog(false)
-                      }
+                      open={modalOpen === "add_video_to_watchlater_dialog"}
+                      handleClose={handleModalClose}
                       videoId={video?._id}
                     />
                   </div>

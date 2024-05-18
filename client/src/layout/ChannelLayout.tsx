@@ -42,9 +42,7 @@ const ChannelLayout: React.FC = () => {
   }
 
   useEffect(() => {
-    if (location?.state?.channel) {
-      channel = location?.state?.channel;
-    } else {
+    if (channel?.username !== username) {
       fetchChannel();
     }
   }, [username]);
