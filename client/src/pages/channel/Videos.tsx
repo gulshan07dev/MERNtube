@@ -1,46 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
 import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
-import { getAllVideos, setVideos } from "@/store/slices/videoSlice";
-import { AppDispatch, RootState } from "@/store/store";
+import VideoService from "@/services/videoService";
+import useService from "@/hooks/useService";
+import { RootState } from "@/store/store";
+import { Video } from "@/store/slices/videoSlice";
 import VideoCard from "@/component/video/VideoCard";
 import VideoSkeleton from "@/component/video/VideoSkeleton";
 import Button from "@/component/CoreUI/Button";
 import EmptyMessage from "@/component/error/EmptyMessage";
 
 const Home: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
   const { channel } = useSelector((state: RootState) => state?.auth);
   const [sortBy, setSortBy] = useState<"createdAt" | "views">("createdAt");
-  const [sortType, setSortType] = useState<"desc" | "acc" | null>("desc");
+  const [sortType, setSortType] = useState<"desc" | "acc">("desc");
   const limit = 6;
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [paginationInfo, setPaginationInfo] = useState({
+    currentPage: 0,
+    totalPages: 1,
+    totalDocs: 1,
+    hasNextPage: true,
+  });
 
   const {
-    loading,
+    isLoading,
     error,
-    videos,
-    currPage,
-    totalPages,
-    totalDocs,
-    hasNextPage,
-  } = useSelector((state: RootState) => state?.video);
+    handler: getAllVideos,
+  } = useService(VideoService.getAllVideos);
 
-  const fetchVideos = (page: number) => {
+  const fetchVideos = async (page: number) => {
     if (page === 1) {
-      dispatch(setVideos([]));
+      setVideos([]);
     }
-    dispatch(
-      getAllVideos({
-        page,
-        limit,
-        sortBy,
-        sortType,
-        userId: channel?._id,
-      })
-    );
+    const { success, responseData } = await getAllVideos({
+      page,
+      limit,
+      sortBy,
+      sortType,
+      userId: channel?._id,
+    });
+
+    if (success) {
+      const { page, totalPages, totalDocs, hasNextPage, docs } =
+        responseData?.data?.result;
+
+      setVideos(page === 1 ? docs : [...videos, ...docs]);
+      setPaginationInfo({
+        currentPage: page,
+        totalPages,
+        totalDocs,
+        hasNextPage,
+      });
+    }
   };
 
   const handleSortTypeChange = (type: "desc" | "acc") => {
@@ -52,16 +67,6 @@ const Home: React.FC = () => {
     setSortBy(by);
   };
 
-  const renderSkeletons = () => {
-    const numSkeletons =
-      limit && videos.length !== 0
-        ? Math.min(limit, totalDocs - videos.length)
-        : limit;
-    return Array.from({ length: numSkeletons }, (_, idx) => (
-      <VideoSkeleton key={idx} />
-    ));
-  };
-
   // fetch initial videos
   useEffect(() => {
     if (channel?._id) {
@@ -69,47 +74,53 @@ const Home: React.FC = () => {
     }
   }, [sortType, sortBy, channel?._id]);
 
+  const renderEmptyMessage = () => (
+    <EmptyMessage
+      message="empty videos"
+      buttonText="fetch again"
+      onRefresh={() => fetchVideos(1)}
+    />
+  );
+
   return (
     <PageLayout>
       <ScrollPagination
         paginationType="infinite-scroll"
-        loadNextPage={() => fetchVideos(currPage + 1)}
+        loadNextPage={() => fetchVideos(paginationInfo.currentPage + 1)}
         refreshHandler={() => fetchVideos(1)}
         dataLength={videos.length}
-        loading={loading || !channel?._id}
-        error={error}
-        currentPage={currPage}
-        hasNextPage={hasNextPage}
-        totalPages={totalPages}
-        totalItems={totalDocs}
+        loading={isLoading || !channel?._id}
+        error={error?.message}
+        currentPage={paginationInfo.currentPage}
+        hasNextPage={paginationInfo.hasNextPage}
+        totalPages={paginationInfo.totalPages}
+        totalItems={paginationInfo.totalDocs}
         endMessage={
           <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
             No more videos to fetch !!!
           </p>
         }
       >
-        <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
-          {!videos.length && totalDocs === 0 && totalPages === 1 && !loading ? (
-            <EmptyMessage
-              message="empty videos"
-              buttonText="fetch again"
-              onRefresh={() => fetchVideos(1)}
-            />
+        <div className="flex flex-col gap-5">
+          {!videos.length &&
+          paginationInfo?.totalDocs === 0 &&
+          paginationInfo.totalPages === 1 &&
+          !isLoading ? (
+            renderEmptyMessage()
           ) : (
             <>
-              {/* video sorting based on newest, oldest, and popular */}
-              <div className="w-full bg-white dark:bg-dark_bg flex md:pb-6 pb-4 pt-2 gap-3">
+              <div className="w-full flex gap-3">
                 {["desc", "acc"].map((type) => (
                   <Button
                     key={type}
                     isLarge={false}
                     onClick={() => handleSortTypeChange(type as "acc" | "desc")}
                     className={twMerge(
-                      "rounded-lg bg-gray-200 dark:bg-[#272727] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
+                      "rounded-lg bg-gray-200 dark:bg-[#333333] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
                       "hover:opacity-100",
                       sortType === type && sortBy === "createdAt"
                         ? ["bg-black text-white dark:bg-white dark:text-black"]
-                        : ["hover:bg-gray-300 dark:hover:bg-[#353535]"]
+                        : ["hover:bg-gray-300 dark:hover:bg-[#404040]"]
                     )}
                   >
                     {type === "desc" ? "Newest" : "Oldest"}
@@ -119,23 +130,27 @@ const Home: React.FC = () => {
                   isLarge={false}
                   onClick={() => handleSortBy("views")}
                   className={twMerge(
-                    "rounded-lg bg-gray-200 dark:bg-[#272727] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
+                    "rounded-lg bg-gray-200 dark:bg-[#333333] text-sm text-[#0f0f0f] dark:text-white font-roboto border-none",
                     "hover:opacity-100",
                     sortBy === "views"
                       ? ["bg-black text-white dark:bg-white dark:text-black"]
-                      : ["hover:bg-gray-300 dark:hover:bg-[#353535]"]
+                      : ["hover:bg-gray-300 dark:hover:bg-[#404040]"]
                   )}
                 >
                   Popular
                 </Button>
               </div>
-              {/* videos */}
-              {videos?.map((item) => (
-                <VideoCard key={item?._id} data={item} />
-              ))}
+              <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
+                {videos?.map((item) => (
+                  <VideoCard key={item?._id} data={item} />
+                ))}
+                {(isLoading || !channel?._id) &&
+                  Array.from({ length: limit }).map((_, idx) => (
+                    <VideoSkeleton key={idx} />
+                  ))}
+              </div>
             </>
           )}
-          {(loading || !channel?._id) && renderSkeletons()}
         </div>
       </ScrollPagination>
     </PageLayout>
