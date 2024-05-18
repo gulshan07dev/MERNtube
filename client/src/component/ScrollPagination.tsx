@@ -11,7 +11,7 @@ interface ScrollPaginationProps {
   refreshHandler: () => void;
   dataLength: number;
   loading: boolean;
-  error: string | null;
+  error?: string | null;
   currentPage: number;
   totalPages: number;
   totalItems: number;
