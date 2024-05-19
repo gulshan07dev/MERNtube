@@ -1,49 +1,39 @@
 import React, { useState } from "react";
 import { IoIosThumbsUp } from "react-icons/io";
 import { twMerge } from "tailwind-merge";
-import useActionHandler from "@/hooks/useActionHandler";
-import {
-  AsyncThunk,
-  AsyncThunkConfig,
-} from "node_modules/@reduxjs/toolkit/dist/createAsyncThunk";
 
 interface LikeBtnProps {
   isLiked: boolean;
   likeCount: number;
-  contentId: string;
-  toggleLikeAction: AsyncThunk<any, any, AsyncThunkConfig>;
+  onToggleLike: () => Promise<boolean>;
+  isLoading: boolean;
 }
 
 const LikeBtn: React.FC<LikeBtnProps> = ({
   isLiked,
   likeCount,
-  contentId,
-  toggleLikeAction,
+  onToggleLike,
+  isLoading,
 }) => {
   const [likeCountState, setLikeCountState] = useState(likeCount);
   const [isLikedState, setIsLikedState] = useState(isLiked);
 
-  const { isLoading, error, handleAction } = useActionHandler({
-    action: toggleLikeAction,
-    isShowToastMessage: true,
-  });
-
-  const toggleLike = async () => {
+  const handleToggleLike = async () => {
     if (isLoading) return;
 
-    const updatedLikeCount = isLikedState
-      ? likeCountState - 1
-      : likeCountState + 1;
-    setLikeCountState(updatedLikeCount);
-    setIsLikedState(!isLikedState);
+    setIsLikedState((prev) => !prev);
+    setLikeCountState((prevCount) =>
+      isLikedState ? prevCount - 1 : prevCount + 1
+    );
 
-    // Call the toggle like action
-    await handleAction(contentId);
+    const success = await onToggleLike();
 
-    // Revert state changes if request fails
-    if (error) {
-      setLikeCountState(likeCountState);
-      setIsLikedState(isLikedState);
+    // Revert state changes if any error occur
+    if (!success) {
+      setIsLikedState((prev) => !prev);
+      setLikeCountState((prevCount) =>
+        isLikedState ? prevCount + 1 : prevCount - 1
+      );
     }
   };
 
@@ -52,9 +42,11 @@ const LikeBtn: React.FC<LikeBtnProps> = ({
       className={twMerge(
         "flex items-center gap-1 w-fit text-gray-600 dark:text-slate-400 text-lg rounded-full",
         "px-3 -ml-3 py-1 transition-all hover:bg-slate-200 dark:hover:bg-[#272727] disabled:opacity-75",
-        (isLikedState || isLoading) && ["text-blue-500 dark:text-white bg-slate-200 dark:bg-[#272727]"]
+        isLikedState || isLoading
+          ? "text-blue-500 dark:text-white bg-slate-200 dark:bg-[#272727]"
+          : ""
       )}
-      onClick={toggleLike}
+      onClick={handleToggleLike}
       disabled={isLoading}
     >
       <span className="text-xl">
