@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import PageLayout from "@/layout/PageLayout";
 import AuthForm, { AuthFormType } from "@/component/authForm/AuthForm";
 import useService from "@/hooks/useService";
-import AuthService from "@/services/authService";
+import authService from "@/services/authService";
 import { useDispatch } from "react-redux";
 import { login } from "@/store/slices/authSlice";
 
@@ -18,7 +18,7 @@ export default function Login() {
     isLoading,
     error,
     handler: loginUser,
-  } = useService(AuthService.loginUser, {
+  } = useService(authService.loginUser, {
     isShowToastMessage: true,
     toastMessages: { loadingMessage: "Logging in..." },
   });

@@ -4,14 +4,14 @@ import Form from "@/component/CoreUI/Form";
 import Input from "@/component/CoreUI/Input";
 import useForm from "@/hooks/useForm";
 import useService from "@/hooks/useService";
-import AuthService from "@/services/authService";
+import authService from "@/services/authService";
 
 const UpdatePasswordForm = () => {
   const {
     error,
     isLoading,
     handler: changeUserPassword,
-  } = useService(AuthService.changeUserPassword, {
+  } = useService(authService.changeUserPassword, {
     isShowToastMessage: true,
     toastMessages: { loadingMessage: "Updating..." },
   });

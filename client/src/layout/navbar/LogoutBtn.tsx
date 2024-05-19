@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { useDispatch } from "react-redux";
 
-import AuthService from "@/services/authService";
+import authService from "@/services/authService";
 import useService from "@/hooks/useService";
 import { logout } from "@/store/slices/authSlice";
 import Button from "../../component/CoreUI/Button";
@@ -12,7 +12,7 @@ export default function LogoutBtn({ className = "" }: { className?: string }) {
   const navigate = useNavigate();
 
   const { isLoading, handler: logoutUser } = useService(
-    AuthService.logoutUser,
+    authService.logoutUser,
     {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "Logout..." },

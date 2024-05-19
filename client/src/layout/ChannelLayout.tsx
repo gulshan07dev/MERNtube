@@ -7,7 +7,7 @@ import { FaEdit, FaRegEdit } from "react-icons/fa";
 
 import { RootState } from "@/store/store";
 import useService from "@/hooks/useService";
-import AuthService from "@/services/authService";
+import authService from "@/services/authService";
 import { setChannel } from "@/store/slices/authSlice";
 import Skeleton from "@/component/Skeleton";
 import Button from "@/component/CoreUI/Button";
@@ -30,7 +30,7 @@ const ChannelLayout: React.FC = () => {
     error,
     isLoading,
     handler: getChannel,
-  } = useService(AuthService.getChannel);
+  } = useService(authService.getChannel);
 
   async function fetchChannel() {
     if (username) {

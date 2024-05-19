@@ -6,7 +6,7 @@ import AuthForm, {
   AuthFormType,
   AuthInputs,
 } from "@/component/authForm/AuthForm";
-import AuthService from "@/services/authService";
+import authService from "@/services/authService";
 import useService from "@/hooks/useService";
 
 export default function Signup() {
@@ -18,7 +18,7 @@ export default function Signup() {
     isLoading,
     error,
     handler: registerUser,
-  } = useService(AuthService.registerUser, {
+  } = useService(authService.registerUser, {
     isShowToastMessage: true,
     toastMessages: { loadingMessage: "Creating your account" },
   });

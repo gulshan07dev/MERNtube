@@ -1,7 +1,7 @@
 import axiosInstance from "@/helper/axiosInstance";
 
 class AuthService {
-  static async registerUser(data: {
+  async registerUser(data: {
     fullName: string;
     email: string;
     password: string;
@@ -13,51 +13,46 @@ class AuthService {
     });
   }
 
-  static async loginUser(data: { usernameOrEmail: string; password: string }) {
+  async loginUser(data: { usernameOrEmail: string; password: string }) {
     return await axiosInstance.post("/users/login", data);
   }
 
-  static async logoutUser() {
+  async logoutUser() {
     return await axiosInstance.get("/users/logout");
   }
 
-  static async refreshAccessToken() {
+  async refreshAccessToken() {
     return await axiosInstance.post("/users/refresh-token");
   }
 
-  static async changeUserPassword(data: {
-    oldPassword: string;
-    newPassword: string;
-  }) {
+  async changeUserPassword(data: { oldPassword: string; newPassword: string }) {
     return await axiosInstance.patch("/users/change-password", data);
   }
 
-  static async changeAccountDetails(data: {
-    fullName?: string;
-    username?: string;
-  }) {
+  async changeAccountDetails(data: { fullName?: string; username?: string }) {
     return await axiosInstance.patch("/users/change-account", data);
   }
 
-  static async changeUserAvatar(data: { avatar: File | null }) {
+  async changeUserAvatar(data: { avatar: File | null }) {
     return await axiosInstance.patch("/users/change-avatar", data, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   }
 
-  static async changeCoverImage(data: { coverImage: File | null }) {
+  async changeCoverImage(data: { coverImage: File | null }) {
     return await axiosInstance.patch("/users/change-coverImage", data, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   }
 
-  static async getCurrentUser() {
+  async getCurrentUser() {
     return await axiosInstance.get("/users/current-user");
   }
 
-  static async getChannel(data: { username: string }) {
+  async getChannel(data: { username: string }) {
     return await axiosInstance.get(`/users/c/${data.username}`);
   }
 }
 
-export default AuthService;
+const authService = new AuthService();
+export default authService;

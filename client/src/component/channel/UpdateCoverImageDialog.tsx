@@ -7,7 +7,7 @@ import Modal from "../CoreUI/Modal";
 import FileUpload from "../FileUpload";
 import useForm from "@/hooks/useForm";
 import useService from "@/hooks/useService";
-import AuthService from "@/services/authService";
+import authService from "@/services/authService";
 import { setUser } from "@/store/slices/authSlice";
 
 interface UpdateCoverImageDialogProps {
@@ -32,7 +32,7 @@ export default function UpdateCoverImageDialog({
   });
 
   const { isLoading, handler: changeCoverImage } = useService(
-    AuthService.changeCoverImage,
+    authService.changeCoverImage,
     {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "Updating cover image..." },

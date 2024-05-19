@@ -4,7 +4,7 @@ import Form from "@/component/CoreUI/Form";
 import Input from "@/component/CoreUI/Input";
 import useForm from "@/hooks/useForm";
 import { RootState } from "@/store/store";
-import AuthService from "@/services/authService";
+import authService from "@/services/authService";
 import useService from "@/hooks/useService";
 import { setUser } from "@/store/slices/authSlice";
 
@@ -16,7 +16,7 @@ const UpdateAccountDetailsForm = () => {
     error,
     isLoading,
     handler: changeAccountDetails,
-  } = useService(AuthService.changeAccountDetails, {
+  } = useService(authService.changeAccountDetails, {
     isShowToastMessage: true,
     toastMessages: { loadingMessage: "Updating..." },
   });
