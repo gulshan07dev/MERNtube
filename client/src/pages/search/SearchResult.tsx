@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import PageLayout from "@/layout/PageLayout";
-import VideoService from "@/services/videoService";
+import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import { Video } from "@/store/slices/videoSlice";
 import ScrollPagination from "@/component/ScrollPagination";
@@ -24,7 +24,7 @@ function SearchResult() {
     isLoading,
     error,
     handler: getAllVideos,
-  } = useService(VideoService.getAllVideos);
+  } = useService(videoService.getAllVideos);
 
   const fetchSearchResults = async (query: string, page: number) => {
     if (page === 1) {

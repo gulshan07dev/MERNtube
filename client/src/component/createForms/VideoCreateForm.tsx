@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { FaUpload } from "react-icons/fa";
 
-import VideoService from "@/services/videoService";
+import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import Form from "@/component/CoreUI/Form";
 import Input from "@/component/CoreUI/Input";
@@ -11,10 +11,14 @@ import useForm from "@/hooks/useForm";
 import FileUpload from "../FileUpload";
 
 export default function VideoCreateForm() {
-  const { error, isLoading, handler: createVideo } = useService(VideoService.createVideo, {
+  const {
+    error,
+    isLoading,
+    handler: createVideo,
+  } = useService(videoService.createVideo, {
     isShowToastMessage: true,
-    toastMessages: {loadingMessage: "Uploading video..."}
-  })
+    toastMessages: { loadingMessage: "Uploading video..." },
+  });
 
   const initialVideoDetails = {
     title: "",

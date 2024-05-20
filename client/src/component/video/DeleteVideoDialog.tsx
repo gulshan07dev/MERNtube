@@ -1,5 +1,5 @@
 import Modal from "../CoreUI/Modal";
-import VideoService from "@/services/videoService";
+import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import Button from "../CoreUI/Button";
 
@@ -17,7 +17,7 @@ export default function DeleteVideoDialog({
   onDelete,
 }: DeleteVideoDialogProps) {
   const { isLoading: isDeleting, handler: deleteVideo } = useService(
-    VideoService.deleteVideo,
+    videoService.deleteVideo,
     {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "deleting video..." },

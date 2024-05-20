@@ -4,10 +4,10 @@ import { twMerge } from "tailwind-merge";
 
 import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
-import VideoService from "@/services/videoService";
+import { IVideo } from "@/interfaces";
+import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import { RootState } from "@/store/store";
-import { Video } from "@/store/slices/videoSlice";
 import VideoCard from "@/component/video/VideoCard";
 import VideoSkeleton from "@/component/video/VideoSkeleton";
 import Button from "@/component/CoreUI/Button";
@@ -18,19 +18,19 @@ const Home: React.FC = () => {
   const [sortBy, setSortBy] = useState<"createdAt" | "views">("createdAt");
   const [sortType, setSortType] = useState<"desc" | "acc">("desc");
   const limit = 6;
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<IVideo[]>([]);
   const [paginationInfo, setPaginationInfo] = useState({
     currentPage: 0,
     totalPages: 1,
     totalDocs: 1,
-    hasNextPage: true,
+    hasNextPage: false,
   });
 
   const {
     isLoading,
     error,
     handler: getAllVideos,
-  } = useService(VideoService.getAllVideos);
+  } = useService(videoService.getAllVideos);
 
   const fetchVideos = async (page: number) => {
     if (page === 1) {

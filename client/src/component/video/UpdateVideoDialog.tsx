@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 import Modal from "../CoreUI/Modal";
-import VideoService from "@/services/videoService";
+import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import { Video } from "@/store/slices/videoSlice";
 import useForm from "@/hooks/useForm";
@@ -35,7 +35,7 @@ export default function UpdateVideoDialog({
   });
 
   const { isLoading, handler: updateVideo } = useService(
-    VideoService.updateVideo,
+    videoService.updateVideo,
     {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "Updating video..." },

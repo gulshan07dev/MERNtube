@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { abbreviateNumber } from "js-abbreviation-number";
- 
-import VideoService from "@/services/videoService";
+
+import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import { Video } from "@/store/slices/videoSlice";
 import DeleteVideoDialog from "../video/DeleteVideoDialog";
@@ -19,7 +19,7 @@ export default function ChannelVideosTableRow({ video }: { video: Video }) {
   const {
     isLoading: isTogglingVideoStatus,
     handler: toggleVideoPublishStatus,
-  } = useService(VideoService.toggleVideoPublishStatus, {
+  } = useService(videoService.toggleVideoPublishStatus, {
     isShowToastMessage: true,
     toastMessages: {
       loadingMessage: `toggling video status to ${!videoDetails?.isPublished}`,

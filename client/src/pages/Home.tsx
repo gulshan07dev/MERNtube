@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import { AppDispatch, RootState } from "@/store/store";
 import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
-import VideoService from "@/services/videoService";
+import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import { setPaginationInfo, setVideos } from "@/store/slices/videoSlice";
 import VideoCard from "@/component/video/VideoCard";
@@ -25,7 +25,7 @@ const Home: React.FC = () => {
     isLoading,
     error,
     handler: getAllVideos,
-  } = useService(VideoService.getAllVideos);
+  } = useService(videoService.getAllVideos);
 
   const fetchVideos = async (page: number, type?: "desc" | "acc") => {
     if (page === 1) {

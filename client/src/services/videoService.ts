@@ -1,7 +1,7 @@
 import axiosInstance from "@/helper/axiosInstance";
 
 class VideoService {
-  static async createVideo(data: {
+  async createVideo(data: {
     title: string;
     description: string;
     videoFile: File | null;
@@ -13,7 +13,7 @@ class VideoService {
     });
   }
 
-  static async updateVideo({
+  async updateVideo({
     videoId,
     data,
   }: {
@@ -25,11 +25,11 @@ class VideoService {
     });
   }
 
-  static async getVideoByVideoId(videoId: string) {
+  async getVideoByVideoId(videoId: string) {
     return await axiosInstance.get(`/videos/${videoId}`);
   }
 
-  static async getAllVideos(queryParams: {
+  async getAllVideos(queryParams: {
     page?: number;
     limit?: number;
     query?: string;
@@ -42,13 +42,14 @@ class VideoService {
     });
   }
 
-  static async deleteVideo(videoId: string) {
+  async deleteVideo(videoId: string) {
     return await axiosInstance.delete(`/videos/${videoId}`);
   }
 
-  static async toggleVideoPublishStatus(videoId: string) {
+  async toggleVideoPublishStatus(videoId: string) {
     return await axiosInstance.post(`/videos/toggle-status/${videoId}`);
   }
 }
 
-export default VideoService;
+const videoService = new VideoService();
+export default videoService;
