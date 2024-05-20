@@ -1,5 +1,5 @@
-import useActionHandler from "@/hooks/useActionHandler";
-import { deleteTweet } from "@/store/slices/tweetSlice";
+import tweetService from "@/services/tweetService";
+import useService from "@/hooks/useService";
 import Modal from "../CoreUI/Modal";
 import Button from "../CoreUI/Button";
 
@@ -16,17 +16,18 @@ export default function DeleteTweetDialog({
   tweetId,
   onDelete,
 }: DeleteTweetDialogProps) {
-  const { isLoading: isDeleting, handleAction: deleteTweetAction } =
-    useActionHandler({
-      action: deleteTweet,
+  const { isLoading: isDeleting, handler: deleteTweet } = useService(
+    tweetService.deleteTweet,
+    {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "deleting tweet..." },
-    });
+    }
+  );
 
   const handleDeleteTweet = async () => {
-    const { error, isSuccess } = await deleteTweetAction(tweetId);
+    const { error, success } = await deleteTweet(tweetId);
 
-    if (!error && isSuccess) {
+    if (!error && success) {
       handleClose();
       onDelete(true);
     }

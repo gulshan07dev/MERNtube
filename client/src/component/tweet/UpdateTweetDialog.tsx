@@ -1,13 +1,14 @@
-import { Tweet, updateTweet } from "@/store/slices/tweetSlice";
+ import { ITweet } from "@/interfaces";
 import Modal from "../CoreUI/Modal";
 import TextAreaInput from "../CoreUI/TextAreaInput";
-import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
+import useForm from "@/hooks/useForm"; 
+import useService from "@/hooks/useService";
+import tweetService from "@/services/tweetService";
 
 interface UpdateTweetDialogProps {
   open: boolean;
   handleClose: () => void;
-  tweet: Tweet;
+  tweet: ITweet;
   onUpdate: (content: string) => void
 }
 
@@ -21,18 +22,17 @@ export default function UpdateTweetDialog({
     initialFormState: { content: tweet?.content },
   });
 
-  const { isLoading, handleAction } = useActionHandler({
-    action: updateTweet,
+  const { isLoading, handler: updateTweet } = useService(tweetService.updateTweet, {
     isShowToastMessage: true,
-    toastMessages: { loadingMessage: "updating tweet..." },
-  });
+    toastMessages: {loadingMessage: "updating tweet..."}
+  })
 
   const handleSubmitForm = async () => {
-    const { isSuccess, error } = await handleAction({
+    const { success, error } = await updateTweet({
       tweetId: tweet?._id,
       data: { content: formData?.content },
     });
-    if (isSuccess && !error) {
+    if (success && !error) {
       handleClose();
       onUpdate(formData?.content)
     }

@@ -5,27 +5,39 @@ import TimeAgo from "react-timeago";
 import { IoIosChatbubbles, IoIosMore } from "react-icons/io";
 
 import { RootState } from "@/store/store";
-import { Tweet } from "@/store/slices/tweetSlice";
+import { ITweet } from "@/interfaces";
+import LikeService from "@/services/likeService";
+import useService from "@/hooks/useService";
+import LikeBtn from "../CoreUI/LikeBtn";
 import Avatar from "../CoreUI/Avatar";
 import Button from "../CoreUI/Button";
-import LikeBtn from "../CoreUI/LikeBtn";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import TextWithToggle from "../CoreUI/TextWithToggle";
-import { toggleTweetLike } from "@/store/slices/likeSlice";
 import UpdateTweetDialog from "./UpdateTweetDialog";
 import DeleteTweetDialog from "./DeleteTweetDialog";
-import Devider from "../Divider";
 import CommentBox from "../comment/CommentBox";
+import Devider from "../Divider";
 
-const TweetCard = ({ tweet }: { tweet: Tweet }) => {
+const TweetCard = ({ tweet }: { tweet: ITweet }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [tweetContent, setTweetContent] = useState(tweet?.content);
-  const [isShowUpdateTweetDialog, setIsShowUpdateTweetDialog] = useState(false);
-  const [isShowDeleteConfirmDialog, setIsShowDeleteConfirmDialog] =
-    useState(false);
+  const [modalOpen, setModalOpen] = useState<
+    "update_tweet_dialog" | "delete_tweet_dialog" | null
+  >(null);
+
   const [isTweetDeleted, setIsTweetDeleted] = useState(false);
   const [showCommentSection, setShowCommentSection] = useState(false);
+
+  const { isLoading: isTweetLikeLoading, handler: toggleTweetLike } =
+    useService(LikeService.toggleTweetLike, {
+      isShowToastMessage: true,
+    });
+
+  const handleToggleTweetLike = async () => {
+    const { success } = await toggleTweetLike(tweet?._id);
+    return success;
+  };
 
   const toggleCommentSection = () => setShowCommentSection((prev) => !prev);
 
@@ -86,33 +98,33 @@ const TweetCard = ({ tweet }: { tweet: Tweet }) => {
             >
               <Button
                 className="w-full py-1.5 px-7 bg-blue-500 border-none"
-                onClick={() => setIsShowUpdateTweetDialog((prev) => !prev)}
+                onClick={() => setModalOpen("update_tweet_dialog")}
               >
                 edit
               </Button>
               <Button
-                onClick={() => setIsShowDeleteConfirmDialog((prev) => !prev)}
                 className="w-full py-1.5 px-7 bg-red-600 border-none"
+                onClick={() => setModalOpen("delete_tweet_dialog")}
               >
                 delete
               </Button>
             </DropdownMenu>
             <UpdateTweetDialog
-              open={isShowUpdateTweetDialog}
-              handleClose={() => setIsShowUpdateTweetDialog(false)}
+              open={modalOpen === "update_tweet_dialog"}
+              handleClose={() => setModalOpen(null)}
               tweet={tweet}
               onUpdate={(content) => setTweetContent(content)}
             />
             <DeleteTweetDialog
-              open={isShowDeleteConfirmDialog}
-              handleClose={() => setIsShowDeleteConfirmDialog(false)}
+              open={modalOpen === "delete_tweet_dialog"}
+              handleClose={() => setModalOpen(null)}
               tweetId={tweetId}
               onDelete={(isTweetDeleted) => setIsTweetDeleted(isTweetDeleted)}
             />
           </>
         )}
       </div>
-      <div className="bg-gray-100 dark:bg-[#121212] p-3 rounded-lg mb-3">
+      <div className="bg-gray-100 dark:bg-[#172227] p-3 rounded-lg mb-3">
         <TextWithToggle
           initialShowLine={2}
           className="text-lg text-gray-800 dark:text-slate-100 font-poppins font-medium"
@@ -124,8 +136,8 @@ const TweetCard = ({ tweet }: { tweet: Tweet }) => {
         <LikeBtn
           isLiked={isLiked}
           likeCount={tweetLikesCount}
-          contentId={tweetId}
-          toggleLikeAction={toggleTweetLike}
+          onToggleLike={handleToggleTweetLike}
+          isLoading={isTweetLikeLoading}
         />
         <button
           className={`flex items-center space-x-1 text-gray-600 dark:text-slate-200 text-lg transition-all rounded-full px-3 py-1 ${

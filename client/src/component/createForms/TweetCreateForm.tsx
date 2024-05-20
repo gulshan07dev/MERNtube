@@ -1,19 +1,20 @@
 import toast from "react-hot-toast";
 import { FaTwitter } from "react-icons/fa";
 
+import tweetService from "@/services/tweetService";
+import useService from "@/hooks/useService";
 import Form from "@/component/CoreUI/Form";
 import TextAreaInput from "../CoreUI/TextAreaInput";
 import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { createTweet } from "@/store/slices/tweetSlice";
 
 export default function TweetCreateForm() {
-  const { error, isLoading, handleAction } = useActionHandler({
-    action: createTweet,
+  const {
+    error,
+    isLoading,
+    handler: createTweet,
+  } = useService(tweetService.createTweet, {
     isShowToastMessage: true,
-    toastMessages: {
-      loadingMessage: "Creating Tweet",
-    },
+    toastMessages: { loadingMessage: "Creating tweet..." },
   });
 
   const initialAccountDetails = {
@@ -29,9 +30,9 @@ export default function TweetCreateForm() {
       return toast.error("Content is required!");
     }
 
-    const { isSuccess, error } = await handleAction(formData);
+    const { success, error } = await createTweet(formData);
 
-    if (isSuccess && !error) {
+    if (success && !error) {
       resetForm();
     }
   };
@@ -48,7 +49,7 @@ export default function TweetCreateForm() {
         isLoading || !formData.content || formData.content.length < 25
       )}
       isLoading={isLoading}
-      error={error}
+      error={error?.message}
       inputs={
         <TextAreaInput
           label="Content"
