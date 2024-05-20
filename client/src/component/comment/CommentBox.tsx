@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import ScrollPagination from "../ScrollPagination";
+import { ITweetComment, IVideoComment } from "@/interfaces";
+import commentService from "@/services/commentService";
+import useService from "@/hooks/useService"; 
 import AddComment from "./AddComment";
 import CommentCard from "./CommentCard";
-import {
-  TweetComment,
-  VideoComment,
-  getTweetComment,
-  getVideoComment,
-} from "@/store/slices/commentSlice";
-import useActionHandler from "@/hooks/useActionHandler";
 import EmptyMessage from "../error/EmptyMessage";
 
 interface CommentBoxProps {
@@ -18,40 +14,79 @@ interface CommentBoxProps {
 }
 
 const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
-  const [comments, setComments] = useState<(VideoComment | TweetComment)[]>([]);
-  const [currPage, setCurrPage] = useState(1);
+  const [comments, setComments] = useState<(IVideoComment | ITweetComment)[]>([]);
   const [sortType, setSortType] = useState<"recent" | "oldest">("recent");
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalDocs, setTotalDocs] = useState(0);
-  const [hasNextPage, setHasNextPage] = useState(false);
-
-  const { error, isLoading, handleAction } = useActionHandler({
-    action: type === "video" ? getVideoComment : getTweetComment,
-    isShowToastMessage: false,
+  const [paginationInfo, setPaginationInfo] = useState({
+    currentPage: 0,
+    totalPages: 0,
+    totalDocs: 0,
+    hasNextPage: false,
   });
 
-  const fetchComments = async (page: number) => {
-    const { isSuccess, resData } = await handleAction({
-      videoId: contentId,
-      tweetId: contentId,
-      queryParams: {
-        page,
-        limit: 5,
-        sortBy: "createdAt",
-        sortType: sortType === "oldest" ? "acc" : "desc",
-      },
-    });
+  const {
+    error: getVideoCommentError,
+    isLoading: isVideoCommentFetching,
+    handler: getVideoComment,
+  } = useService(commentService.getVideoComment);
 
-    if (isSuccess && resData?.result) {
-      setComments((prevComments) =>
-        page === 1
-          ? resData.result.docs
-          : [...prevComments, ...resData.result.docs]
-      );
-      setCurrPage(resData.result.page);
-      setTotalPages(resData.result.totalPages);
-      setTotalDocs(resData.result.totalDocs);
-      setHasNextPage(resData.result.hasNextPage);
+  const {
+    error: getTweetCommentError,
+    isLoading: isTweetCommentFetching,
+    handler: getTweetComment,
+  } = useService(commentService.getTweetComment);
+
+  const fetchComments = async (page: number) => {
+    if (type === "video") {
+      const { success, responseData } = await getVideoComment({
+        videoId: contentId,
+        queryParams: {
+          page,
+          limit: 5,
+          sortBy: "createdAt",
+          sortType: sortType === "oldest" ? "acc" : "desc",
+        },
+      });
+
+      if (success) {
+        const { page, totalPages, totalDocs, hasNextPage, docs } =
+          responseData?.data?.result;
+
+        setComments((prevComments) =>
+          page === 1 ? docs : [...prevComments, ...docs]
+        );
+        setPaginationInfo({
+          currentPage: page,
+          totalPages,
+          totalDocs,
+          hasNextPage,
+        });
+      }
+    }
+    if (type === "tweet") {
+      const { success, responseData } = await getTweetComment({
+        tweetId: contentId,
+        queryParams: {
+          page,
+          limit: 5,
+          sortBy: "createdAt",
+          sortType: sortType === "oldest" ? "acc" : "desc",
+        },
+      });
+
+      if (success) {
+        const { page, totalPages, totalDocs, hasNextPage, docs } =
+          responseData?.data?.result;
+
+        setComments((prevComments) =>
+          page === 1 ? docs : [...prevComments, ...docs]
+        );
+        setPaginationInfo({
+          currentPage: page,
+          totalPages,
+          totalDocs,
+          hasNextPage,
+        });
+      }
     }
   };
 
@@ -66,15 +101,21 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
   return (
     <ScrollPagination
       paginationType="view-more"
-      loadNextPage={() => fetchComments(currPage + 1)}
+      loadNextPage={() => fetchComments(paginationInfo.currentPage + 1)}
       refreshHandler={() => fetchComments(1)}
       dataLength={comments.length}
-      loading={isLoading}
-      error={error}
-      currentPage={currPage}
-      totalItems={totalDocs}
-      totalPages={totalPages}
-      hasNextPage={hasNextPage}
+      loading={
+        type === "video" ? isVideoCommentFetching : isTweetCommentFetching
+      }
+      error={
+        type === "video"
+          ? getVideoCommentError?.message
+          : getTweetCommentError?.message
+      }
+      currentPage={paginationInfo.currentPage}
+      totalItems={paginationInfo.totalDocs}
+      totalPages={paginationInfo.totalPages}
+      hasNextPage={paginationInfo.hasNextPage}
       endMessage={
         <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
           No more comments to fetch !!!
@@ -101,9 +142,11 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
           <CommentCard key={comment?._id} comment={comment} />
         ))}
         {!comments.length &&
-          totalDocs === 0 &&
-          totalPages === 1 &&
-          !isLoading && (
+          paginationInfo.totalDocs === 0 &&
+          paginationInfo.totalPages === 1 &&
+          !(type === "video"
+            ? isVideoCommentFetching
+            : isTweetCommentFetching) && (
             <EmptyMessage
               message="empty comments"
               buttonText="fetch again"

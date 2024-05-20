@@ -1,24 +1,20 @@
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
+import commentService from "@/services/commentService";
+import useService from "@/hooks/useService";
+import { ITweetComment, IVideoComment } from "@/interfaces";
 import { RootState } from "@/store/store";
 import Avatar from "../CoreUI/Avatar";
 import Button from "../CoreUI/Button";
 import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import {
-  TweetComment,
-  VideoComment,
-  addCommentToTweet,
-  addCommentToVideo,
-} from "@/store/slices/commentSlice";
-import { useNavigate } from "react-router-dom";
 
 interface AddCommentProps {
   contentId: string;
   type: "tweet" | "video";
   setComments: React.Dispatch<
-    React.SetStateAction<(VideoComment | TweetComment)[]>
+    React.SetStateAction<(IVideoComment | ITweetComment)[]>
   >;
 }
 
@@ -27,41 +23,65 @@ const AddComment: React.FC<AddCommentProps> = ({
   type,
   setComments,
 }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state?.auth);
 
   const { formData, handleInputChange, resetForm } = useForm({
     initialFormState: { content: "" },
   });
 
-  const { isLoading, handleAction } = useActionHandler({
-    action: type === "video" ? addCommentToVideo : addCommentToTweet,
-    isShowToastMessage: true,
-    toastMessages: { loadingMessage: "Adding Comment..." },
-  });
+  const { isLoading: isAddingCommentToVideo, handler: addCommentToVideo } =
+    useService(commentService.addCommentToVideo, {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "Adding comment..." },
+    });
+
+  const { isLoading: isAddingCommentToTweet, handler: addCommentToTweet } =
+    useService(commentService.addCommentToTweet, {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "Adding comment" },
+    });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await handleAction({
-      data: formData,
-      videoId: contentId,
-      tweetId: contentId,
-    });
+    if (type === "video") {
+      const { success, responseData } = await addCommentToVideo({
+        videoId: contentId,
+        data: formData,
+      });
+      if (success) {
+        resetForm();
+        setComments((prevComments) => [
+          { ...responseData?.data?.comment },
+          ...prevComments,
+        ]);
+      }
+    }
 
-    if (res.isSuccess) {
-      resetForm();
-      setComments((prevComments) => [
-        { ...res.resData?.comment },
-        ...prevComments,
-      ]);
+    if (type === "tweet") {
+      const { success, responseData } = await addCommentToTweet({
+        tweetId: contentId,
+        data: formData,
+      });
+      if (success) {
+        resetForm();
+        setComments((prevComments) => [
+          { ...responseData?.data?.comment },
+          ...prevComments,
+        ]);
+      }
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-1">
       <div className="flex items-center md:gap-5 gap-3 py-1.5">
-        <Avatar url={user?.avatar} fullName={user?.fullName} onClick={() => navigate(`/c/${user?.username}`)} />
+        <Avatar
+          url={user?.avatar}
+          fullName={user?.fullName}
+          onClick={() => navigate(`/c/${user?.username}`)}
+        />
         <input
           type="text"
           name="content"
@@ -80,9 +100,13 @@ const AddComment: React.FC<AddCommentProps> = ({
           "hidden",
           formData.content.length > 0 && "block"
         )}
-        disabled={isLoading}
+        disabled={
+          type === "video" ? isAddingCommentToVideo : isAddingCommentToTweet
+        }
       >
-        {isLoading ? "Adding comment..." : "Comment"}
+        {(type === "video" ? isAddingCommentToVideo : isAddingCommentToTweet)
+          ? "Adding comment..."
+          : "Comment"}
       </Button>
     </form>
   );

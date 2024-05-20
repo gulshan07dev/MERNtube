@@ -1,58 +1,60 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import TimeAgo from "react-timeago";
+import { FiMoreVertical } from "react-icons/fi";
 
+import commentService from "@/services/commentService";
+import { IComment } from "@/interfaces";
+import likeService from "@/services/likeService";
+import useService from "@/hooks/useService";
 import { RootState } from "@/store/store";
-import useActionHandler from "@/hooks/useActionHandler";
-import {
-  Comment,
-  deleteComment,
-  updateComment,
-} from "@/store/slices/commentSlice";
-import { toggleCommentLike } from "@/store/slices/likeSlice";
 import Avatar from "../CoreUI/Avatar";
 import LikeBtn from "../CoreUI/LikeBtn";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
 import EditableTextarea from "../CoreUI/EditableTextarea";
 import Modal from "../CoreUI/Modal";
-import { FiMoreVertical } from "react-icons/fi";
 import TextWithToggle from "../CoreUI/TextWithToggle";
 
 interface CommentCardProps {
-  comment: Comment;
+  comment: IComment;
 }
 
 const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [commentContent, setCommentContent] = useState(comment?.content);
-  const [isShowDeleteConfirmDialog, setIsShowDeleteConfirmDialog] =
-    useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment?.content);
 
-  const { isLoading: isDeleting, handleAction: deleteCommentAction } =
-    useActionHandler({
-      action: deleteComment,
+  const { isLoading: isDeleting, handler: deleteComment } = useService(
+    commentService.deleteComment,
+    {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "Deleting comment..." },
-    });
+    }
+  );
 
-  const { isLoading: isUpdating, handleAction: updateCommentAction } =
-    useActionHandler({
-      action: updateComment,
+  const { isLoading: isUpdating, handler: updateComment } = useService(
+    commentService.updateComment,
+    {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "Updating comment..." },
+    }
+  );
+
+  const { isLoading: isCommentLikeLoading, handler: toggleCommentLike } =
+    useService(likeService.toggleCommentLike, {
+      isShowToastMessage: true,
     });
 
-  const handleDeleteComment = async (commentId: string) => {
+  const handleDelete = async () => {
     setIsDeleted(false);
-    const { error, isSuccess } = await deleteCommentAction(commentId);
+    const { success } = await deleteComment(comment?._id);
 
-    if (!error && isSuccess) {
+    if (success) {
       setIsDeleted(true);
     }
   };
@@ -66,15 +68,20 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
     setEditedContent(comment.content);
   };
 
-  const handleUpdateComment = async () => {
-    const { isSuccess, error } = await updateCommentAction({
+  const handleUpdate = async () => {
+    const { success, error } = await updateComment({
       data: { content: editedContent },
       commentId: comment._id,
     });
-    if (isSuccess && !error) {
+    if (success && !error) {
       setIsEditing(false);
       setCommentContent(editedContent);
     }
+  };
+
+  const handleToggleLike = async () => {
+    const { success } = await toggleCommentLike(comment?._id);
+    return success;
   };
 
   if (isDeleted) {
@@ -108,8 +115,8 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
               >
                 Cancel
               </Button>
-              <Button onClick={handleUpdateComment} disabled={isUpdating}>
-                {isUpdating ? "updating..." : "Update"}
+              <Button onClick={handleUpdate} disabled={isUpdating}>
+                {isUpdating ? "Updating..." : "Update"}
               </Button>
             </div>
           </div>
@@ -123,14 +130,17 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
                 <TimeAgo date={comment?.createdAt} />
               </p>
             </div>
-            <TextWithToggle initialShowLine={2} className="text-sm text-gray-800 dark:text-slate-50 font-roboto whitespace-break-spaces break-all">
+            <TextWithToggle
+              initialShowLine={2}
+              className="text-sm text-gray-800 dark:text-slate-50 font-roboto whitespace-break-spaces break-all"
+            >
               {commentContent}
             </TextWithToggle>
             <LikeBtn
-              contentId={comment._id}
-              isLiked={comment.isLiked}
-              likeCount={comment.commentLikesCount}
-              toggleLikeAction={toggleCommentLike}
+              isLiked={comment?.isLiked}
+              likeCount={comment?.commentLikesCount}
+              onToggleLike={handleToggleLike}
+              isLoading={isCommentLikeLoading}
             />
           </div>
         )}
@@ -155,19 +165,19 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             </Button>
             <Button
               className="w-full py-1.5 px-7 bg-red-600 border-none"
-              onClick={() => setIsShowDeleteConfirmDialog((prev) => !prev)}
+              onClick={handleDelete}
             >
               {isDeleting ? "Deleting..." : "Delete"}
             </Button>
           </DropdownMenu>
           <Modal
-            open={isShowDeleteConfirmDialog}
-            handleClose={() => setIsShowDeleteConfirmDialog(false)}
+            open={isDeleted}
+            handleClose={() => setIsDeleted(false)}
             title="Delete Comment"
             description="Are you sure you want to delete the comment?"
-            submitLabel={isDeleting ? "deleting..." : "Delete"}
+            submitLabel={isDeleting ? "Deleting..." : "Delete"}
             isLoading={isDeleting}
-            onSubmit={() => handleDeleteComment(comment?._id)}
+            onSubmit={() => handleDelete()}
             closeButton={
               <Button
                 className="w-full py-1.5 px-7 bg-red-600 border-none"
