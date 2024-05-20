@@ -1,28 +1,47 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
+import LikeService from "@/services/likeService";
+import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
+import { setLikedVideos } from "@/store/slices/likeSlice";
 import EmptyMessage from "@/component/error/EmptyMessage";
-import { getLikedVideos } from "@/store/slices/likeSlice";
 import LikedVideoCard from "@/component/likedVideo/LikedVideoCard";
 
 export default function LikedVideos() {
   const dispatch: AppDispatch = useDispatch();
+  const [paginationInfo, setPaginationInfo] = useState({
+    currentPage: 0,
+    totalPages: 0,
+    totalDocs: 0,
+    hasNextPage: false,
+  });
+  const { likedVideos } = useSelector((state: RootState) => state.like);
+
   const {
-    likedVideos,
-    loading,
+    isLoading,
     error,
-    currentPage,
-    totalPages,
-    totalVideos,
-    hasNextPage,
-  } = useSelector((state: RootState) => state.like);
+    handler: getLikedVideos,
+  } = useService(LikeService.getLikedVideos);
 
   const handleFetchLikedVideos = async (page: number) => {
-    await dispatch(getLikedVideos({ queryParams: { page, limit: 10 } }));
+    if (page === 1) dispatch(setLikedVideos([]));
+    const { success, responseData } = await getLikedVideos({ page, limit: 10 });
+    if (success) {
+      const { page, totalPages, totalDocs, hasNextPage, docs } =
+        responseData?.data?.result;
+
+      dispatch(setLikedVideos(page === 1 ? docs : [...likedVideos, ...docs]));
+      setPaginationInfo({
+        currentPage: page,
+        totalPages,
+        totalDocs,
+        hasNextPage,
+      });
+    }
   };
 
   useEffect(() => {
@@ -32,15 +51,17 @@ export default function LikedVideos() {
     <PageLayout className="flex flex-col gap-7 max-lg:gap-5">
       <ScrollPagination
         paginationType="infinite-scroll"
-        currentPage={currentPage}
+        currentPage={paginationInfo?.currentPage}
         dataLength={likedVideos?.length}
-        error={error}
-        hasNextPage={hasNextPage}
-        loadNextPage={() => handleFetchLikedVideos(currentPage + 1)}
+        error={error?.message}
+        hasNextPage={paginationInfo?.hasNextPage}
+        loadNextPage={() =>
+          handleFetchLikedVideos(paginationInfo?.currentPage + 1)
+        }
         refreshHandler={() => handleFetchLikedVideos(1)}
-        loading={loading}
-        totalPages={totalPages}
-        totalItems={totalVideos}
+        loading={isLoading}
+        totalPages={paginationInfo?.totalPages}
+        totalItems={paginationInfo?.totalDocs}
         className={twMerge("flex flex-grow flex-col gap-3")}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
@@ -49,9 +70,9 @@ export default function LikedVideos() {
         }
       >
         {!likedVideos?.length &&
-        totalVideos === 0 &&
-        totalPages === 1 &&
-        !loading ? (
+        paginationInfo?.totalDocs === 0 &&
+        paginationInfo?.totalPages === 1 &&
+        !isLoading ? (
           <EmptyMessage
             message="empty liked videos!"
             buttonText="Try again"
