@@ -1,9 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Video } from "./videoSlice";
 import { PaginationInfo } from "@/component/ScrollPagination";
+import { IVideo } from "@/interfaces";
 
 interface initialState {
-  likedVideos: { likedVideos: Video }[];
+  likedVideos: { likedVideos: IVideo }[];
   paginationInfo: PaginationInfo;
 }
 
@@ -23,7 +23,7 @@ const likeSlice = createSlice({
   reducers: {
     setLikedVideos: (
       state,
-      action: PayloadAction<{ likedVideos: Video }[]>
+      action: PayloadAction<{ likedVideos: IVideo }[]>
     ) => {
       state.likedVideos = action.payload;
     },

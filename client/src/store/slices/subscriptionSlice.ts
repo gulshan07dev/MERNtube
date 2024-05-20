@@ -1,14 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axiosInstance from "../../helper/axiosInstance";
-import { User } from "./authSlice";
-
-interface subscriberList extends User {
-  isSubscribed: boolean;
-}
+import axiosInstance from "../../helper/axiosInstance"; 
+import { ISubscriber, IUser } from "@/interfaces";
 
 interface initialState {
-  subscriberLists: { subscriberList: subscriberList }[];
-  subscribedChannelLists: { subscribedChannelList: User }[];
+  subscriberLists: { subscriberList: ISubscriber }[];
+  subscribedChannelLists: { subscribedChannelList: IUser }[];
   loading: boolean;
   error: string | null;
   currentPage: number;

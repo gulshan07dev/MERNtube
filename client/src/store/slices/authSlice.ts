@@ -1,26 +1,10 @@
+import { IChannel, IUser } from "@/interfaces";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-
-export interface User {
-  _id: string;
-  fullName: string;
-  username: string;
-  email: string;
-  avatar?: string;
-  coverImage?: string;
-  isWatchHistoryPaused?: boolean;
-}
-
-interface Channel extends User {
-  subscriberCount: number;
-  channelSubscribedToCount: number;
-  videoCount: number;
-  isSubscribed: boolean;
-}
 
 interface initialState {
   isLoggedIn: boolean;
-  user: User | null;
-  channel: Channel | null;
+  user: IUser | null;
+  channel: IChannel | null;
 }
 
 const initialState: initialState = {
@@ -33,7 +17,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<User>) => {
+    login: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
       state.isLoggedIn = true;
       localStorage.setItem("isLoggedIn", JSON.stringify(true));
@@ -43,10 +27,10 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       localStorage.removeItem("isLoggedIn");
     },
-    setUser: (state, action: PayloadAction<Partial<User>>) => {
-      state.user = { ...state.user, ...action.payload } as User;
+    setUser: (state, action: PayloadAction<Partial<IUser>>) => {
+      state.user = { ...state.user, ...action.payload } as IUser;
     },
-    setChannel: (state, action: PayloadAction<Channel>) => {
+    setChannel: (state, action: PayloadAction<IChannel>) => {
       state.channel = action.payload;
     },
   },

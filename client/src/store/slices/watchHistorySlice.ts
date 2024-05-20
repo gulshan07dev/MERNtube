@@ -1,17 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Video } from "./videoSlice";
 import axiosInstance from "@/helper/axiosInstance";
-
-interface WatchHistory {
-  _id: string;
-  videoId: string;
-  owner: string;
-  watchHistoryVideo: Video;
-  createdAt: Date;
-}
+import { IWatchHistoryVideo } from "@/interfaces";
 
 interface initialState {
-  watchHistories: WatchHistory[];
+  watchHistories: IWatchHistoryVideo[];
   loading: boolean;
   error: string | null;
   currentPage: number;
@@ -142,10 +134,10 @@ const watchHistorySlice = createSlice({
       })
 
       .addCase(clearWatchHistory.fulfilled, (state) => {
-        state.watchHistories = []
+        state.watchHistories = [];
         state.totalVideos = 0;
-        state.totalPages = 1
-      })
+        state.totalPages = 1;
+      });
   },
 });
 

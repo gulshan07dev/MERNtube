@@ -1,31 +1,10 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { User } from "./authSlice";
-
-export interface Video {
-  _id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  videoFile: string;
-  duration: number;
-  views: number;
-  isPublished: boolean;
-  owner?: User;
-  videoLikesCount?: number;
-  isLiked?: boolean;
-  createdAt: Date;
-}
-
-interface PaginationInfo {
-  currentPage: number;
-  totalPages: number;
-  totalDocs: number;
-  hasNextPage: boolean;
-}
+import { PaginationInfo } from "@/component/ScrollPagination";
+import { IVideo } from "@/interfaces";
 
 interface initialState {
-  video: Video | null;
-  videos: Video[];
+  video: IVideo | null;
+  videos: IVideo[];
   paginationInfo: PaginationInfo;
 }
 
@@ -44,10 +23,10 @@ const videoSlice = createSlice({
   name: "video",
   initialState,
   reducers: {
-    setVideo: (state, action: PayloadAction<Video>) => {
+    setVideo: (state, action: PayloadAction<IVideo>) => {
       state.video = action.payload;
     },
-    setVideos: (state, action: PayloadAction<Video[]>) => {
+    setVideos: (state, action: PayloadAction<IVideo[]>) => {
       state.videos = action.payload;
     },
     setPaginationInfo: (state, action: PayloadAction<PaginationInfo>) => {

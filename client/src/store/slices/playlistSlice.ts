@@ -1,23 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "@/helper/axiosInstance";
-import { User } from "./authSlice";
-
-export interface Playlist {
-  _id: string;
-  name: string;
-  description: string;
-  owner?: User;
-  videosCount?: number;
-  totalViews?: number;
-  isPrivate: boolean;
-  playlistThumbnail: string;
-  isVideoAddedToPlaylist?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+import { IPlaylist } from "@/interfaces";
 
 interface initialState {
-  playlist: Playlist | null;
+  playlist: IPlaylist | null;
 }
 
 const initialState: initialState = {

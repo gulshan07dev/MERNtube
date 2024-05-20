@@ -1,7 +1,6 @@
-import axiosInstance from "@/helper/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-import { Video } from "./videoSlice";
+import axiosInstance from "@/helper/axiosInstance";
+import { IVideo } from "@/interfaces";
 
 interface initialState {
   stats: {
@@ -10,7 +9,7 @@ interface initialState {
     totalVideos?: number;
     totalVideoLikes?: number;
   };
-  channelVideos: Video[];
+  channelVideos: IVideo[];
 }
 
 const initialState: initialState = {

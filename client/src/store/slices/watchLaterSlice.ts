@@ -1,9 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Video } from "./videoSlice";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"; 
 import axiosInstance from "@/helper/axiosInstance";
+import { IVideo } from "@/interfaces";
 
 interface initialState {
-  watchLaterVideos: { _id: string; watchLaterVideo: Video }[];
+  watchLaterVideos: { _id: string; watchLaterVideo: IVideo }[];
   loading: boolean;
   error: string | null;
   currentPage: number;
