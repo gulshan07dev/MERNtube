@@ -5,15 +5,15 @@ import { RouterProvider } from "react-router-dom";
 import { AppDispatch } from "./store/store";
 import { login, logout } from "./store/slices/authSlice";
 import { setAppLoading } from "./store/slices/appLoadingSlice";
-import AuthService from "./services/authService";
+import authService from "./services/authService";
 import useService from "./hooks/useService";
 import router from "./routes";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
-  const { handler: getCurrentUser } = useService(AuthService.getCurrentUser);
+  const { handler: getCurrentUser } = useService(authService.getCurrentUser);
   const { handler: refreshAccessToken } = useService(
-    AuthService.refreshAccessToken
+    authService.refreshAccessToken
   );
 
   useEffect(() => {
