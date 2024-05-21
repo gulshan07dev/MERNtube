@@ -8,12 +8,14 @@ import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
 import PageLayout from "@/layout/PageLayout";
-import VideoService from "@/services/videoService";
-import AuthService from "@/services/authService";
+import videoService from "@/services/videoService";
+import authService from "@/services/authService";
+import LikeService from "@/services/likeService";
 import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
 import { setVideo } from "@/store/slices/videoSlice";
-import { toggleVideoLike } from "@/store/slices/likeSlice";
+import { setChannel } from "@/store/slices/authSlice";
+import { IChannel } from "@/interfaces";
 import LikeBtn from "@/component/CoreUI/LikeBtn";
 import { addVideoToWatchHistory } from "@/store/slices/watchHistorySlice";
 import ShareDialog from "@/component/ShareDialog";
@@ -26,7 +28,6 @@ import Avatar from "@/component/CoreUI/Avatar";
 import TextWithToggle from "@/component/CoreUI/TextWithToggle";
 import Button from "@/component/CoreUI/Button";
 import ErrorDialog from "@/component/error/ErrorDialog";
-import { setChannel } from "@/store/slices/authSlice";
 
 export default function VideoPlayer() {
   const dispatch: AppDispatch = useDispatch();
@@ -47,7 +48,7 @@ export default function VideoPlayer() {
     isLoading: isFetchingVideo,
     error: videoFetchingError,
     handler: getVideoByVideoId,
-  } = useService(VideoService.getVideoByVideoId);
+  } = useService(videoService.getVideoByVideoId);
 
   const fetchVideo = async () => {
     if (videoId) {
@@ -62,7 +63,7 @@ export default function VideoPlayer() {
     isLoading: isFetchingChannel,
     error: channelFetchingError,
     handler: getChannel,
-  } = useService(AuthService.getChannel);
+  } = useService(authService.getChannel);
 
   const fetchChannel = async (username: string) => {
     const { success, responseData } = await getChannel({ username });
@@ -71,6 +72,31 @@ export default function VideoPlayer() {
     }
   };
 
+  const { isLoading: isVideoLikeLoading, handler: toggleVideoLike } =
+    useService(LikeService.toggleVideoLike, {
+      isShowToastMessage: true,
+    });
+
+  const handleToggleVideoLike = async () => {
+    if (!video) return false;
+    const { success } = await toggleVideoLike(video?._id);
+    return success;
+  };
+
+   const onSubscribeToggle = () => {
+     dispatch(
+       setChannel({
+         ...channel,
+         subscriberCount: channel?.isSubscribed
+           ? channel?.subscriberCount === 0
+             ? 0
+             : channel?.subscriberCount - 1
+           : (channel?.subscriberCount || 0) + 1,
+         isSubscribed: !channel?.isSubscribed,
+       } as IChannel)
+     );
+   };
+   
   const handleModalClose = () => {
     setModalOpen(null);
   };
@@ -151,9 +177,7 @@ export default function VideoPlayer() {
                         fullName={channel?.fullName}
                         url={channel?.avatar}
                         className="size-10 flex-shrink-0"
-                        onClick={() =>
-                          navigate(`/c/${channel?.username}`)
-                        }
+                        onClick={() => navigate(`/c/${channel?.username}`)}
                       />
                       <div className="flex flex-col flex-grow truncate">
                         <h3 className="md:text-base text-[15px] font-Noto_sans font-[600] text-[#0F0F0F] dark:text-[#F1F1F1] leading-[18px] w-full truncate">
@@ -170,6 +194,7 @@ export default function VideoPlayer() {
                     <SubscribeBtn
                       channelId={channel?._id}
                       isSubscribed={channel?.isSubscribed}
+                      onSubscribeToggle={onSubscribeToggle}
                       className="md:text-[14px] md:py-1.5 md:px-3"
                     />
                   </div>
@@ -180,10 +205,10 @@ export default function VideoPlayer() {
                   <div className="flex gap-2 max-sm:gap-3 pl-3 w-fit max-md:w-full whitespace-nowrap max-md:overflow-x-scroll max-md:no-scrollbar">
                     {/* like button */}
                     <LikeBtn
-                      contentId={video?._id}
                       isLiked={Boolean(video?.isLiked)}
                       likeCount={video?.videoLikesCount || 0}
-                      toggleLikeAction={toggleVideoLike}
+                      onToggleLike={handleToggleVideoLike}
+                      isLoading={isVideoLikeLoading}
                     />
                     {/* share button */}
                     <Button
