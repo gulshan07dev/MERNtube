@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -8,65 +8,92 @@ import ScrollPagination from "@/component/ScrollPagination";
 import Avatar from "@/component/CoreUI/Avatar";
 import ErrorDialog from "@/component/error/ErrorDialog";
 import SubscribeBtn from "@/component/subscription/SubscribeBtn";
-import { getUserChannelSubscribers } from "@/store/slices/subscriptionSlice";
+import useService from "@/hooks/useService";
+import subscriptionService from "@/services/subscriptionService";
+import { setSubscriberList } from "@/store/slices/subscriptionSlice";
 
 export default function Subscribers() {
   const dispatch: AppDispatch = useDispatch();
   const { user, channel } = useSelector((state: RootState) => state?.auth);
-  const {
-    subscriberLists,
-    loading,
-    error,
-    currentPage,
-    totalPages,
-    totalChannels,
-    hasNextPage,
-  } = useSelector((state: RootState) => state.subscription);
+  const [paginationInfo, setPaginationInfo] = useState({
+    currentPage: 0,
+    totalPages: 0,
+    totalDocs: 0,
+    hasNextPage: false,
+  });
+  const { subscriberList } = useSelector(
+    (state: RootState) => state.subscription
+  );
 
-  const handleFetchSubscriberLists = (page: number) => {
+  const {
+    isLoading,
+    error,
+    handler: getUserChannelSubscribers,
+  } = useService(subscriptionService.getUserChannelSubscribers);
+
+  const handleFetchSubscriberList = async (page: number) => {
     if (!channel) return;
-    dispatch(
-      getUserChannelSubscribers({
-        channelId: channel?._id,
-        queryParams: { page, limit: 10 },
-      })
-    );
+
+    if (page === 1) {
+      dispatch(setSubscriberList([]));
+    }
+    const { success, responseData } = await getUserChannelSubscribers({
+      channelId: channel?._id,
+      queryParams: { page, limit: 10 },
+    });
+
+    if (success) {
+      const { page, totalPages, totalDocs, hasNextPage, docs } =
+        responseData?.data?.result;
+
+      dispatch(
+        setSubscriberList(page === 1 ? docs : [...subscriberList, ...docs])
+      );
+      setPaginationInfo({
+        currentPage: page,
+        totalPages,
+        totalDocs,
+        hasNextPage,
+      });
+    }
   };
 
   useEffect(() => {
-    handleFetchSubscriberLists(1);
+    handleFetchSubscriberList(1);
   }, [channel?._id]);
   return (
     <PageLayout>
       <ScrollPagination
         paginationType="infinite-scroll"
-        currentPage={currentPage}
-        dataLength={subscriberLists?.length}
-        error={error}
-        hasNextPage={hasNextPage}
-        loadNextPage={() => handleFetchSubscriberLists(currentPage + 1)}
-        refreshHandler={() => handleFetchSubscriberLists(1)}
-        loading={loading || !channel}
-        totalPages={totalPages}
-        totalItems={totalChannels}
+        currentPage={paginationInfo.currentPage}
+        dataLength={subscriberList?.length}
+        error={error?.message}
+        hasNextPage={paginationInfo.hasNextPage}
+        loadNextPage={() =>
+          handleFetchSubscriberList(paginationInfo.currentPage + 1)
+        }
+        refreshHandler={() => handleFetchSubscriberList(1)}
+        loading={isLoading || !channel}
+        totalPages={paginationInfo.totalPages}
+        totalItems={paginationInfo.totalDocs}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
             No more subscriber to show !!!
           </p>
         }
       >
-        {!subscriberLists?.length &&
-        totalChannels === 0 &&
-        totalPages === 1 &&
-        !loading ? (
+        {!subscriberList?.length &&
+        paginationInfo.totalDocs === 0 &&
+        paginationInfo.totalPages === 1 &&
+        !isLoading ? (
           <ErrorDialog
             errorMessage="No users have subscribed to this channel!"
             buttonLabel="Try again"
-            buttonOnClick={() => handleFetchSubscriberLists(1)}
+            buttonOnClick={() => handleFetchSubscriberList(1)}
           />
         ) : (
           <div className="flex flex-col gap-1 pb-4">
-            {subscriberLists.map(({ subscriberList: subscriberChannel }) => (
+            {subscriberList.map(({ subscriberList: subscriberChannel }) => (
               <div
                 key={subscriberChannel?._id}
                 className="w-full flex items-center gap-3 py-3 px-2 truncate rounded-full hover:bg-slate-100 dark:hover:bg-[#272727]"

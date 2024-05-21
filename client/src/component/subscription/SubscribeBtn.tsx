@@ -1,37 +1,40 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 import { FaChartBar, FaUserPlus } from "react-icons/fa";
 
-import Button from "../CoreUI/Button";
-import useActionHandler from "@/hooks/useActionHandler";
-import { toggleSubscription } from "@/store/slices/subscriptionSlice";
-
+import subscriptionService from "@/services/subscriptionService";
+import useService from "@/hooks/useService";
 import { RootState } from "@/store/store";
-import { useNavigate } from "react-router-dom";
+import Button from "../CoreUI/Button";
 
-export default function SubscribeBtn({
-  isSubscribed,
+export default function SubscriptionButton({
   channelId,
+  isSubscribed,
+  onSubscribeToggle,
   className = "",
 }: {
   isSubscribed: boolean;
   channelId: string;
+  onSubscribeToggle?: () => void;
   className?: string;
 }) {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [subscribed, setSubscribed] = useState(isSubscribed);
 
-  const { isLoading, handleAction } = useActionHandler({
-    action: toggleSubscription,
-    isShowToastMessage: false,
-  });
+  const { isLoading, handler: toggleSubscription } = useService(
+    subscriptionService.toggleSubscription
+  );
 
   const handleSubscribe = async () => {
-    const { isSuccess } = await handleAction(channelId);
+    const { success } = await toggleSubscription(channelId);
 
-    if (isSuccess) {
+    if (success) { 
+      if (onSubscribeToggle) {
+        onSubscribeToggle();
+      }
       setSubscribed((prev) => !prev);
     }
   };
@@ -42,12 +45,18 @@ export default function SubscribeBtn({
       isLarge={false}
       disabled={isLoading}
       className={twMerge(
-        "text-base text-white bg-[#f10b64] px-4 rounded-full",
+        "text-base max-sm:text-sm text-white bg-[#f10b64] px-4 rounded-full",
         className
       )}
       onClick={handleSubscribe}
     >
-      {isLoading ? "subscribing..." : subscribed ? "Un subscribe" : "subscribe"}
+      {isLoading
+        ? subscribed
+          ? "Unsubscribing"
+          : "Subscribing"
+        : subscribed
+        ? "Unsubscribe"
+        : "Subscribe"}
     </Button>
   ) : (
     <Button

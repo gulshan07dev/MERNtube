@@ -9,6 +9,7 @@ import { RootState } from "@/store/store";
 import useService from "@/hooks/useService";
 import authService from "@/services/authService";
 import { setChannel } from "@/store/slices/authSlice";
+import { IChannel } from "@/interfaces";
 import Skeleton from "@/component/Skeleton";
 import Button from "@/component/CoreUI/Button";
 import Avatar from "@/component/CoreUI/Avatar";
@@ -40,6 +41,20 @@ const ChannelLayout: React.FC = () => {
       }
     }
   }
+
+  const onSubscribeToggle = () => {
+    dispatch(
+      setChannel({
+        ...channel,
+        subscriberCount: channel?.isSubscribed
+          ? channel?.subscriberCount === 0
+            ? 0
+            : channel?.subscriberCount - 1
+          : (channel?.subscriberCount || 0) + 1,
+        isSubscribed: !channel?.isSubscribed,
+      } as IChannel)
+    );
+  };
 
   useEffect(() => {
     if (channel?.username !== username) {
@@ -184,8 +199,9 @@ const ChannelLayout: React.FC = () => {
                   </p>
                   {/* subscribe button */}
                   <SubscribeBtn
-                    isSubscribed={channel?.isSubscribed || false}
                     channelId={channel?._id || ""}
+                    isSubscribed={channel?.isSubscribed || false}
+                    onSubscribeToggle={onSubscribeToggle}
                   />
                 </div>
               </div>
