@@ -1,212 +1,47 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axiosInstance from "@/helper/axiosInstance";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IPlaylist } from "@/interfaces";
 
 interface initialState {
   playlist: IPlaylist | null;
+  playlists: IPlaylist[];
+  paginationInfo: {
+    currentPage: number;
+    totalPages: number;
+    totalDocs: number;
+    hasNextPage: boolean;
+  };
 }
 
 const initialState: initialState = {
   playlist: null,
+  playlists: [],
+  paginationInfo: {
+    currentPage: 0,
+    totalPages: 0,
+    totalDocs: 0,
+    hasNextPage: false,
+  },
 };
-
-const createPlaylist = createAsyncThunk(
-  "/playlists/create",
-  async (
-    data: { name: string; description: string; isPrivate: boolean },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await axiosInstance.post("/playlists", data);
-      return res?.data;
-    } catch (error: any) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-const getUserPlaylists = createAsyncThunk(
-  "/playlists/get/user/userId",
-  async (
-    {
-      userId,
-      queryParams,
-    }: {
-      userId: string;
-      queryParams: { page?: number; limit?: number; videoId?: string };
-    },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await axiosInstance.get(`/playlists/user/${userId}`, {
-        params: queryParams,
-      });
-      return res?.data;
-    } catch (error: any) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-const getPlaylist = createAsyncThunk(
-  "/playlists/get/playlistId",
-  async (playlistId: string, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.get(`/playlists/${playlistId}`);
-      return res?.data;
-    } catch (error: any) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-const getUserPlaylistVideos = createAsyncThunk(
-  "/playlists/playlistId/videos",
-  async (
-    {
-      playlistId,
-      queryParams,
-    }: {
-      playlistId: string;
-      queryParams: {
-        page?: number;
-        limit?: number;
-        orderBy?: "acc" | "desc";
-        sortBy?: "createdAt" | "views";
-        sortType?: "acc" | "desc";
-      };
-    },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await axiosInstance.get(`/playlists/${playlistId}/videos`, {
-        params: queryParams,
-      });
-      return res?.data;
-    } catch (error: any) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-const addVideoToPlaylist = createAsyncThunk(
-  "/playlists/add/playlistId/videoId",
-  async (
-    { playlistId, videoId }: { playlistId: string; videoId: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await axiosInstance.post(
-        `/playlists/${playlistId}/${videoId}`
-      );
-      return res?.data;
-    } catch (error: any) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-const removeVideoFromPlaylist = createAsyncThunk(
-  "/playlists/remove/playlistId/videoId",
-  async (
-    { playlistId, videoId }: { playlistId: string; videoId: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await axiosInstance.delete(
-        `/playlists/${playlistId}/${videoId}`
-      );
-      return res?.data;
-    } catch (error: any) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-const deletePlaylist = createAsyncThunk(
-  "/playlists/delete/playlistId",
-  async (playlistId: string, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.delete(`/playlists/${playlistId}`);
-      return res?.data;
-    } catch (error: any) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-const updatePlaylist = createAsyncThunk(
-  "/playlists/update/playlistId",
-  async (
-    {
-      playlistId,
-      data,
-    }: {
-      playlistId: string;
-      data: { name: string; description: string; isPrivate: boolean };
-    },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await axiosInstance.patch(`/playlists/${playlistId}`, data);
-      return res?.data;
-    } catch (error: any) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
 
 const playlistSlice = createSlice({
   name: "playlist",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(getPlaylist.pending, (state) => {
-        state.playlist = null;
-      })
-      .addCase(getPlaylist.fulfilled, (state, action) => {
-        state.playlist = action.payload?.data?.playlist;
-      })
-      .addCase(getPlaylist.rejected, (state) => {
-        state.playlist = null;
-      });
+  reducers: {
+    setPlaylist: (state, action: PayloadAction<initialState["playlist"]>) => {
+      state.playlist = action.payload;
+    },
+    setPlaylists: (state, action: PayloadAction<initialState["playlists"]>) => {
+      state.playlists = action.payload;
+    },
+    setPaginationInfo: (
+      state,
+      action: PayloadAction<initialState["paginationInfo"]>
+    ) => {
+      state.paginationInfo = action.payload;
+    },
   },
 });
 
 export default playlistSlice.reducer;
-export const {} = playlistSlice.actions;
-export {
-  createPlaylist,
-  getUserPlaylists,
-  getPlaylist,
-  getUserPlaylistVideos,
-  addVideoToPlaylist,
-  removeVideoFromPlaylist,
-  deletePlaylist,
-  updatePlaylist,
-};
+export const { setPlaylist, setPlaylists, setPaginationInfo } =
+  playlistSlice.actions;
