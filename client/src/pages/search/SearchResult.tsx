@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import PageLayout from "@/layout/PageLayout";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
-import { Video } from "@/store/slices/videoSlice";
+import { IVideo } from "@/interfaces"; 
 import ScrollPagination from "@/component/ScrollPagination";
 import EmptyMessage from "@/component/error/EmptyMessage";
 import SearchVideoCard from "@/component/search/SearchVideoCard";
@@ -18,7 +18,7 @@ function SearchResult() {
     totalDocs: 1,
     hasNextPage: true,
   });
-  const [searchResults, setSearchResults] = useState<Video[]>([]);
+  const [searchResults, setSearchResults] = useState<IVideo[]>([]);
 
   const {
     isLoading,

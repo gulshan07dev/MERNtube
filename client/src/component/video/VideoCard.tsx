@@ -7,7 +7,7 @@ import { FiMoreVertical } from "react-icons/fi";
 import { BiSolidPlaylist } from "react-icons/bi";
 import { FaShare } from "react-icons/fa";
 
-import { Video } from "@/store/slices/videoSlice";
+import { IVideo } from "@/interfaces";
 import Avatar from "../CoreUI/Avatar";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
@@ -15,7 +15,7 @@ import ShareDialog from "../ShareDialog";
 import AddVideoToWatchLaterDialog from "../watchLater/AddVideoToWatchLaterDialog";
 import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 
-const VideoCard = ({ data }: { data: Video }) => {
+const VideoCard = ({ data }: { data: IVideo }) => {
   const navigate = useNavigate();
   const [
     isShowAddVideoToWatchLaterDialog,

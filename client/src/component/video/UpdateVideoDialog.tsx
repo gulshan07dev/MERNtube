@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import Modal from "../CoreUI/Modal";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
-import { Video } from "@/store/slices/videoSlice";
+import { IVideo } from "@/interfaces";
 import useForm from "@/hooks/useForm";
 import Input from "../CoreUI/Input";
 import FileUpload from "../FileUpload";
@@ -11,8 +11,8 @@ import FileUpload from "../FileUpload";
 interface UpdateVideoDialogProps {
   open: boolean;
   handleClose: () => void;
-  video: Video;
-  onUpdate: (video: Video) => void;
+  video: IVideo;
+  onUpdate: (video: IVideo) => void;
 }
 
 export default function UpdateVideoDialog({
@@ -50,7 +50,7 @@ export default function UpdateVideoDialog({
     if (success && !error) {
       resetForm();
       handleClose();
-      onUpdate(responseData?.data?.updatedVideo as Video);
+      onUpdate(responseData?.data?.updatedVideo as IVideo);
     }
   };
 

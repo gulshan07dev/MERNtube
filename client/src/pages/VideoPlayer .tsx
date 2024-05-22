@@ -10,14 +10,14 @@ import { BiSolidPlaylist } from "react-icons/bi";
 import PageLayout from "@/layout/PageLayout";
 import videoService from "@/services/videoService";
 import authService from "@/services/authService";
-import LikeService from "@/services/likeService";
+import likeService from "@/services/likeService";
+import watchHistoryService from "@/services/watchHistoryService";
 import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
 import { setVideo } from "@/store/slices/videoSlice";
 import { setChannel } from "@/store/slices/authSlice";
 import { IChannel } from "@/interfaces";
 import LikeBtn from "@/component/CoreUI/LikeBtn";
-import { addVideoToWatchHistory } from "@/store/slices/watchHistorySlice";
 import ShareDialog from "@/component/ShareDialog";
 import AddVideoToPlaylistDialog from "@/component/playlist/AddVideoToPlaylistDialog";
 import AddVideoToWatchLaterDialog from "@/component/watchLater/AddVideoToWatchLaterDialog";
@@ -73,7 +73,7 @@ export default function VideoPlayer() {
   };
 
   const { isLoading: isVideoLikeLoading, handler: toggleVideoLike } =
-    useService(LikeService.toggleVideoLike, {
+    useService(likeService.toggleVideoLike, {
       isShowToastMessage: true,
     });
 
@@ -115,8 +115,8 @@ export default function VideoPlayer() {
       return;
     }
     (async () => {
-      const res = await dispatch(addVideoToWatchHistory(videoId));
-      if (res.payload.success) {
+      const res = await watchHistoryService.addVideoToWatchHistory(videoId)
+      if (res?.data?.success) {
         setIsVideoAddedToWatchHistory(true);
       }
     })();

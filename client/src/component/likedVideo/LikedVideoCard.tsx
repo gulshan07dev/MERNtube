@@ -7,14 +7,14 @@ import { FiMoreVertical } from "react-icons/fi";
 import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
-import { Video } from "@/store/slices/videoSlice";
+import { IVideo } from "@/interfaces"; 
 import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import Button from "@/component/CoreUI/Button";
 import ShareDialog from "@/component/ShareDialog";
 import AddVideoToWatchLaterDialog from "../watchLater/AddVideoToWatchLaterDialog";
 import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 
-const LikedVideoCard = ({ video }: { video: Video }) => {
+const LikedVideoCard = ({ video }: { video: IVideo }) => {
   const [
     isShowAddVideoToWatchLaterDialog,
     setIsShowAddVideoToWatchLaterDialog,
