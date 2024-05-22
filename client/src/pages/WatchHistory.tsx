@@ -1,45 +1,87 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
-import { AppDispatch, RootState } from "@/store/store";
 import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
-import { getWatchHistory } from "@/store/slices/watchHistorySlice";
+import watchHistoryService from "@/services/watchHistoryService";
+import useService from "@/hooks/useService";
+import { AppDispatch, RootState } from "@/store/store";
+import {
+  clearWatchHistories,
+  setPaginationInfo,
+  setWatchHistories,
+} from "@/store/slices/watchHistorySlice";
+import { IVideo, IWatchHistoryVideo } from "@/interfaces";
 import EmptyMessage from "@/component/error/EmptyMessage";
 import WatchHistoryVideoCard from "@/component/watchHistory/WatchHistoryVideoCard";
 import WatchHistoryVideoSkeleton from "@/component/watchHistory/WatchHistoryVideoSkeleton";
 import ClearWatchHistory from "@/component/settings/watchHistory/ClearWatchHistory";
 import ToggleWatchHistoryPauseStatus from "@/component/settings/watchHistory/ToggleWatchHistoryPauseStatus";
-import { Video } from "@/store/slices/videoSlice";
-
-interface GroupedWatchHistories {
-  [key: string]: {
-    date: string;
-    videos: { video: Video; historyId: string }[];
-  };
-}
 
 export default function WatchHistory() {
   const dispatch: AppDispatch = useDispatch();
-  const {
-    watchHistories,
-    loading,
-    error,
-    currentPage,
-    totalPages,
-    totalVideos,
-    hasNextPage,
-  } = useSelector((state: RootState) => state.watch_history);
+  const limit = 10;
+  const { watchHistories, paginationInfo } = useSelector(
+    (state: RootState) => state.watch_history
+  );
 
-  const [groupedWatchHistories, setGroupedWatchHistories] =
-    useState<GroupedWatchHistories>({});
+  const {
+    error,
+    isLoading,
+    handler: getWatchHistory,
+  } = useService(watchHistoryService.getWatchHistory);
 
   const handleFetchWatchHistory = useCallback(
-    (page: number) => {
-      dispatch(getWatchHistory({ queryParams: { page, limit: 10 } }));
+    async (page: number) => {
+      if (page === 1) {
+        dispatch(clearWatchHistories());
+      }
+
+      const { success, responseData } = await getWatchHistory({
+        queryParams: { page, limit },
+      });
+
+      if (success) {
+        const { page, totalPages, totalDocs, hasNextPage, docs } =
+          responseData?.data?.result;
+
+        const updatedWatchHistories: {
+          [key: string]: {
+            date: string;
+            videos: { video: IVideo; historyId: string }[];
+          };
+        } = {};
+        docs.forEach(
+          ({
+            watchHistoryVideo,
+            _id: historyId,
+            createdAt,
+          }: IWatchHistoryVideo) => {
+            const date = getFormattedDate(createdAt?.toString());
+            if (!updatedWatchHistories[date]) {
+              updatedWatchHistories[date] = { date, videos: [] };
+            }
+            updatedWatchHistories[date].videos = [
+              ...updatedWatchHistories[date].videos,
+              { video: watchHistoryVideo, historyId },
+            ];
+          }
+        );
+
+        dispatch(setWatchHistories(updatedWatchHistories));
+
+        dispatch(
+          setPaginationInfo({
+            currentPage: page,
+            totalPages,
+            totalDocs,
+            hasNextPage,
+          })
+        );
+      }
     },
-    [dispatch]
+    [watchHistories]
   );
 
   const getFormattedDate = useCallback((createdAt: string): string => {
@@ -65,39 +107,29 @@ export default function WatchHistory() {
   }, []);
 
   useEffect(() => {
+    if (Object.keys(watchHistories).length) return;
     handleFetchWatchHistory(1);
   }, []);
-
-  useEffect(() => {
-    const grouped: GroupedWatchHistories = {};
-
-    watchHistories.forEach(
-      ({ watchHistoryVideo: video, _id: historyId, createdAt }) => {
-        const date = getFormattedDate(createdAt.toString());
-        if (!grouped[date]) {
-          grouped[date] = { date, videos: [] };
-        }
-        grouped[date].videos.push({ video, historyId });
-      }
-    );
-
-    setGroupedWatchHistories(grouped);
-  }, [watchHistories]);
 
   return (
     <PageLayout className="flex lg:gap-7 max-lg:flex-col-reverse max-lg:gap-5">
       {/* history videos categorized with day/dates */}
       <ScrollPagination
         paginationType="infinite-scroll"
-        currentPage={currentPage}
-        dataLength={watchHistories?.length}
-        error={error}
-        hasNextPage={hasNextPage}
-        loadNextPage={() => handleFetchWatchHistory(currentPage + 1)}
+        currentPage={paginationInfo.currentPage}
+        dataLength={Object.values(watchHistories).reduce(
+          (total, { videos }) => total + videos.length,
+          2
+        )}
+        error={error?.message}
+        hasNextPage={paginationInfo.hasNextPage}
+        loadNextPage={() =>
+          handleFetchWatchHistory(paginationInfo.currentPage + 1)
+        }
         refreshHandler={() => handleFetchWatchHistory(1)}
-        loading={loading}
-        totalPages={totalPages}
-        totalItems={totalVideos}
+        loading={isLoading}
+        totalPages={paginationInfo.totalPages}
+        totalItems={paginationInfo.totalDocs}
         className={twMerge("flex flex-grow flex-col gap-3")}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
@@ -105,10 +137,10 @@ export default function WatchHistory() {
           </p>
         }
       >
-        {!watchHistories?.length &&
-        totalVideos === 0 &&
-        totalPages === 1 &&
-        !loading ? (
+        {!Object.keys(watchHistories).length &&
+        paginationInfo.totalDocs === 0 &&
+        paginationInfo.totalPages === 1 &&
+        !isLoading ? (
           <EmptyMessage
             message="empty history!"
             buttonText="Try again"
@@ -119,23 +151,21 @@ export default function WatchHistory() {
             <h1 className="text-4xl font-roboto font-semibold text-[#0F0F0F] dark:text-[#F1F1F1]">
               Watch History
             </h1>
-            {Object.values(groupedWatchHistories).map(
-              ({ date, videos }, idx) => (
-                <div key={idx}>
-                  <h1 className="text-black dark:text-white text-lg">{date}</h1>
-                  {videos.map(({ video, historyId }, videoIdx) => (
-                    <WatchHistoryVideoCard
-                      key={videoIdx}
-                      video={video}
-                      historyId={historyId}
-                    />
-                  ))}
-                </div>
-              )
-            )}
+            {Object.values(watchHistories).map(({ date, videos }, idx) => (
+              <div key={idx}>
+                <h1 className="text-black dark:text-white text-lg">{date}</h1>
+                {videos.map(({ video, historyId }) => (
+                  <WatchHistoryVideoCard
+                    key={historyId}
+                    video={video}
+                    historyId={historyId}
+                  />
+                ))}
+              </div>
+            ))}
           </>
         )}
-        {loading &&
+        {isLoading &&
           Array.from({ length: 10 }).map((_, idx) => (
             <WatchHistoryVideoSkeleton key={idx} />
           ))}

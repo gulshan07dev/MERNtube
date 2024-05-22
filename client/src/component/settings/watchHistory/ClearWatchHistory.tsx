@@ -1,10 +1,10 @@
+import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 
+import watchHistoryService from "@/services/watchHistoryService";
+import useService from "@/hooks/useService";
 import Button from "../../CoreUI/Button";
-import useActionHandler from "@/hooks/useActionHandler";
-import { clearWatchHistory } from "@/store/slices/watchHistorySlice";
 import Modal from "../../CoreUI/Modal";
-import { useState } from "react";
 
 export default function ClearWatchHistory() {
   const [
@@ -12,15 +12,17 @@ export default function ClearWatchHistory() {
     setIsShowClearWatchHistoryConfirmDialog,
   ] = useState(false);
 
-  const { isLoading, handleAction } = useActionHandler({
-    action: clearWatchHistory,
-    isShowToastMessage: true,
-    toastMessages: { loadingMessage: "Cleaning watch history..." },
-  });
+  const { isLoading, handler: clearWatchHistory } = useService(
+    watchHistoryService.clearWatchHistory,
+    {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "Cleaning watch history..." },
+    }
+  );
 
   const handleClearWatchHistory = async () => {
-    const { isSuccess, error } = await handleAction();
-    if (isSuccess && !error) {
+    const { success, error } = await clearWatchHistory();
+    if (success && !error) {
       setIsShowClearWatchHistoryConfirmDialog(false);
     }
   };

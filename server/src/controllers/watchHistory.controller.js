@@ -103,7 +103,7 @@ const toggleWatchHistoryPauseStatus = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(
         200,
         { watchHistoryPaused: user.isWatchHistoryPaused },
-        `Watch history ${!user.isWatchHistoryPaused ? 'Paused' : 'Resumed'} successfully`
+        `Watch history ${user.isWatchHistoryPaused ? 'Paused' : 'Resumed'} successfully`
     ));
 });
 

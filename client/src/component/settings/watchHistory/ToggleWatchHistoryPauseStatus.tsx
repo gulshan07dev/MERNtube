@@ -1,12 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
-
-import { AppDispatch, RootState } from "@/store/store";
 import { useState } from "react";
-import ToggleButton from "../../CoreUI/ToggleButton";
-import useActionHandler from "@/hooks/useActionHandler";
-import { toggleWatchHistoryPauseStatus } from "@/store/slices/watchHistorySlice";
+import { useDispatch, useSelector } from "react-redux";
 import { FaPause, FaPlayCircle } from "react-icons/fa";
+
+import watchHistoryService from "@/services/watchHistoryService";
+import useService from "@/hooks/useService";
+import { AppDispatch, RootState } from "@/store/store";
 import { setUser } from "@/store/slices/authSlice";
+import ToggleButton from "../../CoreUI/ToggleButton"; 
 
 export default function ToggleWatchHistoryPauseStatus() {
   const dispatch: AppDispatch = useDispatch();
@@ -15,17 +15,19 @@ export default function ToggleWatchHistoryPauseStatus() {
     user?.isWatchHistoryPaused
   );
 
-  const { isLoading, handleAction } = useActionHandler({
-    action: toggleWatchHistoryPauseStatus,
-    isShowToastMessage: true,
-    toastMessages: {
-      loadingMessage: `toggling watch history status to ${!isWatchHistoryPaused}`,
-    },
-  });
+  const { isLoading, handler: toggleWatchHistoryPauseStatus } = useService(
+    watchHistoryService.toggleWatchHistoryPauseStatus,
+    {
+      isShowToastMessage: true,
+      toastMessages: {
+        loadingMessage: `toggling watch history status to ${!isWatchHistoryPaused}`,
+      }
+    }
+  );
 
   const handleToggleWatchHistoryPauseStatus = async () => {
-    const { isSuccess, error } = await handleAction();
-    if (isSuccess && !error) {
+    const { success, error } = await toggleWatchHistoryPauseStatus();
+    if (success && !error) {
       dispatch(setUser({ isWatchHistoryPaused: !isWatchHistoryPaused }));
       setIsWatchHistoryPaused((prev) => !prev);
     }

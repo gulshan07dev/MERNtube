@@ -8,48 +8,51 @@ import { MdDelete } from "react-icons/md";
 import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
-import { Video } from "@/store/slices/videoSlice";
+import watchHistoryService from "@/services/watchHistoryService";
+import useService from "@/hooks/useService";
+import { IVideo } from "@/interfaces";
+import Modal from "@/component/CoreUI/Modal";
 import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import Button from "@/component/CoreUI/Button";
 import ShareDialog from "@/component/ShareDialog";
-import useActionHandler from "@/hooks/useActionHandler";
 import AddVideoToWatchLaterDialog from "../watchLater/AddVideoToWatchLaterDialog";
 import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
-import Modal from "@/component/CoreUI/Modal";
-import { removeVideoToWatchHistory } from "@/store/slices/watchHistorySlice";
 
 const WatchHistoryVideoCard = ({
   video,
   historyId,
 }: {
-  video: Video;
+  video: IVideo;
   historyId: string;
 }) => {
-   const [
-     isShowAddVideoToWatchLaterDialog,
-     setIsShowAddVideoToWatchLaterDialog
-   ] = useState(false);
-  const [isShowAddVideoToPlaylistDialog, setIsShowAddVideoToPlaylistDialog] =
-    useState(false);
+  const [modalOpen, setModalOpen] = useState<
+    | "add_video_to_watch_later_dialog"
+    | "add_video_to_playlist_dialog"
+    | "remove_video_from_history_dialog"
+    | "video_share_dialog"
+    | null
+  >(null);
   const [isVideoRemovedFromHistory, setIsVideoRemovedFromHistory] =
     useState(false);
-  const [isShowVideoRemoveConfirmDialog, setIsShowVideoRemoveConfirmDialog] =
-    useState(false);
-  const [isShowShareDialog, setIsShowShareDialog] = useState(false);
 
-  const { isLoading: isRemovingVideo, handleAction: removeVideo } =
-    useActionHandler({
-      action: removeVideoToWatchHistory,
-      isShowToastMessage: true,
-      toastMessages: { loadingMessage: "Removing video from watch history..." },
-    });
+  const {
+    isLoading: isRemovingVideoFromWatchHistory,
+    handler: removeVideoFromWatchHistory,
+  } = useService(watchHistoryService.removeVideoFromWatchHistory, {
+    isShowToastMessage: true,
+    toastMessages: { loadingMessage: "Removing video from watch history..." },
+  });
 
   const handleRemoveVideoFromWatchHistory = async () => {
-    const { isSuccess, error } = await removeVideo(historyId);
+    const { success, error } = await removeVideoFromWatchHistory(historyId);
 
-    if (isSuccess && !error) {
+    if (success && !error) {
       setIsVideoRemovedFromHistory(true);
     }
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(null);
   };
 
   if (isVideoRemovedFromHistory) {
@@ -95,7 +98,7 @@ const WatchHistoryVideoCard = ({
           <Button
             icon={<AiOutlineClockCircle />}
             className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
-            onClick={() => setIsShowAddVideoToWatchLaterDialog((prev) => !prev)}
+            onClick={() => setModalOpen("add_video_to_watch_later_dialog")}
           >
             Save to Watch Later
           </Button>
@@ -103,7 +106,7 @@ const WatchHistoryVideoCard = ({
           <Button
             icon={<BiSolidPlaylist />}
             className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
-            onClick={() => setIsShowAddVideoToPlaylistDialog((prev) => !prev)}
+            onClick={() => setModalOpen("add_video_to_playlist_dialog")}
           >
             Save to Playlist
           </Button>
@@ -111,7 +114,7 @@ const WatchHistoryVideoCard = ({
           <Button
             icon={<MdDelete />}
             className="bg-red-500 text-sm text-white font-roboto hover:opacity-75 w-full py-2"
-            onClick={() => setIsShowVideoRemoveConfirmDialog((prev) => !prev)}
+            onClick={() => setModalOpen("remove_video_from_history_dialog")}
           >
             Remove from History
           </Button>
@@ -119,43 +122,43 @@ const WatchHistoryVideoCard = ({
           <Button
             icon={<FaShare />}
             className="bg-white border-gray-500 dark:border-none text-sm text-black font-roboto hover:opacity-75 w-full py-2"
-            onClick={() => setIsShowShareDialog((prev) => !prev)}
+            onClick={() => setModalOpen("video_share_dialog")}
           >
             Share
           </Button>
         </div>
       </DropdownMenu>
       <AddVideoToWatchLaterDialog
-        open={isShowAddVideoToWatchLaterDialog}
-        handleClose={() => setIsShowAddVideoToWatchLaterDialog(false)}
+        open={modalOpen === "add_video_to_watch_later_dialog"}
+        handleClose={handleModalClose}
         videoId={video?._id}
       />
       <AddVideoToPlaylistDialog
         videoId={video?._id}
-        open={isShowAddVideoToPlaylistDialog}
-        handleClose={() => setIsShowAddVideoToPlaylistDialog(false)}
+        open={modalOpen === "add_video_to_playlist_dialog"}
+        handleClose={handleModalClose}
       />
       <Modal
-        open={isShowVideoRemoveConfirmDialog}
-        handleClose={() => setIsShowVideoRemoveConfirmDialog(false)}
+        open={modalOpen === "remove_video_from_history_dialog"}
+        handleClose={handleModalClose}
         title="Remove Video From Watch History"
         description="Are you sure you want to remove video from the watch history?"
-        isLoading={isRemovingVideo}
+        isLoading={isRemovingVideoFromWatchHistory}
         closeButton={
           <Button
             className="w-full py-1.5 px-7 bg-red-600 border-none"
-            disabled={isRemovingVideo}
+            disabled={isRemovingVideoFromWatchHistory}
           >
             Cancel
           </Button>
         }
-        submitLabel={isRemovingVideo ? "Removing" : "Remove"}
+        submitLabel={isRemovingVideoFromWatchHistory ? "Removing" : "Remove"}
         onSubmit={handleRemoveVideoFromWatchHistory}
       />
       <ShareDialog
         url={`${document.baseURI}watch/${video?._id}`}
-        open={isShowShareDialog}
-        handleClose={() => setIsShowShareDialog(false)}
+        open={modalOpen === "video_share_dialog"}
+        handleClose={handleModalClose}
       />
     </div>
   );
