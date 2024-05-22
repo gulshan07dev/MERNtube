@@ -1,7 +1,7 @@
-import useActionHandler from "@/hooks/useActionHandler";
-import Button from "../CoreUI/Button";
+import watchLaterService from "@/services/watchLaterService";
+import useService from "@/hooks/useService";
 import Modal from "../CoreUI/Modal";
-import { removeVideoFromWatchLater } from "@/store/slices/watchLaterSlice";
+import Button from "../CoreUI/Button";
 
 export default function RemoveVideoFromWatchLaterDialog({
   videoId,
@@ -14,15 +14,17 @@ export default function RemoveVideoFromWatchLaterDialog({
   handleClose: () => void;
   onRemove: () => void;
 }) {
-  const { isLoading, handleAction } = useActionHandler({
-    action: removeVideoFromWatchLater,
-    isShowToastMessage: true,
-    toastMessages: { loadingMessage: "Removing video from watch later..." },
-  });
+  const { isLoading, handler: removeVideoFromWatchLater } = useService(
+    watchLaterService.removeVideoFromWatchLater,
+    {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "Removing video from watch later..." },
+    }
+  );
 
   const handleRemoveVideoFromWatchLater = async () => {
-    const { isSuccess, error } = await handleAction(videoId);
-    if (isSuccess && !error) {
+    const { success, error } = await removeVideoFromWatchLater(videoId);
+    if (success && !error) {
       onRemove();
       handleClose();
     }

@@ -1,7 +1,7 @@
-import useActionHandler from "@/hooks/useActionHandler";
-import Button from "../CoreUI/Button";
+import watchLaterService from "@/services/watchLaterService";
+import useService from "@/hooks/useService";
 import Modal from "../CoreUI/Modal";
-import { addVideoToWatchLater } from "@/store/slices/watchLaterSlice";
+import Button from "../CoreUI/Button";
 
 export default function AddVideoToWatchLaterDialog({
   videoId,
@@ -12,15 +12,17 @@ export default function AddVideoToWatchLaterDialog({
   open: boolean;
   handleClose: () => void;
 }) {
-  const { isLoading, handleAction } = useActionHandler({
-    action: addVideoToWatchLater,
-    isShowToastMessage: true,
-    toastMessages: { loadingMessage: "Adding video to watch later..." },
-  });
+  const { isLoading, handler: addVideoToWatchLater } = useService(
+    watchLaterService.addVideoToWatchLater,
+    {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "Adding video to watch later..." },
+    }
+  );
 
   const handleAddVideoToWatchLater = async () => {
-    const { isSuccess, error } = await handleAction(videoId);
-    if (isSuccess && !error) {
+    const { success, error } = await addVideoToWatchLater(videoId);
+    if (success && !error) {
       handleClose();
     }
   };

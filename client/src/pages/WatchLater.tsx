@@ -4,27 +4,52 @@ import { twMerge } from "tailwind-merge";
 
 import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
+import watchLaterService from "@/services/watchLaterService";
+import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
-import { getUserWatchLaterVideos } from "@/store/slices/watchLaterSlice";
+import {
+  setPaginationInfo,
+  setWatchLaterVideos,
+} from "@/store/slices/watchLaterSlice";
 import EmptyMessage from "@/component/error/EmptyMessage";
 import WatchLaterVideoCard from "@/component/watchLater/WatchLaterVideoCard";
 
 export default function WatchLater() {
   const dispatch: AppDispatch = useDispatch();
+  const { watchLaterVideos, paginationInfo } = useSelector(
+    (state: RootState) => state.watch_later
+  );
+
   const {
-    watchLaterVideos,
-    loading,
+    isLoading,
     error,
-    currentPage,
-    totalPages,
-    totalVideos,
-    hasNextPage,
-  } = useSelector((state: RootState) => state.watch_later);
+    handler: getUserWatchLaterVideos,
+  } = useService(watchLaterService.getUserWatchLaterVideos);
 
   const handleFetchWatchLaterVideos = async (page: number) => {
-    await dispatch(
-      getUserWatchLaterVideos({ queryParams: { page, limit: 10 } })
-    );
+    if (page === 1) {
+      dispatch(setWatchLaterVideos([]));
+    }
+
+    const { success, responseData } = await getUserWatchLaterVideos({
+      queryParams: { page, limit: 10 },
+    });
+    if (success) {
+      const { page, totalPages, totalDocs, hasNextPage, docs } =
+        responseData?.data?.result;
+
+      dispatch(
+        setWatchLaterVideos(page === 1 ? docs : [...watchLaterVideos, ...docs])
+      );
+      dispatch(
+        setPaginationInfo({
+          currentPage: page,
+          totalPages,
+          totalDocs,
+          hasNextPage,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -34,15 +59,17 @@ export default function WatchLater() {
     <PageLayout className="flex flex-col gap-7 max-lg:gap-5">
       <ScrollPagination
         paginationType="infinite-scroll"
-        currentPage={currentPage}
+        currentPage={paginationInfo.currentPage}
         dataLength={watchLaterVideos?.length}
-        error={error}
-        hasNextPage={hasNextPage}
-        loadNextPage={() => handleFetchWatchLaterVideos(currentPage + 1)}
+        error={error?.message}
+        hasNextPage={paginationInfo.hasNextPage}
+        loadNextPage={() =>
+          handleFetchWatchLaterVideos(paginationInfo.currentPage + 1)
+        }
         refreshHandler={() => handleFetchWatchLaterVideos(1)}
-        loading={loading}
-        totalPages={totalPages}
-        totalItems={totalVideos}
+        loading={isLoading}
+        totalPages={paginationInfo.totalPages}
+        totalItems={paginationInfo.totalDocs}
         className={twMerge("flex flex-grow flex-col gap-3")}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
@@ -51,11 +78,11 @@ export default function WatchLater() {
         }
       >
         {!watchLaterVideos?.length &&
-        totalVideos === 0 &&
-        totalPages === 1 &&
-        !loading ? (
+        paginationInfo.totalDocs === 0 &&
+        paginationInfo.totalPages === 1 &&
+        !isLoading ? (
           <EmptyMessage
-            message="empty history!"
+            message="empty watch later!"
             buttonText="Try again"
             onRefresh={() => handleFetchWatchLaterVideos(1)}
           />

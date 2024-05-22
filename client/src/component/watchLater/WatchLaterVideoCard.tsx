@@ -8,7 +8,7 @@ import { MdDelete } from "react-icons/md";
 import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
-import { Video } from "@/store/slices/videoSlice";
+import { IVideo } from "@/interfaces"; 
 import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import Button from "@/component/CoreUI/Button";
 import ShareDialog from "@/component/ShareDialog";
@@ -16,7 +16,7 @@ import AddVideoToWatchLaterDialog from "../watchLater/AddVideoToWatchLaterDialog
 import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 import RemoveVideoFromWatchLaterDialog from "./RemoveVideoFromWatchLaterDialog";
 
-const WatchLaterVideoCard = ({ video }: { video: Video }) => {
+const WatchLaterVideoCard = ({ video }: { video: IVideo }) => {
   const [
     isShowAddVideoToWatchLaterDialog,
     setIsShowAddVideoToWatchLaterDialog,
