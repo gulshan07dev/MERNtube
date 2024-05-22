@@ -2,16 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import Modal from "../CoreUI/Modal";
-import {
-  addVideoToPlaylist,
-  getUserPlaylists,
-  Playlist,
-  removeVideoFromPlaylist,
-} from "@/store/slices/playlistSlice";
-import useActionHandler from "@/hooks/useActionHandler";
-import { RootState } from "@/store/store";
 import ScrollPagination from "../ScrollPagination";
+import Modal from "../CoreUI/Modal";
+import playlistService from "@/services/playlistService";
+import useService from "@/hooks/useService";
+import { IPlaylist } from "@/interfaces";
+import { RootState } from "@/store/store";
 import CheckBox from "../CoreUI/CheckBox";
 
 interface AddVideoToPlaylistDialogProps {
@@ -27,68 +23,69 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user, isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const limit = 7;
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalItems, setTotalItems] = useState(0);
-  const [hasNextPage, setHasNextPage] = useState(false);
+  const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
+  const [paginationInfo, setPaginationInfo] = useState({
+    currentPage: 0,
+    totalPages: 1,
+    totalDocs: 1,
+    hasNextPage: false,
+  });
 
   const {
     isLoading: isFetchingPlaylists,
-    error,
-    handleAction: fetchPlaylists,
-  } = useActionHandler({
-    action: getUserPlaylists,
-    isShowToastMessage: false,
-  });
+    error: playlistsFetchingError,
+    handler: getUserPlaylists,
+  } = useService(playlistService.getUserPlaylists);
 
-  const handleFetchPlaylists = async (page: number) => {
-    if (!user?._id) return;
-
-    if (page === 1) {
-      setPlaylists([]);
-    }
-
-    const { isSuccess, resData } = await fetchPlaylists({
-      userId: user?._id,
-      queryParams: { page, limit, videoId },
-    });
-
-    if (isSuccess && resData?.result) {
-      const newPlaylists = resData.result.docs;
-      setPlaylists((prevPlaylists) =>
-        page === 1 ? newPlaylists : [...prevPlaylists, ...newPlaylists]
-      );
-      setCurrentPage(resData.result.page);
-      setTotalPages(resData.result.totalPages);
-      setTotalItems(resData.result.totalItems);
-      setHasNextPage(resData.result.hasNextPage);
-    }
-  };
-
-  const { isLoading: isAddingToPlaylist, handleAction: addToPlaylist } =
-    useActionHandler({
-      action: addVideoToPlaylist,
+  const { isLoading: isVideoAddingToPlaylist, handler: addVideoToPlaylist } =
+    useService(playlistService.addVideoToPlaylist, {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "Adding video to playlist..." },
     });
 
-  const { isLoading: isRemovingToPlaylist, handleAction: removeFromPlaylist } =
-    useActionHandler({
-      action: removeVideoFromPlaylist,
-      isShowToastMessage: true,
-      toastMessages: { loadingMessage: "Removing video from playlist..." },
+  const {
+    isLoading: isRemovingVideoFromPlaylist,
+    handler: removeVideoFromPlaylist,
+  } = useService(playlistService.removeVideoFromPlaylist, {
+    isShowToastMessage: true,
+    toastMessages: { loadingMessage: "Removing video from playlist..." },
+  });
+
+  const handleFetchPlaylists = async (page: number) => {
+    if (!user?._id) return;
+    if (page === 1) {
+      setPlaylists([]);
+    }
+
+    const { success, responseData } = await getUserPlaylists({
+      userId: user?._id,
+      queryParams: { page, limit, videoId },
     });
+
+    if (success) {
+      const { page, totalPages, totalDocs, hasNextPage, docs } =
+        responseData?.data?.result;
+      setPlaylists((prevPlaylists) =>
+        page === 1 ? docs : [...prevPlaylists, ...docs]
+      );
+      setPaginationInfo({
+        currentPage: page,
+        totalPages,
+        totalDocs,
+        hasNextPage,
+      });
+    }
+  };
 
   const handleTogglePlaylist = async (
     playlistId: string,
     isChecked: boolean
   ) => {
     if (isChecked) {
-      await addToPlaylist({ playlistId, videoId });
+      return await addVideoToPlaylist({ playlistId, videoId });
     } else {
-      await removeFromPlaylist({ playlistId, videoId });
+      return await removeVideoFromPlaylist({ playlistId, videoId });
     }
   };
 
@@ -109,24 +106,26 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
       {isLoggedIn && (
         <ScrollPagination
           paginationType="view-more"
-          loadNextPage={() => handleFetchPlaylists(currentPage + 1)}
+          loadNextPage={() =>
+            handleFetchPlaylists(paginationInfo.currentPage + 1)
+          }
           refreshHandler={() => handleFetchPlaylists(1)}
           dataLength={playlists.length}
           loading={isFetchingPlaylists}
-          error={error}
-          currentPage={currentPage}
-          totalItems={totalItems}
-          totalPages={totalPages}
-          hasNextPage={hasNextPage}
-          className={error ? "pt-10" : ""}
+          error={playlistsFetchingError?.message}
+          currentPage={paginationInfo.currentPage}
+          totalItems={paginationInfo.totalDocs}
+          totalPages={paginationInfo.totalPages}
+          hasNextPage={paginationInfo.hasNextPage}
+          className={playlistsFetchingError ? "pt-10" : ""}
         >
           <div className="flex flex-col gap-3">
             {playlists.map((playlist) => (
               <PlaylistCard
                 key={playlist._id}
                 playlist={playlist}
-                isAddingToPlaylist={isAddingToPlaylist}
-                isRemovingToPlaylist={isRemovingToPlaylist}
+                isAddingToPlaylist={isVideoAddingToPlaylist}
+                isRemovingToPlaylist={isRemovingVideoFromPlaylist}
                 handleTogglePlaylist={handleTogglePlaylist}
               />
             ))}
@@ -138,7 +137,7 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
 };
 
 interface PlaylistCardProps {
-  playlist: Playlist;
+  playlist: IPlaylist;
   isAddingToPlaylist: boolean;
   isRemovingToPlaylist: boolean;
   handleTogglePlaylist: (playlistId: string, isChecked: boolean) => void;

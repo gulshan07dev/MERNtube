@@ -2,19 +2,20 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 import Modal from "../CoreUI/Modal";
+import playlistService from "@/services/playlistService";
+import useService from "@/hooks/useService";
+import { IPlaylist } from "@/interfaces";
+import useForm from "@/hooks/useForm";
 import Input from "../CoreUI/Input";
 import TextAreaInput from "../CoreUI/TextAreaInput";
 import CheckBox from "../CoreUI/CheckBox";
-import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { updatePlaylist } from "@/store/slices/playlistSlice";
 
 interface UpdatePlaylistDialogProps {
   open: boolean;
   handleClose: () => void;
   playlistId: string;
   playlistDetails: { name: string; description: string; isPrivate: boolean };
-  onUpdate: (updatedPlaylist: any) => void;
+  onUpdate: (updatedPlaylist: IPlaylist) => void;
 }
 
 export default function UpdatePlaylistDialog({
@@ -28,8 +29,11 @@ export default function UpdatePlaylistDialog({
     initialFormState: playlistDetails,
   });
 
-  const { isLoading, error, handleAction } = useActionHandler({
-    action: updatePlaylist,
+  const {
+    isLoading,
+    error,
+    handler: updatedPlaylist,
+  } = useService(playlistService.updatePlaylist, {
     isShowToastMessage: true,
     toastMessages: { loadingMessage: "Updating playlist..." },
   });
@@ -38,14 +42,14 @@ export default function UpdatePlaylistDialog({
     if (!formData.name) {
       return toast.error("Name is required!");
     }
-    const { isSuccess, resData } = await handleAction({
+    const { success, responseData } = await updatedPlaylist({
       playlistId,
       data: formData,
     });
 
-    if (isSuccess && !error) {
+    if (success && !error) {
       handleClose();
-      onUpdate(resData.playlist);
+      onUpdate(responseData?.data?.playlist);
     }
   };
 

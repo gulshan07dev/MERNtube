@@ -1,17 +1,18 @@
 import toast from "react-hot-toast";
 
 import Modal from "../CoreUI/Modal";
+import playlistService from "@/services/playlistService";
+import useService from "@/hooks/useService";
+import { IPlaylist } from "@/interfaces";
+import useForm from "@/hooks/useForm";
 import Input from "../CoreUI/Input";
 import TextAreaInput from "../CoreUI/TextAreaInput";
 import CheckBox from "../CoreUI/CheckBox";
-import useForm from "@/hooks/useForm";
-import useActionHandler from "@/hooks/useActionHandler";
-import { createPlaylist } from "@/store/slices/playlistSlice";
 
 interface CreatePlaylistDialogProps {
   open: boolean;
   handleClose: () => void;
-  onCreate: (createdPlaylist: any) => void;
+  onCreate: (createdPlaylist: IPlaylist) => void;
 }
 
 export default function CreatePlaylistDialog({
@@ -29,8 +30,11 @@ export default function CreatePlaylistDialog({
     initialFormState: playlistDetails,
   });
 
-  const { isLoading, error, handleAction } = useActionHandler({
-    action: createPlaylist,
+  const {
+    isLoading,
+    error,
+    handler: createPlaylist,
+  } = useService(playlistService.createPlaylist, {
     isShowToastMessage: true,
     toastMessages: { loadingMessage: "Creating playlist..." },
   });
@@ -39,11 +43,11 @@ export default function CreatePlaylistDialog({
     if (!formData.name) {
       return toast.error("Name is required!");
     }
-    const { isSuccess, resData } = await handleAction(formData);
-    if (isSuccess && !error) {
+    const { success, responseData } = await createPlaylist(formData);
+    if (success && !error) {
       resetForm();
       handleClose();
-      onCreate(resData.playlist);
+      onCreate(responseData?.data?.playlist);
     }
   };
   return (

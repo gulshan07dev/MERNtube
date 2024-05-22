@@ -1,27 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { abbreviateNumber } from "js-abbreviation-number";
 import { MdDelete } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 
 import PageLayout from "@/layout/PageLayout";
+import ScrollPagination from "@/component/ScrollPagination";
+import playlistService from "@/services/playlistService";
+import useService from "@/hooks/useService";
+import { setPlaylist } from "@/store/slices/playlistSlice";
 import { RootState } from "@/store/store";
-import {
-  deletePlaylist,
-  getPlaylist,
-  getUserPlaylistVideos,
-} from "@/store/slices/playlistSlice";
-import useActionHandler from "@/hooks/useActionHandler";
+import { IVideo } from "@/interfaces";
 import Skeleton from "@/component/Skeleton";
 import ErrorDialog from "@/component/error/ErrorDialog";
 import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import Button from "@/component/CoreUI/Button";
 import DeletePlaylistDialogButton from "@/component/playlist/DeletePlaylistDialogButton";
 import UpdatePlaylistDialog from "@/component/playlist/UpdatePlaylistDialog";
-import ScrollPagination from "@/component/ScrollPagination";
-import { Video } from "@/store/slices/videoSlice";
 import PlaylistVideoCard from "@/component/playlist/playlistVideo/PlaylistVideoCard";
 import PlaylistVideoSkeleton from "@/component/playlist/playlistVideo/PlaylistVideoSkeleton";
 import TextWithToggle from "@/component/CoreUI/TextWithToggle";
@@ -34,54 +31,59 @@ type SortType =
   | "date-published-oldest";
 
 export default function PlaylistVideos() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { playlistId } = useParams();
   const { playlist } = useSelector((state: RootState) => state?.playlist);
-
-  const [isShowDeleteDialog, setIsShowDeleteDialog] = useState(false);
-  const [isShowUpdateDialog, setIsShowUpdateDialog] = useState(false);
-  const [sortType, setSortType] = useState<SortType>("date-added-newest");
   const [playlistVideos, setPlaylistVideos] = useState<
-    { playlistVideo: Video }[]
+    { playlistVideo: IVideo }[]
   >([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState<
+    "delete_playlist_dialog" | "update_playlist_dialog" | null
+  >(null);
+  const [sortType, setSortType] = useState<SortType>("date-added-newest");
+  const [paginationInfo, setPaginationInfo] = useState({
+    currentPage: 0,
+    totalPages: 0,
+    totalDocs: 0,
+    hasNextPage: false,
+  });
   const limit = 5;
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalVideos, setTotalVideos] = useState(0);
-  const [hasNextPage, setHasNextPage] = useState(false);
-
-  const { isLoading: isDeleting, handleAction: deletePlaylistAction } =
-    useActionHandler({
-      action: deletePlaylist,
-      isShowToastMessage: true,
-      toastMessages: { loadingMessage: "Deleting playlist..." },
-    });
-
-  const handleDeletePlaylist = async () => {
-    const { error, isSuccess } = await deletePlaylistAction(playlistId);
-    if (!error && isSuccess) {
-      setIsShowDeleteDialog(false);
-      navigate(-1);
-    }
-  };
 
   const {
     isLoading: isFetchingPlaylist,
     error: playlistFetchingError,
-    handleAction: fetchPlaylist,
-  } = useActionHandler({
-    action: getPlaylist,
-    isShowToastMessage: false,
-  });
+    handler: getPlaylist,
+  } = useService(playlistService.getPlaylist);
+
+  const { isLoading: isDeleting, handler: deletePlaylist } = useService(
+    playlistService.deletePlaylist,
+    {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "Deleting playlist..." },
+    }
+  );
 
   const {
-    isLoading: isFetchingVideos,
-    error: videosFetchingError,
-    handleAction: fetchPlaylistVideos,
-  } = useActionHandler({
-    action: getUserPlaylistVideos,
-    isShowToastMessage: false,
-  });
+    isLoading: isFetchingPlaylistVideos,
+    error: playlistVideosFetchingError,
+    handler: getUserPlaylistVideos,
+  } = useService(playlistService.getUserPlaylistVideos);
+
+  const handleFetchePlaylist = async () => {
+    const { error, success, responseData } = await getPlaylist(playlistId!);
+    if (!error && success) {
+      dispatch(setPlaylist(responseData?.data?.playlist));
+    }
+  };
+
+  const handleDeletePlaylist = async () => {
+    const { error, success } = await deletePlaylist(playlistId!);
+    if (!error && success) {
+      setModalOpen(null);
+      navigate(-1);
+    }
+  };
 
   const handleFetchPlaylistVideos = async (page: number) => {
     if (!playlist?._id || !playlistId) return;
@@ -90,7 +92,7 @@ export default function PlaylistVideos() {
       setPlaylistVideos([]);
     }
 
-    const { isSuccess, resData } = await fetchPlaylistVideos({
+    const { success, responseData } = await getUserPlaylistVideos({
       playlistId,
       queryParams: {
         page,
@@ -115,22 +117,23 @@ export default function PlaylistVideos() {
       },
     });
 
-    if (isSuccess && resData?.result) {
-      const newPlaylistVideos = resData.result.docs;
-      setPlaylistVideos(
-        page === 1
-          ? [...newPlaylistVideos]
-          : [...playlistVideos, ...newPlaylistVideos]
-      );
-      setCurrentPage(resData.result.page);
-      setTotalPages(resData.result.totalPages);
-      setTotalVideos(resData.result.totalDocs);
-      setHasNextPage(resData.result.hasNextPage);
+    if (success) {
+      const { page, totalPages, totalDocs, hasNextPage, docs } =
+        responseData?.data?.result;
+
+      setPlaylistVideos(page === 1 ? docs : [...playlistVideos, ...docs]);
+      setPaginationInfo({
+        currentPage: page,
+        totalPages,
+        totalDocs,
+        hasNextPage,
+      });
     }
   };
 
   useEffect(() => {
-    fetchPlaylist(playlistId);
+    if (playlist?._id === playlistId) return;
+    handleFetchePlaylist();
   }, [playlistId]);
 
   useEffect(() => {
@@ -141,9 +144,9 @@ export default function PlaylistVideos() {
     <PageLayout className="w-full flex max-lg:flex-col max-lg:gap-7 gap-3">
       {playlistFetchingError ? (
         <ErrorDialog
-          errorMessage={playlistFetchingError}
+          errorMessage={playlistFetchingError?.message}
           buttonLabel="Try again"
-          buttonOnClick={() => fetchPlaylist(playlistId)}
+          buttonOnClick={() => handleFetchePlaylist()}
         />
       ) : (
         <>
@@ -219,7 +222,7 @@ export default function PlaylistVideos() {
                     {/* Edit Button */}
                     <Button
                       className="w-full py-1.5 px-7 bg-blue-500 border-none"
-                      onClick={() => setIsShowUpdateDialog((prev) => !prev)}
+                      onClick={() => setModalOpen("update_playlist_dialog")}
                     >
                       Edit
                     </Button>
@@ -227,7 +230,7 @@ export default function PlaylistVideos() {
                     <Button
                       icon={<MdDelete />}
                       className="w-full py-1.5 px-7 bg-red-600 border-none"
-                      onClick={() => setIsShowDeleteDialog((prev) => !prev)}
+                      onClick={() => setModalOpen("delete_playlist_dialog")}
                       disabled={isDeleting}
                     >
                       {isDeleting ? "Deleting..." : "Delete"}
@@ -235,22 +238,24 @@ export default function PlaylistVideos() {
                   </DropdownMenu>
                   {/* Delete Playlist Dialog */}
                   <DeletePlaylistDialogButton
-                    open={isShowDeleteDialog}
-                    handleClose={() => setIsShowDeleteDialog(false)}
+                    open={modalOpen === "delete_playlist_dialog"}
+                    handleClose={() => setModalOpen(null)}
                     isDeleting={isDeleting}
                     onDelete={handleDeletePlaylist}
                   />
                   {/* Update Playlist Dialog */}
                   <UpdatePlaylistDialog
-                    open={isShowUpdateDialog}
-                    handleClose={() => setIsShowUpdateDialog(false)}
+                    open={modalOpen === "update_playlist_dialog"}
+                    handleClose={() => setModalOpen(null)}
                     playlistId={playlist?._id || ""}
                     playlistDetails={{
                       name: playlist?.name || "",
                       description: playlist?.description || "",
                       isPrivate: playlist?.isPrivate || false,
                     }}
-                    onUpdate={() => fetchPlaylist(playlistId)}
+                    onUpdate={(updatedPlaylist) =>
+                      dispatch(setPlaylist(updatedPlaylist))
+                    }
                   />
                 </div>
                 {/* Description */}
@@ -267,15 +272,17 @@ export default function PlaylistVideos() {
           {/* Playlist Videos */}
           <ScrollPagination
             paginationType="infinite-scroll"
-            loadNextPage={() => handleFetchPlaylistVideos(currentPage + 1)}
+            loadNextPage={() =>
+              handleFetchPlaylistVideos(paginationInfo.currentPage + 1)
+            }
             refreshHandler={() => handleFetchPlaylistVideos(1)}
             dataLength={playlistVideos.length}
-            loading={isFetchingVideos || isFetchingPlaylist}
-            error={videosFetchingError}
-            currentPage={currentPage}
-            totalItems={totalVideos}
-            totalPages={totalPages}
-            hasNextPage={hasNextPage}
+            loading={isFetchingPlaylistVideos || isFetchingPlaylist}
+            error={playlistVideosFetchingError?.message}
+            currentPage={paginationInfo.currentPage}
+            totalItems={paginationInfo.totalDocs}
+            totalPages={paginationInfo.totalPages}
+            hasNextPage={paginationInfo.hasNextPage}
             endMessage={
               <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
                 No more playlists to show !!!
@@ -284,9 +291,9 @@ export default function PlaylistVideos() {
             className="lg:w-[70%] w-full flex flex-col gap-2"
           >
             {!playlistVideos?.length &&
-            totalVideos === 0 &&
-            totalPages === 1 &&
-            !isFetchingVideos &&
+            paginationInfo.totalDocs === 0 &&
+            paginationInfo.totalPages === 1 &&
+            !isFetchingPlaylistVideos &&
             !isFetchingPlaylist ? (
               <ErrorDialog
                 errorMessage="empty videos!"
@@ -320,8 +327,8 @@ export default function PlaylistVideos() {
                 ))}
               </>
             )}
-            {(isFetchingVideos || isFetchingPlaylist) &&
-              currentPage == 1 &&
+            {(isFetchingPlaylistVideos || isFetchingPlaylist) &&
+              paginationInfo.currentPage == 1 &&
               Array.from({ length: 10 }).map((_, idx) => (
                 <PlaylistVideoSkeleton key={idx} />
               ))}

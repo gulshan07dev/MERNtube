@@ -4,36 +4,35 @@ import { IoIosMore } from "react-icons/io";
 import { MdDelete, MdLock } from "react-icons/md";
 import { FaGlobe } from "react-icons/fa";
 
-import { Playlist, deletePlaylist } from "@/store/slices/playlistSlice";
+import playlistService from "@/services/playlistService";
+import useService from "@/hooks/useService";
+import { IPlaylist } from "@/interfaces";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
-import useActionHandler from "@/hooks/useActionHandler";
 import DeletePlaylistDialogButton from "./DeletePlaylistDialogButton";
 import UpdatePlaylistDialog from "./UpdatePlaylistDialog";
 
-export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
-  const [playlistDetails, setPlaylistDetails] = useState<Playlist>(playlist);
-  const [
-    isShowDeletePlaylistConfirmDialog,
-    setIsShowDeletePlaylistConfirmDialog,
-  ] = useState(false);
-  const [isShowUpdatePlaylistDialog, setIsShowUpdatePlaylistDialog] =
-    useState(false);
+export default function PlaylistCard({ playlist }: { playlist: IPlaylist }) {
+  const [playlistDetails, setPlaylistDetails] = useState<IPlaylist>(playlist);
+  const [modalOpen, setModalOpen] = useState<
+    "delete_playlist_dialog" | "update_playlist_dialog" | null
+  >(null);
   const [isDeleted, setIsDeleted] = useState(false);
 
-  const { isLoading: isDeleting, handleAction: deletePlaylistAction } =
-    useActionHandler({
-      action: deletePlaylist,
+  const { isLoading: isPlaylistDeleting, handler: deletePlaylist } = useService(
+    playlistService.deletePlaylist,
+    {
       isShowToastMessage: true,
       toastMessages: { loadingMessage: "deleting playlist..." },
-    });
+    }
+  );
 
   const handleDeletePlaylist = async (playlistId: string) => {
     setIsDeleted(false);
-    const { error, isSuccess } = await deletePlaylistAction(playlistId);
+    const { error, success } = await deletePlaylist(playlistId);
 
-    if (!error && isSuccess) {
-      setIsShowDeletePlaylistConfirmDialog(false);
+    if (!error && success) {
+      setModalOpen(null);
       setIsDeleted(true);
     }
   };
@@ -61,7 +60,7 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
           </div>
         )}
         <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-sm bg-gray-600 dark:bg-[#202020] text-white text-xs">
-          {playlist?.videosCount}{" "}
+          {playlist?.videosCount || 0}{" "}
           {playlist?.videosCount && playlist?.videosCount > 1
             ? "videos"
             : "video"}
@@ -93,37 +92,35 @@ export default function PlaylistCard({ playlist }: { playlist: Playlist }) {
         >
           <Button
             className="w-full py-1.5 px-7 bg-blue-500 border-none"
-            onClick={() => setIsShowUpdatePlaylistDialog((prev) => !prev)}
+            onClick={() => setModalOpen("update_playlist_dialog")}
           >
             Edit
           </Button>
           <Button
             icon={<MdDelete />}
             className="w-full py-1.5 px-7 bg-red-600 border-none"
-            onClick={() =>
-              setIsShowDeletePlaylistConfirmDialog((prev) => !prev)
-            }
-            disabled={isDeleting}
+            onClick={() => setModalOpen("delete_playlist_dialog")}
+            disabled={isPlaylistDeleting}
           >
-            {isDeleting ? "Deleting..." : "Delete"}
+            {isPlaylistDeleting ? "Deleting..." : "Delete"}
           </Button>
         </DropdownMenu>
         <DeletePlaylistDialogButton
-          open={isShowDeletePlaylistConfirmDialog}
-          handleClose={() => setIsShowDeletePlaylistConfirmDialog(false)}
-          isDeleting={isDeleting}
+          open={modalOpen === "delete_playlist_dialog"}
+          handleClose={() => setModalOpen(null)}
+          isDeleting={isPlaylistDeleting}
           onDelete={() => handleDeletePlaylist(playlistDetails?._id)}
         />
         <UpdatePlaylistDialog
-          open={isShowUpdatePlaylistDialog}
-          handleClose={() => setIsShowUpdatePlaylistDialog(false)}
+          open={modalOpen === "update_playlist_dialog"}
+          handleClose={() => setModalOpen(null)}
           playlistId={playlistDetails?._id}
           playlistDetails={{
             name: playlistDetails?.name,
             description: playlistDetails?.description,
             isPrivate: playlistDetails?.isPrivate,
           }}
-          onUpdate={(updatedPlaylist: Playlist) =>
+          onUpdate={(updatedPlaylist: IPlaylist) =>
             setPlaylistDetails(updatedPlaylist)
           }
         />

@@ -1,50 +1,62 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BiPlusCircle } from "react-icons/bi";
 
 import PageLayout from "@/layout/PageLayout";
-import { RootState } from "@/store/store";
 import ScrollPagination from "@/component/ScrollPagination";
-import { Playlist, getUserPlaylists } from "@/store/slices/playlistSlice";
-import useActionHandler from "@/hooks/useActionHandler";
+import playlistService from "@/services/playlistService";
+import useService from "@/hooks/useService";
+import { RootState } from "@/store/store";
+import { setPaginationInfo, setPlaylists } from "@/store/slices/playlistSlice";
 import EmptyMessage from "@/component/error/EmptyMessage";
 import PlaylistSkeleton from "@/component/playlist/PlaylistSkeleton";
 import PlaylistCard from "@/component/playlist/PlaylistCard";
 import CreatePlaylistDialog from "@/component/playlist/CreatePlaylistDialog";
 import Button from "@/component/CoreUI/Button";
+import { useParams } from "react-router-dom";
 
 export default function Playlists() {
+  const dispatch = useDispatch();
+  const { username } = useParams();
   const { user, channel } = useSelector((state: RootState) => state?.auth);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [currPage, setCurrPage] = useState(1);
+  const {
+    playlists,
+    paginationInfo: { currentPage, totalPages, totalDocs, hasNextPage },
+  } = useSelector((state: RootState) => state?.playlist);
   const limit = 5;
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalDocs, setTotalDocs] = useState(0);
-  const [hasNextPage, setHasNextPage] = useState(false);
 
   const [isShowCreatePlaylistDialog, setIsShowCreatePlaylistDialog] =
     useState(false);
 
-  const { error, isLoading, handleAction } = useActionHandler({
-    action: getUserPlaylists,
-    isShowToastMessage: false,
-  });
+  const {
+    error,
+    isLoading,
+    handler: getUserPlaylists,
+  } = useService(playlistService.getUserPlaylists);
 
   const fetchUserPlaylists = async (page: number) => {
     if (!channel?._id) return;
-
-    const { isSuccess, resData } = await handleAction({
+    if (page === 1) {
+      dispatch(setPlaylists([]));
+    }
+    const { success, responseData } = await getUserPlaylists({
       userId: channel?._id,
       queryParams: { page, limit },
     });
 
-    if (isSuccess && resData?.result) {
-      const newPlaylists = resData.result.docs;
-      setPlaylists(page === 1 ? newPlaylists : [...playlists, ...newPlaylists]);
-      setCurrPage(resData.result.page);
-      setTotalPages(resData.result.totalPages);
-      setTotalDocs(resData.result.totalDocs);
-      setHasNextPage(resData.result.hasNextPage);
+    if (success) {
+      const { page, totalPages, totalDocs, hasNextPage, docs } =
+        responseData?.data?.result;
+
+      dispatch(setPlaylists(page === 1 ? docs : [...playlists, ...docs]));
+      dispatch(
+        setPaginationInfo({
+          currentPage: page,
+          totalPages,
+          totalDocs,
+          hasNextPage,
+        })
+      );
     }
   };
 
@@ -61,18 +73,18 @@ export default function Playlists() {
   // fetch initial playlists
   useEffect(() => {
     fetchUserPlaylists(1);
-  }, [channel?._id]);
+  }, [username]);
 
   return (
     <PageLayout>
       <ScrollPagination
         paginationType="view-more"
-        loadNextPage={() => fetchUserPlaylists(currPage + 1)}
+        loadNextPage={() => fetchUserPlaylists(currentPage + 1)}
         refreshHandler={() => fetchUserPlaylists(1)}
         dataLength={playlists.length}
         loading={isLoading}
-        error={error}
-        currentPage={currPage}
+        error={error?.message}
+        currentPage={currentPage}
         totalItems={totalDocs}
         totalPages={totalPages}
         hasNextPage={hasNextPage}
@@ -86,7 +98,7 @@ export default function Playlists() {
           <h2 className="max-md:self-center md:text-lg text-base font-semibold text-zinc-800 dark:text-slate-200 font-Noto_sans">
             Created Playlist
           </h2>
-          {channel?._id === user?._id && (
+          {channel?._id === user?._id && !isLoading && (
             <>
               <Button
                 icon={<BiPlusCircle />}
@@ -101,7 +113,7 @@ export default function Playlists() {
                 open={isShowCreatePlaylistDialog}
                 handleClose={() => setIsShowCreatePlaylistDialog(false)}
                 onCreate={(createdPlaylist) =>
-                  setPlaylists((prev) => [createdPlaylist, ...prev])
+                  dispatch(setPlaylists([createdPlaylist, ...playlists]))
                 }
               />
             </>
