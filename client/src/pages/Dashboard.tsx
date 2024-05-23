@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   FaEye,
   FaUserPlus,
@@ -8,13 +8,11 @@ import {
   FaSyncAlt,
 } from "react-icons/fa";
 
-import { RootState } from "@/store/store";
 import PageLayout from "@/layout/PageLayout";
-import useActionHandler from "@/hooks/useActionHandler";
-import {
-  getChannelStats,
-  getChannelVideos,
-} from "@/store/slices/dashboardSlice";
+import dashboardService from "@/services/dashboardService";
+import useService from "@/hooks/useService";
+import { RootState } from "@/store/store";
+import { setChannelVideos, setStats } from "@/store/slices/dashboardSlice";
 import StatCard from "@/component/dashboard/StatCard";
 import Button from "@/component/CoreUI/Button";
 import ErrorDialog from "@/component/error/ErrorDialog";
@@ -23,6 +21,7 @@ import ChannelVideosTableRow from "@/component/dashboard/ChannelVideosTableRow";
 import ErrorMessage from "@/component/error/ErrorMessage";
 
 export default function Dashboard() {
+  const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state?.auth);
   const { stats, channelVideos } = useSelector(
     (state: RootState) => state?.dashboard
@@ -31,37 +30,37 @@ export default function Dashboard() {
   const {
     error: statsFetchingError,
     isLoading: isFetchingStats,
-    handleAction: handleStatsAction,
-  } = useActionHandler({
-    action: getChannelStats,
-    isShowToastMessage: false,
-  });
+    handler: getChannelStats,
+  } = useService(dashboardService.getChannelStats);
 
   const {
     error: channelVideosFetchingError,
     isLoading: isFetchingChannelVideos,
-    handleAction: handleChannelVideosAction,
-  } = useActionHandler({
-    action: getChannelVideos,
-    isShowToastMessage: false,
-  });
+    handler: getChannelVideos,
+  } = useService(dashboardService.getChannelVideos);
 
-  const fetchStats = async () => {
-    await handleStatsAction();
+  const handleFetchStats = async () => {
+    const { success, responseData } = await getChannelStats();
+    if (success) {
+      dispatch(setStats(responseData?.data?.stats));
+    }
   };
 
-  const fetchChannelVideos = async () => {
-    await handleChannelVideosAction();
+  const handleFetchChannelVideos = async () => {
+    const { success, responseData } = await getChannelVideos();
+    if (success) {
+      dispatch(setChannelVideos(responseData?.data?.videos));
+    }
   };
 
   useEffect(() => {
     if (!Object.values(stats).length) {
-      fetchStats();
+      handleFetchStats();
     }
   }, []);
 
   useEffect(() => {
-    fetchChannelVideos();
+    handleFetchChannelVideos();
   }, []);
 
   return (
@@ -87,7 +86,7 @@ export default function Dashboard() {
           <div className="flex gap-3 items-center">
             <Button
               btnType="icon-btn"
-              onClick={fetchStats}
+              onClick={handleFetchStats}
               disabled={isFetchingStats}
               className="text-lg bg-slate-100 dark:bg-zinc-600 hover:bg-white dark:hover:bg-zinc-800 rounded-sm hover:rotate-90 transition-transform"
             >
@@ -98,7 +97,7 @@ export default function Dashboard() {
             </h2>
           </div>
           {statsFetchingError ? (
-            <ErrorDialog errorMessage={statsFetchingError} />
+            <ErrorDialog errorMessage={statsFetchingError?.message} />
           ) : (
             <div className="relative grid lg:grid-cols-4 grid-cols-2 gap-5 lg:h-[200px] h-[400px]">
               {!isFetchingStats && (
@@ -144,7 +143,7 @@ export default function Dashboard() {
           <div className="flex gap-3 items-center px-5 py-3">
             <Button
               btnType="icon-btn"
-              onClick={fetchChannelVideos}
+              onClick={handleFetchChannelVideos}
               disabled={isFetchingChannelVideos}
               className="text-lg bg-slate-100 dark:bg-zinc-600 hover:bg-white dark:hover:bg-zinc-800 rounded-sm hover:rotate-90 transition-transform"
             >
@@ -155,7 +154,7 @@ export default function Dashboard() {
             </h2>
           </div>
           {channelVideosFetchingError ? (
-            <ErrorDialog errorMessage={channelVideosFetchingError} />
+            <ErrorDialog errorMessage={channelVideosFetchingError?.message} />
           ) : !isFetchingChannelVideos ? (
             channelVideos?.length === 0 ? (
               <ErrorMessage

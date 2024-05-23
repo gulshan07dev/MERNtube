@@ -4,16 +4,18 @@ import { abbreviateNumber } from "js-abbreviation-number";
 
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
-import { Video } from "@/store/slices/videoSlice";
+import { IVideo } from "@/interfaces";
 import DeleteVideoDialog from "../video/DeleteVideoDialog";
 import UpdateVideoDialog from "../video/UpdateVideoDialog";
 import ToggleButton from "../CoreUI/ToggleButton";
 import Button from "../CoreUI/Button";
+import { Link } from "react-router-dom";
 
-export default function ChannelVideosTableRow({ video }: { video: Video }) {
+export default function ChannelVideosTableRow({ video }: { video: IVideo }) {
   const [videoDetails, setVideoDetails] = useState(video);
-  const [isUpdateVideoDialogOpen, setIsUpdateVideoDialogOpen] = useState(false);
-  const [isDeleteVideoDialogOpen, setIsDeleteVideoDialogOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<
+    "update_video_dialog" | "delete_video_dialog" | null
+  >(null);
   const [isVideoDeleted, setIsVideoDeleted] = useState(false);
 
   const {
@@ -72,7 +74,12 @@ export default function ChannelVideosTableRow({ video }: { video: Video }) {
             alt="Video Thumbnail"
             className="h-4 w-8"
           />
-          <p>{videoDetails?.title}</p>
+          <Link
+            to={`/watch/${videoDetails?._id}`}
+            className="hover:text-blue-600"
+          >
+            <p>{videoDetails?.title}</p>
+          </Link>
         </div>
       </th>
       {/* rating - likes */}
@@ -91,13 +98,13 @@ export default function ChannelVideosTableRow({ video }: { video: Video }) {
           <Button
             btnType="icon-btn"
             aria-label="Edit Video"
-            onClick={() => setIsUpdateVideoDialogOpen(true)}
+            onClick={() => setModalOpen("update_video_dialog")}
           >
             <FaEdit />
           </Button>
           <UpdateVideoDialog
-            open={isUpdateVideoDialogOpen}
-            handleClose={() => setIsUpdateVideoDialogOpen(false)}
+            open={modalOpen === "update_video_dialog"}
+            handleClose={() => setModalOpen(null)}
             video={videoDetails}
             onUpdate={(video) => {
               setVideoDetails(video);
@@ -107,13 +114,13 @@ export default function ChannelVideosTableRow({ video }: { video: Video }) {
           <Button
             btnType="icon-btn"
             aria-label="Delete Video"
-            onClick={() => setIsDeleteVideoDialogOpen(true)}
+            onClick={() => setModalOpen("delete_video_dialog")}
           >
             <FaTrash />
           </Button>
           <DeleteVideoDialog
-            open={isDeleteVideoDialogOpen}
-            handleClose={() => setIsDeleteVideoDialogOpen(false)}
+            open={modalOpen === "delete_video_dialog"}
+            handleClose={() => setModalOpen(null)}
             videoId={videoDetails?._id}
             onDelete={(isVideoDeleted) => setIsVideoDeleted(isVideoDeleted)}
           />
