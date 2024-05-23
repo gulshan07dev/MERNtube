@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IVideo } from "@/interfaces";
+import { IPaginationInfo, IVideo } from "@/interfaces";
 
 interface initialState {
   watchHistories: {
@@ -8,22 +8,12 @@ interface initialState {
       videos: { video: IVideo; historyId: string }[];
     };
   };
-  paginationInfo: {
-    currentPage: number;
-    totalPages: number;
-    totalDocs: number;
-    hasNextPage: boolean;
-  };
+  watchHistoriesPaginationInfo: Partial<IPaginationInfo>;
 }
 
 const initialState: initialState = {
   watchHistories: {},
-  paginationInfo: {
-    currentPage: 0,
-    totalPages: 0,
-    totalDocs: 0,
-    hasNextPage: false,
-  },
+  watchHistoriesPaginationInfo: {},
 };
 
 const watchHistorySlice = createSlice({
@@ -39,15 +29,18 @@ const watchHistorySlice = createSlice({
     clearWatchHistories: (state) => {
       state.watchHistories = {};
     },
-    setPaginationInfo: (
+    setWatchHistoriesPaginationInfo: (
       state,
-      action: PayloadAction<initialState["paginationInfo"]>
+      action: PayloadAction<initialState["watchHistoriesPaginationInfo"]>
     ) => {
-      state.paginationInfo = action.payload;
+      state.watchHistoriesPaginationInfo = action.payload;
     },
   },
 });
 
 export default watchHistorySlice.reducer;
-export const { setWatchHistories, clearWatchHistories, setPaginationInfo } =
-  watchHistorySlice.actions;
+export const {
+  setWatchHistories,
+  clearWatchHistories,
+  setWatchHistoriesPaginationInfo,
+} = watchHistorySlice.actions;

@@ -1,22 +1,16 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { PaginationInfo } from "@/component/ScrollPagination";
-import { IVideo } from "@/interfaces";
+import { IPaginationInfo, IVideo } from "@/interfaces";
 
 interface initialState {
   video: IVideo | null;
   videos: IVideo[];
-  paginationInfo: PaginationInfo;
+  videosPaginationInfo: Partial<IPaginationInfo>;
 }
 
 const initialState: initialState = {
   video: null,
   videos: [],
-  paginationInfo: {
-    currentPage: 0,
-    totalPages: 1,
-    totalDocs: 1,
-    hasNextPage: true,
-  },
+  videosPaginationInfo: {},
 };
 
 const videoSlice = createSlice({
@@ -29,11 +23,15 @@ const videoSlice = createSlice({
     setVideos: (state, action: PayloadAction<IVideo[]>) => {
       state.videos = action.payload;
     },
-    setPaginationInfo: (state, action: PayloadAction<PaginationInfo>) => {
-      state.paginationInfo = action.payload;
+    setVideosPaginationInfo: (
+      state,
+      action: PayloadAction<IPaginationInfo>
+    ) => {
+      state.videosPaginationInfo = action.payload;
     },
   },
 });
 
 export default videoSlice.reducer;
-export const { setVideo, setVideos, setPaginationInfo } = videoSlice.actions;
+export const { setVideo, setVideos, setVideosPaginationInfo } =
+  videoSlice.actions;

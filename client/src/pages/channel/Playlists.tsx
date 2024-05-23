@@ -7,7 +7,10 @@ import ScrollPagination from "@/component/ScrollPagination";
 import playlistService from "@/services/playlistService";
 import useService from "@/hooks/useService";
 import { RootState } from "@/store/store";
-import { setPaginationInfo, setPlaylists } from "@/store/slices/playlistSlice";
+import {
+  setPlaylists,
+  setPlaylistsPaginationInfo,
+} from "@/store/slices/playlistSlice";
 import EmptyMessage from "@/component/error/EmptyMessage";
 import PlaylistSkeleton from "@/component/playlist/PlaylistSkeleton";
 import PlaylistCard from "@/component/playlist/PlaylistCard";
@@ -21,7 +24,12 @@ export default function Playlists() {
   const { user, channel } = useSelector((state: RootState) => state?.auth);
   const {
     playlists,
-    paginationInfo: { currentPage, totalPages, totalDocs, hasNextPage },
+    playlistsPaginationInfo: {
+      currentPage,
+      totalPages,
+      totalDocs,
+      hasNextPage,
+    },
   } = useSelector((state: RootState) => state?.playlist);
   const limit = 5;
 
@@ -50,7 +58,7 @@ export default function Playlists() {
 
       dispatch(setPlaylists(page === 1 ? docs : [...playlists, ...docs]));
       dispatch(
-        setPaginationInfo({
+        setPlaylistsPaginationInfo({
           currentPage: page,
           totalPages,
           totalDocs,
@@ -63,7 +71,7 @@ export default function Playlists() {
   const renderSkeletons = () => {
     const numSkeletons =
       limit && playlists.length !== 0
-        ? Math.min(limit, totalDocs - playlists.length)
+        ? Math.min(limit, totalDocs! - playlists.length)
         : limit;
     return Array.from({ length: numSkeletons }, (_, idx) => (
       <PlaylistSkeleton key={idx} />
@@ -79,15 +87,15 @@ export default function Playlists() {
     <PageLayout>
       <ScrollPagination
         paginationType="view-more"
-        loadNextPage={() => fetchUserPlaylists(currentPage + 1)}
+        loadNextPage={() => fetchUserPlaylists(currentPage! + 1)}
         refreshHandler={() => fetchUserPlaylists(1)}
         dataLength={playlists.length}
         loading={isLoading}
         error={error?.message}
-        currentPage={currentPage}
-        totalItems={totalDocs}
-        totalPages={totalPages}
-        hasNextPage={hasNextPage}
+        currentPage={currentPage!}
+        totalItems={totalDocs!}
+        totalPages={totalPages!}
+        hasNextPage={hasNextPage!}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
             No more playlists to show !!!

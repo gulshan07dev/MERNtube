@@ -1,3 +1,10 @@
+export interface IPaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  totalDocs: number;
+  hasNextPage: boolean;
+}
+
 export interface IUser {
   _id: string;
   fullName: string;
@@ -81,6 +88,3 @@ export interface IVideoComment extends IComment {
 export interface ITweetComment extends IComment {
   tweet: string;
 }
-
-
-

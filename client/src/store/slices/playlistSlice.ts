@@ -1,26 +1,16 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IPlaylist } from "@/interfaces";
+import { IPaginationInfo, IPlaylist } from "@/interfaces";
 
 interface initialState {
   playlist: IPlaylist | null;
   playlists: IPlaylist[];
-  paginationInfo: {
-    currentPage: number;
-    totalPages: number;
-    totalDocs: number;
-    hasNextPage: boolean;
-  };
+  playlistsPaginationInfo:  Partial<IPaginationInfo>;
 }
 
 const initialState: initialState = {
   playlist: null,
   playlists: [],
-  paginationInfo: {
-    currentPage: 0,
-    totalPages: 0,
-    totalDocs: 0,
-    hasNextPage: false,
-  },
+  playlistsPaginationInfo:  {},
 };
 
 const playlistSlice = createSlice({
@@ -33,15 +23,15 @@ const playlistSlice = createSlice({
     setPlaylists: (state, action: PayloadAction<initialState["playlists"]>) => {
       state.playlists = action.payload;
     },
-    setPaginationInfo: (
+    setPlaylistsPaginationInfo: (
       state,
-      action: PayloadAction<initialState["paginationInfo"]>
+      action: PayloadAction<initialState["playlistsPaginationInfo"]>
     ) => {
-      state.paginationInfo = action.payload;
+      state.playlistsPaginationInfo = action.payload;
     },
   },
 });
 
 export default playlistSlice.reducer;
-export const { setPlaylist, setPlaylists, setPaginationInfo } =
+export const { setPlaylist, setPlaylists, setPlaylistsPaginationInfo } =
   playlistSlice.actions;

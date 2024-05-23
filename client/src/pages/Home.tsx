@@ -7,7 +7,7 @@ import PageLayout from "@/layout/PageLayout";
 import ScrollPagination from "@/component/ScrollPagination";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
-import { setPaginationInfo, setVideos } from "@/store/slices/videoSlice";
+import { setVideosPaginationInfo, setVideos } from "@/store/slices/videoSlice";
 import VideoCard from "@/component/video/VideoCard";
 import VideoSkeleton from "@/component/video/VideoSkeleton";
 import Button from "@/component/CoreUI/Button";
@@ -15,9 +15,10 @@ import EmptyMessage from "@/component/error/EmptyMessage";
 
 const Home: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { videos, paginationInfo } = useSelector(
-    (state: RootState) => state.video
-  );
+  const {
+    videos,
+    videosPaginationInfo: { currentPage, totalPages, totalDocs, hasNextPage },
+  } = useSelector((state: RootState) => state.video);
   const [sortType, setSortType] = useState<"desc" | "acc">("desc");
   const limit = 9;
 
@@ -45,7 +46,7 @@ const Home: React.FC = () => {
 
       dispatch(setVideos(page === 1 ? docs : [...videos, ...docs]));
       dispatch(
-        setPaginationInfo({
+        setVideosPaginationInfo({
           currentPage: page,
           totalPages,
           totalDocs,
@@ -64,7 +65,7 @@ const Home: React.FC = () => {
 
   // fetch initial videos
   useEffect(() => {
-    if (paginationInfo.currentPage > 0) return;
+    if (currentPage! > 0) return;
     fetchVideos(1);
   }, []);
 
@@ -80,15 +81,15 @@ const Home: React.FC = () => {
     <PageLayout>
       <ScrollPagination
         paginationType="infinite-scroll"
-        loadNextPage={() => fetchVideos(paginationInfo.currentPage + 1)}
+        loadNextPage={() => fetchVideos(currentPage! + 1)}
         refreshHandler={() => fetchVideos(1)}
         dataLength={videos.length}
         loading={isLoading}
         error={error?.message}
-        currentPage={paginationInfo.currentPage}
-        hasNextPage={paginationInfo.hasNextPage}
-        totalPages={paginationInfo.totalPages}
-        totalItems={paginationInfo.totalDocs}
+        currentPage={currentPage!}
+        hasNextPage={hasNextPage!}
+        totalPages={totalPages!}
+        totalItems={totalDocs!}
         endMessage={
           <p className="py-4 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
             No more videos to fetch !!!
@@ -116,7 +117,7 @@ const Home: React.FC = () => {
         <div className="flex flex-grow flex-wrap items-start gap-y-7 max-lg:justify-center lg:gap-x-5 gap-10">
           {videos.length || isLoading
             ? videos.map((item) => <VideoCard key={item?._id} data={item} />)
-            : paginationInfo.totalDocs === 0 && paginationInfo.totalPages === 1
+            : totalDocs === 0 && totalPages === 1
             ? renderEmptyMessage()
             : null}
           {isLoading &&

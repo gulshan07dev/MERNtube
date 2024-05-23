@@ -9,7 +9,7 @@ import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
 import {
   clearWatchHistories,
-  setPaginationInfo,
+  setWatchHistoriesPaginationInfo,
   setWatchHistories,
 } from "@/store/slices/watchHistorySlice";
 import { IVideo, IWatchHistoryVideo } from "@/interfaces";
@@ -22,9 +22,15 @@ import ToggleWatchHistoryPauseStatus from "@/component/settings/watchHistory/Tog
 export default function WatchHistory() {
   const dispatch: AppDispatch = useDispatch();
   const limit = 10;
-  const { watchHistories, paginationInfo } = useSelector(
-    (state: RootState) => state.watch_history
-  );
+  const {
+    watchHistories,
+    watchHistoriesPaginationInfo: {
+      currentPage,
+      totalPages,
+      totalDocs,
+      hasNextPage,
+    },
+  } = useSelector((state: RootState) => state.watch_history);
 
   const {
     error,
@@ -72,7 +78,7 @@ export default function WatchHistory() {
         dispatch(setWatchHistories(updatedWatchHistories));
 
         dispatch(
-          setPaginationInfo({
+          setWatchHistoriesPaginationInfo({
             currentPage: page,
             totalPages,
             totalDocs,
@@ -116,20 +122,18 @@ export default function WatchHistory() {
       {/* history videos categorized with day/dates */}
       <ScrollPagination
         paginationType="infinite-scroll"
-        currentPage={paginationInfo.currentPage}
+        currentPage={currentPage!}
         dataLength={Object.values(watchHistories).reduce(
           (total, { videos }) => total + videos.length,
           2
         )}
         error={error?.message}
-        hasNextPage={paginationInfo.hasNextPage}
-        loadNextPage={() =>
-          handleFetchWatchHistory(paginationInfo.currentPage + 1)
-        }
+        hasNextPage={hasNextPage!}
+        loadNextPage={() => handleFetchWatchHistory(currentPage! + 1)}
         refreshHandler={() => handleFetchWatchHistory(1)}
         loading={isLoading}
-        totalPages={paginationInfo.totalPages}
-        totalItems={paginationInfo.totalDocs}
+        totalPages={totalPages!}
+        totalItems={totalDocs!}
         className={twMerge("flex flex-grow flex-col gap-3")}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
@@ -138,8 +142,8 @@ export default function WatchHistory() {
         }
       >
         {!Object.keys(watchHistories).length &&
-        paginationInfo.totalDocs === 0 &&
-        paginationInfo.totalPages === 1 &&
+        totalDocs === 0 &&
+        totalPages === 1 &&
         !isLoading ? (
           <EmptyMessage
             message="empty history!"

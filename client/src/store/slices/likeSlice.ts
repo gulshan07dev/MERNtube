@@ -1,12 +1,14 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IVideo } from "@/interfaces";
+import { IPaginationInfo, IVideo } from "@/interfaces";
 
 interface initialState {
   likedVideos: { likedVideos: IVideo }[];
+  likedVideosPaginationInfo: Partial<IPaginationInfo>;
 }
 
 const initialState: initialState = {
   likedVideos: [],
+  likedVideosPaginationInfo: {},
 };
 
 const likeSlice = createSlice({
@@ -19,8 +21,15 @@ const likeSlice = createSlice({
     ) => {
       state.likedVideos = action.payload;
     },
+
+    setLikedVideosPaginationInfo: (
+      state,
+      action: PayloadAction<initialState["likedVideosPaginationInfo"]>
+    ) => {
+      state.likedVideosPaginationInfo = action.payload;
+    },
   },
 });
 
 export default likeSlice.reducer;
-export const { setLikedVideos } = likeSlice.actions;
+export const { setLikedVideos, setLikedVideosPaginationInfo } = likeSlice.actions;

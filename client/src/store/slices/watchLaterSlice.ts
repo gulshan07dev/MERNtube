@@ -1,24 +1,14 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IVideo } from "@/interfaces";
+import { IPaginationInfo, IVideo } from "@/interfaces";
 
 interface initialState {
   watchLaterVideos: { _id: string; watchLaterVideo: IVideo }[];
-  paginationInfo: {
-    currentPage: number;
-    totalPages: number;
-    totalDocs: number;
-    hasNextPage: boolean;
-  };
+  watchLaterVideosPaginationInfo: Partial<IPaginationInfo>;
 }
 
 const initialState: initialState = {
   watchLaterVideos: [],
-  paginationInfo: {
-    currentPage: 0,
-    totalPages: 0,
-    totalDocs: 0,
-    hasNextPage: false,
-  },
+  watchLaterVideosPaginationInfo:  {},
 };
 
 const watchLaterSlice = createSlice({
@@ -31,14 +21,15 @@ const watchLaterSlice = createSlice({
     ) => {
       state.watchLaterVideos = action.payload;
     },
-    setPaginationInfo: (
+    setWatchLaterVideosPaginationInfo: (
       state,
-      action: PayloadAction<initialState["paginationInfo"]>
+      action: PayloadAction<initialState["watchLaterVideosPaginationInfo"]>
     ) => {
-      state.paginationInfo = action.payload;
+      state.watchLaterVideosPaginationInfo = action.payload;
     },
   },
 });
 
 export default watchLaterSlice.reducer;
-export const { setWatchLaterVideos, setPaginationInfo } = watchLaterSlice.actions;
+export const { setWatchLaterVideos, setWatchLaterVideosPaginationInfo } =
+  watchLaterSlice.actions;

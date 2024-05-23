@@ -8,7 +8,7 @@ import watchLaterService from "@/services/watchLaterService";
 import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
 import {
-  setPaginationInfo,
+  setWatchLaterVideosPaginationInfo,
   setWatchLaterVideos,
 } from "@/store/slices/watchLaterSlice";
 import EmptyMessage from "@/component/error/EmptyMessage";
@@ -16,9 +16,15 @@ import WatchLaterVideoCard from "@/component/watchLater/WatchLaterVideoCard";
 
 export default function WatchLater() {
   const dispatch: AppDispatch = useDispatch();
-  const { watchLaterVideos, paginationInfo } = useSelector(
-    (state: RootState) => state.watch_later
-  );
+  const {
+    watchLaterVideos,
+    watchLaterVideosPaginationInfo: {
+      currentPage,
+      totalPages,
+      totalDocs,
+      hasNextPage,
+    },
+  } = useSelector((state: RootState) => state.watch_later);
 
   const {
     isLoading,
@@ -42,7 +48,7 @@ export default function WatchLater() {
         setWatchLaterVideos(page === 1 ? docs : [...watchLaterVideos, ...docs])
       );
       dispatch(
-        setPaginationInfo({
+        setWatchLaterVideosPaginationInfo({
           currentPage: page,
           totalPages,
           totalDocs,
@@ -59,17 +65,15 @@ export default function WatchLater() {
     <PageLayout className="flex flex-col gap-7 max-lg:gap-5">
       <ScrollPagination
         paginationType="infinite-scroll"
-        currentPage={paginationInfo.currentPage}
+        currentPage={currentPage!}
         dataLength={watchLaterVideos?.length}
         error={error?.message}
-        hasNextPage={paginationInfo.hasNextPage}
-        loadNextPage={() =>
-          handleFetchWatchLaterVideos(paginationInfo.currentPage + 1)
-        }
+        hasNextPage={hasNextPage!}
+        loadNextPage={() => handleFetchWatchLaterVideos(currentPage! + 1)}
         refreshHandler={() => handleFetchWatchLaterVideos(1)}
         loading={isLoading}
-        totalPages={paginationInfo.totalPages}
-        totalItems={paginationInfo.totalDocs}
+        totalPages={totalPages!}
+        totalItems={totalDocs!}
         className={twMerge("flex flex-grow flex-col gap-3")}
         endMessage={
           <p className="py-4 pt-5 text-lg text-gray-800 dark:text-white text-center font-Noto_sans">
@@ -78,8 +82,8 @@ export default function WatchLater() {
         }
       >
         {!watchLaterVideos?.length &&
-        paginationInfo.totalDocs === 0 &&
-        paginationInfo.totalPages === 1 &&
+        totalDocs === 0 &&
+        totalPages === 1 &&
         !isLoading ? (
           <EmptyMessage
             message="empty watch later!"
