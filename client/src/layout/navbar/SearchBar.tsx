@@ -24,6 +24,7 @@ export default function SearchBar() {
   return (
     <>
       <div
+      role="searchbox"
         className={twMerge(
           "lg:w-[45%] md:w-[40%] max-md:hidden",
           isSearchbarOpenInMobile && [
@@ -44,6 +45,7 @@ export default function SearchBar() {
               className="text-gray-400 font-extralight hidden group-focus-within:block"
             />
             <input
+            role="search"
               type="text"
               placeholder="search"
               ref={searchInputRef}
@@ -56,6 +58,7 @@ export default function SearchBar() {
           </div>
           <button
             type="submit"
+            title="Search"
             className="rounded-se-full rounded-ee-full cursor-pointer max-md:hidden md:px-4 px-2.5 py-1 text-gray-600 dark:text-slate-100 dark:hover:text-slate-300"
           >
             <Search className="md:text-sm text-[10px]" />
@@ -66,6 +69,7 @@ export default function SearchBar() {
           // for mobile devices. close search input button
           <Button
             btnType="icon-btn"
+            title="Close Searchbar"
             className="md:hidden bg-red-50 hover:bg-slate-200 dark:bg-[#303030] hover:dark:bg-[#474747] text-2xl text-red-500 p-1.5"
             onClick={() => setIsSearchbarOpenInMobile(false)}
           >
@@ -78,6 +82,7 @@ export default function SearchBar() {
       <div className="hidden max-md:flex flex-grow justify-end pr-3 bg-none">
         <Button
           btnType="icon-btn"
+          title="Open Searchbar"
           className="bg-slate-100 hover:bg-slate-200 dark:bg-[#303030] hover:dark:bg-[#474747]"
           onClick={() => {
             setIsSearchbarOpenInMobile((prev) => !prev);

@@ -38,12 +38,10 @@ const Navbar = ({
   return (
     <nav
       className={`w-full h-[60px] bg-white dark:bg-dark_bg flex justify-between items-center sticky top-0 z-50 transition-[top] md:px-7 md:pl-5 px-3`}
-      role="navigation"
-      aria-label="Primary Navigation"
       ref={navbar}
     >
       {/* Left Section */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1" role="presentation">
         <SidebarToggleBtn
           className={!showSidebarToggleBtn ? "lg:hidden" : ""}
         />
@@ -69,13 +67,16 @@ const Navbar = ({
             }
           >
             {/* User Information */}
-            <div className="flex gap-3">
+            <div className="flex gap-3" role="menu">
               <Avatar
                 url={user?.avatar || ""}
                 fullName={user?.fullName || ""}
               />
               {isLoggedIn && (
-                <div className="flex flex-col min-w-[120px] max-w-[165px]">
+                <div
+                  className="flex flex-col min-w-[120px] max-w-[165px]"
+                  role="presentation"
+                >
                   <h1 className="text-base text-gray-900 dark:text-white font-roboto truncate">
                     {user?.fullName}
                   </h1>
@@ -86,6 +87,7 @@ const Navbar = ({
                   <Link
                     to={`/c/${user?.username}`}
                     className="text-[12px] text-blue-600 dark:text-blue-500 font-[600] font-nunito_sans leading-5"
+                    role="menuitem"
                   >
                     View your channel
                   </Link>
@@ -98,22 +100,25 @@ const Navbar = ({
                 <Link
                   to="/account"
                   className="text-gray-700 dark:text-slate-300"
+                  role="menuitem"
                 >
                   Account & Password
                 </Link>
                 <Link
                   to="/dashboard"
                   className="text-gray-700 dark:text-slate-300"
+                  role="menuitem"
                 >
                   Dashboard
                 </Link>
                 <Link
                   to="/settings"
                   className="text-gray-700 dark:text-slate-300"
+                  role="menuitem"
                 >
                   Setting
                 </Link>
-                <hr />
+                <hr role="separator" />
                 {/* logout */}
                 <LogoutBtn className="w-full" />
               </>
