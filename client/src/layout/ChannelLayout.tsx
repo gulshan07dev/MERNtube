@@ -132,6 +132,7 @@ const ChannelLayout: React.FC = () => {
                   <>
                     <Button
                       btnType="icon-btn"
+                      title="Update Cover Image"
                       onClick={() => setModalOpen("update_cover_image_dialog")}
                       className="absolute right-2 top-2 md:text-4xl text-3xl bg-slate-200 dark:bg-slate-800"
                     >

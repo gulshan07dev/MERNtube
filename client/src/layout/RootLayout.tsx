@@ -30,11 +30,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({
       {showNavigation && (
         <Navbar showSidebarToggleBtn={byDefaultSidebarHidden} />
       )}
-      <main
-        className="w-full min-h-screen bg-white_bg dark:bg-dark_bg relative flex"
-        role="region"
-        aria-label="Main Content="
-      >
+      <main className="w-full min-h-screen bg-white_bg dark:bg-dark_bg relative flex">
         {showNavigation && (
           <section>
             <Sidebar byDefaultSidebarHidden={byDefaultSidebarHidden} />
