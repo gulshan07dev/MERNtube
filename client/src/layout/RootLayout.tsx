@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
 import Navbar from "./navbar/Navbar";
 import Sidebar from "./sidebar/Sidebar";
+import Loader from "@/component/Loader";
 
 interface RootLayoutProps {
   byDefaultSidebarHidden?: boolean;
@@ -44,7 +45,9 @@ const RootLayout: React.FC<RootLayoutProps> = ({
           )}
         >
           <ScrollRestoration />
+          <Suspense fallback={<Loader />}>
           <Outlet />
+          </Suspense>
         </section>
       </main>
     </>

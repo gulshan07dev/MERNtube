@@ -1,29 +1,31 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import RootLayout from "../layout/RootLayout";
-import AuthRequired from "../helper/auth/AuthRequired";
-import AuthNotRequired from "../helper/auth/AuthNotRequired";
-import Home from "../pages/Home";
-import Login from "../pages/auth/Login";
-import Signup from "../pages/auth/Signup";
-import Account from "../pages/Account";
-import ChannelLayout from "../layout/ChannelLayout";
-import Channel from "../pages/channel/Channel";
-import Videos from "../pages/channel/Videos";
-import Tweets from "../pages/channel/Tweets";
-import Playlists from "../pages/channel/Playlists";
-import Subscribers from "../pages/channel/Subscribers";
-import Create from "../pages/Create";
-import Settings from "../pages/Settings";
-import PlaylistVideos from "../pages/PlaylistVideos";
-import VideoPlayer from "../pages/VideoPlayer ";
-import WatchHistory from "../pages/WatchHistory";
-import WatchLater from "../pages/WatchLater";
-import LikedVideos from "../pages/LikedVideos";
-import SendFeedback from "../pages/SendFeedback";
-import Subscriptions from "../pages/Subscriptions";
-import Dashboard from "../pages/Dashboard";
-import SearchResult from "@/pages/search/SearchResult";
+import { lazy } from "react";
+const AuthRequired = lazy(() => import("../helper/auth/AuthRequired"));
+const AuthNotRequired = lazy(() => import("../helper/auth/AuthNotRequired"));
+const Home = lazy(() => import("../pages/Home"));
+const Login = lazy(() => import("../pages/auth/Login"));
+const Signup = lazy(() => import("../pages/auth/Signup"));
+const Account = lazy(() => import("../pages/Account"));
+const ChannelLayout = lazy(() => import("../layout/ChannelLayout"));
+const Channel = lazy(() => import("../pages/channel/Channel"));
+const Videos = lazy(() => import("../pages/channel/Videos"));
+const Tweets = lazy(() => import("../pages/channel/Tweets"));
+const Playlists = lazy(() => import("../pages/channel/Playlists"));
+const Subscribers = lazy(() => import("../pages/channel/Subscribers"));
+const Create = lazy(() => import("../pages/Create"));
+const Settings = lazy(() => import("../pages/Settings"));
+const PlaylistVideos = lazy(() => import("../pages/PlaylistVideos"));
+const VideoPlayer = lazy(() => import("../pages/VideoPlayer "));
+const WatchHistory = lazy(() => import("../pages/WatchHistory"));
+const WatchLater = lazy(() => import("../pages/WatchLater"));
+const LikedVideos = lazy(() => import("../pages/LikedVideos"));
+const SendFeedback = lazy(() => import("../pages/SendFeedback"));
+const Subscriptions = lazy(() => import("../pages/Subscriptions"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
+const SearchResult = lazy(() => import("@/pages/search/SearchResult"));
+
 
 const router = createBrowserRouter([
   {

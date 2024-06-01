@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useParams, useLocation } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
@@ -17,6 +17,7 @@ import UpdateAvatarDialog from "@/component/channel/UpdateAvatarDialog";
 import UpdateCoverImageDialog from "@/component/channel/UpdateCoverImageDialog";
 import SubscribeBtn from "@/component/subscription/SubscribeBtn";
 import ErrorDialog from "@/component/error/ErrorDialog";
+import Loader from "@/component/Loader";
 
 const ChannelLayout: React.FC = () => {
   const dispatch = useDispatch();
@@ -236,7 +237,11 @@ const ChannelLayout: React.FC = () => {
           <hr className="absolute bottom-0 w-full border-0 rounded-md h-[1px]  bg-gray-300 dark:bg-gray-600" />
         </section>
       )}
-      {!error && <Outlet />}
+      {!error && (
+        <Suspense fallback={<Loader />}>
+          <Outlet />
+        </Suspense>
+      )}
     </main>
   );
 };
