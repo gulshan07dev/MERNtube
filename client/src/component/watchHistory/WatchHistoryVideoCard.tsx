@@ -11,7 +11,7 @@ import { BiSolidPlaylist } from "react-icons/bi";
 import watchHistoryService from "@/services/watchHistoryService";
 import useService from "@/hooks/useService";
 import { IVideo } from "@/interfaces";
-import Modal from "@/component/CoreUI/Modal";
+import Modal from "../Modal";
 import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import Button from "@/component/CoreUI/Button";
 import ShareDialog from "@/component/ShareDialog";
@@ -144,14 +144,6 @@ const WatchHistoryVideoCard = ({
         title="Remove Video From Watch History"
         description="Are you sure you want to remove video from the watch history?"
         isLoading={isRemovingVideoFromWatchHistory}
-        closeButton={
-          <Button
-            className="w-full py-1.5 px-7 bg-red-600 border-none"
-            disabled={isRemovingVideoFromWatchHistory}
-          >
-            Cancel
-          </Button>
-        }
         submitLabel={isRemovingVideoFromWatchHistory ? "Removing" : "Remove"}
         onSubmit={handleRemoveVideoFromWatchHistory}
       />

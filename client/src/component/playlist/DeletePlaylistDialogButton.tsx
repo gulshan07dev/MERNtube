@@ -1,5 +1,4 @@
-import Button from "../CoreUI/Button";
-import Modal from "../CoreUI/Modal";
+import Modal from "../Modal";
 
 const DeletePlaylistDialogButton = ({
   open,
@@ -8,7 +7,7 @@ const DeletePlaylistDialogButton = ({
   onDelete,
 }: {
   open: boolean;
-  handleClose: () => void
+  handleClose: () => void;
   isDeleting: boolean;
   onDelete: () => void;
 }) => {
@@ -22,14 +21,6 @@ const DeletePlaylistDialogButton = ({
         submitLabel={isDeleting ? "Deleting..." : "Delete"}
         isLoading={isDeleting}
         onSubmit={onDelete}
-        closeButton={
-          <Button
-            className="w-full py-1.5 px-7 bg-red-600 border-none"
-            disabled={isDeleting}
-          >
-            Cancel
-          </Button>
-        }
       />
     </>
   );

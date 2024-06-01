@@ -1,7 +1,6 @@
 import tweetService from "@/services/tweetService";
 import useService from "@/hooks/useService";
-import Modal from "../CoreUI/Modal";
-import Button from "../CoreUI/Button";
+import Modal from "../Modal";
 
 interface DeleteTweetDialogProps {
   open: boolean;
@@ -41,14 +40,6 @@ export default function DeleteTweetDialog({
       submitLabel={isDeleting ? "deleting..." : "Delete"}
       isLoading={isDeleting}
       onSubmit={() => handleDeleteTweet()}
-      closeButton={
-        <Button
-          className="w-full py-1.5 px-7 bg-red-600 border-none"
-          disabled={isDeleting}
-        >
-          Cancel
-        </Button>
-      }
     />
   );
 }

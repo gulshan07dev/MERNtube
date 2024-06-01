@@ -4,7 +4,7 @@ import { FaTrash } from "react-icons/fa";
 import watchHistoryService from "@/services/watchHistoryService";
 import useService from "@/hooks/useService";
 import Button from "../../CoreUI/Button";
-import Modal from "../../CoreUI/Modal";
+import Modal from "../../Modal";
 
 export default function ClearWatchHistory() {
   const [
@@ -42,14 +42,6 @@ export default function ClearWatchHistory() {
         title="Clear Watch History"
         description="Are you sure you want to clear the watch history?"
         isLoading={isLoading}
-        closeButton={
-          <Button
-            className="w-full py-1.5 px-7 bg-red-600 border-none"
-            disabled={isLoading}
-          >
-            Cancel
-          </Button>
-        }
         submitLabel={isLoading ? "Cleaning" : "Clear"}
         onSubmit={handleClearWatchHistory}
       />

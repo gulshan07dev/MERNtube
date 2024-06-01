@@ -1,7 +1,7 @@
- import { ITweet } from "@/interfaces";
-import Modal from "../CoreUI/Modal";
+import { ITweet } from "@/interfaces";
+import Modal from "../Modal";
 import TextAreaInput from "../CoreUI/TextAreaInput";
-import useForm from "@/hooks/useForm"; 
+import useForm from "@/hooks/useForm";
 import useService from "@/hooks/useService";
 import tweetService from "@/services/tweetService";
 
@@ -9,23 +9,26 @@ interface UpdateTweetDialogProps {
   open: boolean;
   handleClose: () => void;
   tweet: ITweet;
-  onUpdate: (content: string) => void
+  onUpdate: (content: string) => void;
 }
 
 export default function UpdateTweetDialog({
   open,
   handleClose,
   tweet,
-  onUpdate
+  onUpdate,
 }: UpdateTweetDialogProps) {
   const { formData, handleInputChange } = useForm({
     initialFormState: { content: tweet?.content },
   });
 
-  const { isLoading, handler: updateTweet } = useService(tweetService.updateTweet, {
-    isShowToastMessage: true,
-    toastMessages: {loadingMessage: "updating tweet..."}
-  })
+  const { isLoading, handler: updateTweet } = useService(
+    tweetService.updateTweet,
+    {
+      isShowToastMessage: true,
+      toastMessages: { loadingMessage: "updating tweet..." },
+    }
+  );
 
   const handleSubmitForm = async () => {
     const { success, error } = await updateTweet({
@@ -34,7 +37,7 @@ export default function UpdateTweetDialog({
     });
     if (success && !error) {
       handleClose();
-      onUpdate(formData?.content)
+      onUpdate(formData?.content);
     }
   };
   return (
@@ -67,4 +70,3 @@ export default function UpdateTweetDialog({
     </Modal>
   );
 }
-                     

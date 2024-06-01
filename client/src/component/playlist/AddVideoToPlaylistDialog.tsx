@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import ScrollPagination from "../ScrollPagination";
-import Modal from "../CoreUI/Modal";
+import Modal from "../Modal";
 import playlistService from "@/services/playlistService";
 import useService from "@/hooks/useService";
 import { IPlaylist } from "@/interfaces";
@@ -101,6 +101,7 @@ const AddVideoToPlaylistDialog: React.FC<AddVideoToPlaylistDialogProps> = ({
       }
       submitLabel={!isLoggedIn ? "Log In or Sign Up" : undefined}
       onSubmit={!isLoggedIn ? () => navigate("/auth/login") : undefined}
+      isLoading={isVideoAddingToPlaylist || isRemovingVideoFromPlaylist}
       onOpen={() => handleFetchPlaylists(1)}
     >
       {isLoggedIn && (

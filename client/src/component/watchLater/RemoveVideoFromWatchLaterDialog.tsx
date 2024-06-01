@@ -1,7 +1,6 @@
 import watchLaterService from "@/services/watchLaterService";
 import useService from "@/hooks/useService";
-import Modal from "../CoreUI/Modal";
-import Button from "../CoreUI/Button";
+import Modal from "../Modal";
 
 export default function RemoveVideoFromWatchLaterDialog({
   videoId,
@@ -35,14 +34,6 @@ export default function RemoveVideoFromWatchLaterDialog({
       handleClose={handleClose}
       title="Remove Video From Watch Later"
       description="Are you sure you want to remove this video from watch later?"
-      closeButton={
-        <Button
-          className="w-full py-1.5 px-7 bg-red-600 border-none"
-          disabled={isLoading}
-        >
-          Cancel
-        </Button>
-      }
       submitLabel="Remove"
       onSubmit={handleRemoveVideoFromWatchLater}
       isLoading={isLoading}

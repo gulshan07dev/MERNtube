@@ -14,7 +14,7 @@ import LikeBtn from "../CoreUI/LikeBtn";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
 import EditableTextarea from "../CoreUI/EditableTextarea";
-import Modal from "../CoreUI/Modal";
+import Modal from "../Modal";
 import TextWithToggle from "../CoreUI/TextWithToggle";
 
 interface CommentCardProps {
@@ -178,14 +178,6 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             submitLabel={isDeleting ? "Deleting..." : "Delete"}
             isLoading={isDeleting}
             onSubmit={() => handleDelete()}
-            closeButton={
-              <Button
-                className="w-full py-1.5 px-7 bg-red-600 border-none"
-                disabled={isDeleting}
-              >
-                Cancel
-              </Button>
-            }
           />
         </>
       )}

@@ -17,13 +17,16 @@ import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 
 const VideoCard = ({ data }: { data: IVideo }) => {
   const navigate = useNavigate();
-  const [
-    isShowAddVideoToWatchLaterDialog,
-    setIsShowAddVideoToWatchLaterDialog,
-  ] = useState(false);
-  const [isShowAddVideoToPlaylistDialog, setIsShowAddVideoToPlaylistDialog] =
-    useState(false);
-  const [isShowShareDialog, setIsShowShareDialog] = useState(false);
+  const [modalOpen, setModalOpen] = useState<
+    | "add_video_to_watch_later_dialog"
+    | "add_video_to_playlist_dialog"
+    | "video_share_dialog"
+    | null
+  >(null);
+
+  const handleCloseModal = () => {
+    setModalOpen(null);
+  };
 
   return (
     <div className="group/item rounded-md w-[315px] max-lg:w-[415px] max-sm:w-full">
@@ -60,6 +63,7 @@ const VideoCard = ({ data }: { data: IVideo }) => {
             triggerButton={
               <Button
                 btnType="icon-btn"
+                title="video-menu-options"
                 className="hidden group-hover/item:block max-md:block"
               >
                 <FiMoreVertical size={15} />
@@ -70,9 +74,7 @@ const VideoCard = ({ data }: { data: IVideo }) => {
               <Button
                 icon={<AiOutlineClockCircle />}
                 className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
-                onClick={() =>
-                  setIsShowAddVideoToWatchLaterDialog((prev) => !prev)
-                }
+                onClick={() => setModalOpen("add_video_to_watch_later_dialog")}
               >
                 Save to Watch Later
               </Button>
@@ -80,9 +82,7 @@ const VideoCard = ({ data }: { data: IVideo }) => {
               <Button
                 icon={<BiSolidPlaylist />}
                 className="bg-white dark:bg-[#333333] border-gray-500 dark:border-[#505050] text-sm text-black dark:text-white font-roboto hover:opacity-75 w-full py-2"
-                onClick={() =>
-                  setIsShowAddVideoToPlaylistDialog((prev) => !prev)
-                }
+                onClick={() => setModalOpen("add_video_to_playlist_dialog")}
               >
                 Save to Playlist
               </Button>
@@ -90,26 +90,26 @@ const VideoCard = ({ data }: { data: IVideo }) => {
               <Button
                 icon={<FaShare />}
                 className="bg-white border-gray-500 dark:border-none text-sm text-black font-roboto hover:opacity-75 w-full py-2"
-                onClick={() => setIsShowShareDialog((prev) => !prev)}
+                onClick={() => setModalOpen("video_share_dialog")}
               >
                 Share
               </Button>
             </div>
           </DropdownMenu>
           <AddVideoToWatchLaterDialog
-            open={isShowAddVideoToWatchLaterDialog}
-            handleClose={() => setIsShowAddVideoToWatchLaterDialog(false)}
+            open={modalOpen === "add_video_to_watch_later_dialog"}
+            handleClose={handleCloseModal}
             videoId={data?._id}
           />
           <AddVideoToPlaylistDialog
+            open={modalOpen === "add_video_to_playlist_dialog"}
+            handleClose={handleCloseModal}
             videoId={data?._id}
-            open={isShowAddVideoToPlaylistDialog}
-            handleClose={() => setIsShowAddVideoToPlaylistDialog(false)}
           />
           <ShareDialog
+            open={modalOpen === "video_share_dialog"}
+            handleClose={handleCloseModal}
             url={`${document.baseURI}watch/${data?._id}`}
-            open={isShowShareDialog}
-            handleClose={() => setIsShowShareDialog(false)}
           />
         </div>
       </div>

@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 
-import Modal from "../CoreUI/Modal";
+import Modal from "../Modal";
 import playlistService from "@/services/playlistService";
 import useService from "@/hooks/useService";
 import { IPlaylist } from "@/interfaces";

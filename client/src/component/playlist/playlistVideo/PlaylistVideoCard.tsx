@@ -10,7 +10,7 @@ import { FaShare } from "react-icons/fa";
 import playlistService from "@/services/playlistService";
 import useService from "@/hooks/useService";
 import { IVideo } from "@/interfaces";
-import Modal from "@/component/CoreUI/Modal";
+import Modal from "@/component/Modal";
 import DropdownMenu from "@/component/CoreUI/DropdownMenu";
 import Button from "@/component/CoreUI/Button";
 import ShareDialog from "@/component/ShareDialog";
@@ -132,14 +132,6 @@ const playlistVideoCard = ({
         title="Remove Video From Playlist"
         description="Are you sure you want to remove video from the playlist?"
         isLoading={isVideoRemovingFromPlaylist}
-        closeButton={
-          <Button
-            className="w-full py-1.5 px-7 bg-red-600 border-none"
-            disabled={isVideoRemovingFromPlaylist}
-          >
-            Cancel
-          </Button>
-        }
         submitLabel={isVideoRemovingFromPlaylist ? "Removing" : "Remove"}
         onSubmit={handleRemoveVideoFromPlaylist}
       />

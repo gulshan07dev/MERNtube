@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "@/store/store";
-import Modal from "../CoreUI/Modal";
+import Modal from "../Modal";
 import FileUpload from "../FileUpload";
 import useForm from "@/hooks/useForm";
 import useService from "@/hooks/useService";
@@ -19,7 +19,7 @@ export default function UpdateCoverImageDialog({
   open,
   handleClose,
 }: UpdateCoverImageDialogProps) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const coverImageRef = useRef<HTMLInputElement | null>(null);
 
@@ -47,7 +47,7 @@ export default function UpdateCoverImageDialog({
     const { success, error, responseData } = await changeCoverImage(formData);
 
     if (success && !error) {
-      dispatch(setUser({coverImage: responseData?.data?.user?.coverImage}))
+      dispatch(setUser({ coverImage: responseData?.data?.user?.coverImage }));
       handleClose();
       resetForm();
     }

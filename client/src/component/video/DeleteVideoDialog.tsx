@@ -1,7 +1,6 @@
-import Modal from "../CoreUI/Modal";
+import Modal from "../Modal";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
-import Button from "../CoreUI/Button";
 
 interface DeleteVideoDialogProps {
   open: boolean;
@@ -43,14 +42,6 @@ export default function DeleteVideoDialog({
       submitLabel={isDeleting ? "deleting..." : "Delete"}
       isLoading={isDeleting}
       onSubmit={handleDeleteVideo}
-      closeButton={
-        <Button
-          className="w-full py-1.5 px-7 bg-red-600 border-none"
-          disabled={isDeleting}
-        >
-          Cancel
-        </Button>
-      }
     />
   );
 }

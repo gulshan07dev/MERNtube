@@ -4,7 +4,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { createPortal } from "react-dom";
 
 import useClickOutside from "@/hooks/useClickOutside";
-import Button from "./Button";
+import Button from "./CoreUI/Button";
 
 interface ModalProps {
   open: boolean;
@@ -17,7 +17,6 @@ interface ModalProps {
   isSubmitButtonDisabled?: boolean;
   isLoading?: boolean;
   className?: string;
-  closeButton?: React.ReactElement;
   onOpen?: () => void;
 }
 
@@ -32,15 +31,18 @@ const Modal: React.FC<ModalProps> = ({
   isSubmitButtonDisabled,
   isLoading,
   className = "",
-  closeButton,
   onOpen,
 }) => {
   const ModalRef = useRef<HTMLDivElement>(null);
 
-  if (!closeButton) {
+  if (!submitLabel) {
     useClickOutside({
       ref: ModalRef,
-      callback: handleClose,
+      callback: () => {
+        if (!isLoading) {
+          handleClose();
+        }
+      },
     });
   }
 
@@ -60,19 +62,30 @@ const Modal: React.FC<ModalProps> = ({
             <div
               ref={ModalRef}
               className={twMerge(
-                "relative bg-white dark:bg-[#121212] dark:border dark:border-[#525252] rounded-md p-8 max-sm:px-4 max-w-md w-[95%] max-h-[95%] overflow-x-hidden overflow-y-scroll flex flex-col gap-3",
+                "relative bg-white dark:bg-[#121212] dark:border dark:border-[#525252] rounded-md max-w-md w-[95%] max-h-[95%] overflow-x-hidden overflow-y-auto on-scrollbar flex flex-col",
                 className
               )}
             >
-              <h2 className="text-xl text-black dark:text-white font-bold font-Noto_sans">
-                {title}
-              </h2>
-              <p className="text-gray-700 dark:text-gray-300">{description}</p>
-              {children && (
-                <div className="overflow-y-scroll no-scrollbar">{children}</div>
-              )}
-              <div className="flex gap-4 justify-end mt-3">
-                {!closeButton ? (
+              <div className="flex flex-col gap-4 max-sm:px-4 p-6">
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-xl text-black dark:text-white font-bold font-Noto_sans">
+                    {title}
+                  </h2>
+                  <p className="text-gray-700 dark:text-gray-300">
+                    {description}
+                  </p>
+                </div>
+                {children && <div>{children}</div>}
+              </div>
+
+              <div
+                className={twMerge(
+                  submitLabel && [
+                    "w-full flex gap-4 justify-between pt-3 pb-5 sm:px-5 px-4 border-t-[0.5px] border-slate-200 dark:border-[#525252] bg-purple-50 dark:bg-[#172227]",
+                  ]
+                )}
+              >
+                {!submitLabel ? (
                   <button
                     className="p-2 rounded-full text-2xl text-black dark:text-white absolute top-4 right-1 bg-red-50 hover:bg-red-500 hover:text-white dark:bg-[#242424] dark:hover:bg-[#505050] transition-[color_background]"
                     onClick={handleClose}
@@ -81,13 +94,13 @@ const Modal: React.FC<ModalProps> = ({
                     <AiOutlineClose />
                   </button>
                 ) : (
-                  closeButton && (
-                    <div className="flex gap-1">
-                      {React.cloneElement(closeButton, {
-                        onClick: handleClose,
-                      })}
-                    </div>
-                  )
+                  <Button
+                    className="px-5 bg-red-500 border border-red-600 rounded-md"
+                    disabled={isLoading}
+                    onClick={handleClose}
+                  >
+                    Cancel
+                  </Button>
                 )}
 
                 {submitLabel && onSubmit && (
@@ -95,7 +108,7 @@ const Modal: React.FC<ModalProps> = ({
                     onClick={onSubmit}
                     disabled={isLoading || isSubmitButtonDisabled}
                     isGradientBg={true}
-                    className="border-none dark:text-white"
+                    className="dark:text-white  rounded-md"
                   >
                     {submitLabel}
                   </Button>

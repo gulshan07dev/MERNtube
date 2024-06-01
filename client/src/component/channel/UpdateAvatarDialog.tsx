@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "@/store/store";
-import Modal from "../CoreUI/Modal";
+import Modal from "../Modal";
 import FileUpload from "../FileUpload";
 import useForm from "@/hooks/useForm";
 import useService from "@/hooks/useService";
@@ -47,7 +47,7 @@ export default function UpdateAvatarDialog({
     const { success, error, responseData } = await changeUserAvatar(formData);
 
     if (success && !error) {
-      dispatch(setUser({ avatar: responseData?.data?.user?.avatar}));
+      dispatch(setUser({ avatar: responseData?.data?.user?.avatar }));
       handleClose();
       resetForm();
     }

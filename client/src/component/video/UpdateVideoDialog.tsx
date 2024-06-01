@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import Modal from "../CoreUI/Modal";
+import Modal from "../Modal";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import { IVideo } from "@/interfaces";

@@ -8,7 +8,7 @@ import {
   FaCopy,
 } from "react-icons/fa";
 
-import Modal from "./CoreUI/Modal";
+import Modal from "./Modal";
 
 const ShareDialog = ({
   url,
