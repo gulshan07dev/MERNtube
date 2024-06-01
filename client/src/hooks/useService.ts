@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AxiosError, AxiosResponse } from "axios";
 import toast from "react-hot-toast";
 
 interface ErrorResponse {
@@ -25,8 +26,8 @@ type ServiceHandler<TArgs extends any[]> = {
   }>;
 };
 
-const useService = <TArgs extends any[], TResult>(
-  serviceFunction: (...args: TArgs) => Promise<TResult>,
+const useService = <TArgs extends any[]>(
+  serviceFunction: (...args: TArgs) => Promise<AxiosResponse>,
   options?: {
     isShowToastMessage?: boolean;
     toastMessages?: {
@@ -54,7 +55,7 @@ const useService = <TArgs extends any[], TResult>(
         : null;
 
     try {
-      const response: any = await serviceFunction(...args);
+      const response = await serviceFunction(...args);
       const responseData = response.data as ResponseData;
 
       isShowToastMessage &&
@@ -68,7 +69,8 @@ const useService = <TArgs extends any[], TResult>(
         success: true,
         error: null,
       };
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as AxiosError;
       const responseError = error.response?.data as ErrorResponse;
       const message =
         responseError?.errors && Object.values(responseError?.errors).length
