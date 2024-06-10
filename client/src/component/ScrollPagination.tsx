@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { RotatingLines } from "react-loader-spinner";
+import { useEffect } from "react";
 
 import { twMerge } from "tailwind-merge";
 import ErrorDialog from "./error/ErrorDialog";
@@ -88,13 +87,7 @@ const ScrollPagination = ({
             )}
           {loading && (
             <div className="w-full flex justify-center mb-5 max-md:mt-3">
-              <RotatingLines
-                visible={true}
-                width="75"
-                strokeWidth="5"
-                animationDuration="0.75"
-                ariaLabel="rotating-lines-loading"
-              />
+              <div className="w-14 h-14 rounded-full bg-none border-[3px] border-t-0 border-r-0 border-violet-500 animate-spin delay-1000 duration-150" />
             </div>
           )}
         </>

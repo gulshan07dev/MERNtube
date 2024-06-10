@@ -1,16 +1,17 @@
-import React from "react";
+import { lazy, StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
 import { Provider } from "react-redux";
-import store from "./store/store.ts";
 import { Toaster } from "react-hot-toast";
+import store from "./store/store.ts";
+
+import "./index.css";
+const App = lazy(() => import("./App.tsx"));
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
+  <StrictMode>
     <Provider store={store}>
       <App />
     </Provider>
     <Toaster />
-  </React.StrictMode>
+  </StrictMode>
 );

@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mui/icons-material": "^5.14.19",
     "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.6.2",
     "js-abbreviation-number": "^1.4.0",
@@ -18,11 +17,11 @@
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.12.0",
-    "react-loader-spinner": "^6.1.6",
     "react-redux": "^9.0.4",
     "react-router-dom": "^6.22.3",
     "react-timeago": "^7.2.0",
-    "tailwind-merge": "^2.2.1"
+    "tailwind-merge": "^2.2.1",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20.11.14",

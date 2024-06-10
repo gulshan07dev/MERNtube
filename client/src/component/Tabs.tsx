@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import Button from "./CoreUI/Button";
 import { twMerge } from "tailwind-merge";
@@ -27,8 +27,10 @@ const Tabs = ({ tabs, className = "" }: TabsProps) => {
                 ? "bg-[#000000cb] dark:bg-[#454545] text-white"
                 : "bg-transparent text-black dark:text-white"
             }`}
-            onClick={() => setSelectedTab(tab.label)} 
-          >{tab.label}</Button>
+            onClick={() => setSelectedTab(tab.label)}
+          >
+            {tab.label}
+          </Button>
         ))}
       </div>
       {/* Render the selected tab component */}

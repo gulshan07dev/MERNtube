@@ -33,6 +33,11 @@ const userSchema = new Schema({
         maxLength: [7, "Password must be less than 8 char"],
         trim: true,
     },
+    role: {
+        type: String,
+        enum: ["USER", "ADMIN"],
+        default: "USER"
+    },
     avatar: {
         type: String
     },

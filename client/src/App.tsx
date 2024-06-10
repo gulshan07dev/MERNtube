@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useDispatch } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 
@@ -8,6 +8,7 @@ import { setAppLoading } from "./store/slices/appLoadingSlice";
 import authService from "./services/authService";
 import useService from "./hooks/useService";
 import router from "./routes";
+import MainAppLoader from "./component/MainAppLoader";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -47,9 +48,9 @@ function App() {
   }, []);
 
   return (
-    <>
+    <Suspense fallback={<MainAppLoader />}>
       <RouterProvider router={router} />
-    </>
+    </Suspense>
   );
 }
 

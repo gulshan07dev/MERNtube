@@ -1,9 +1,10 @@
-import React, {
+import {
   useState,
   ChangeEvent,
   ForwardedRef,
   RefObject,
   useEffect,
+  forwardRef,
 } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -20,7 +21,7 @@ interface FileUploadProps {
   fileType?: "image" | "video";
 }
 
-const FileUpload = React.forwardRef(
+const FileUpload = forwardRef(
   (
     {
       label,
@@ -83,7 +84,9 @@ const FileUpload = React.forwardRef(
             <div className="h-full w-full flex flex-col gap-2 justify-center items-center">
               {icon && label ? (
                 <>
-                  <span className="text-gray-600 dark:text-slate-200 text-4xl">{icon}</span>
+                  <span className="text-gray-600 dark:text-slate-200 text-4xl">
+                    {icon}
+                  </span>
                   <span className="text-lg text-gray-700 dark:text-slate-100 font-roboto">
                     {label}
                   </span>

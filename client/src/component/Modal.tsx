@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 import { AiOutlineClose } from "react-icons/ai";
 import { createPortal } from "react-dom";
@@ -9,6 +9,7 @@ import Button from "./CoreUI/Button";
 interface ModalProps {
   open: boolean;
   handleClose: () => void;
+  icon?: ReactElement;
   title: string;
   description: string;
   children?: React.ReactNode;
@@ -18,11 +19,13 @@ interface ModalProps {
   isLoading?: boolean;
   className?: string;
   onOpen?: () => void;
+  onClose?: () => void;
 }
 
 const Modal: React.FC<ModalProps> = ({
   open,
   handleClose,
+  icon,
   title,
   description,
   children,
@@ -32,6 +35,7 @@ const Modal: React.FC<ModalProps> = ({
   isLoading,
   className = "",
   onOpen,
+  onClose,
 }) => {
   const ModalRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +49,13 @@ const Modal: React.FC<ModalProps> = ({
       },
     });
   }
+
+  const handleModalClose = () => {
+    handleClose();
+    if (onClose) {
+      onClose();
+    }
+  };
 
   useEffect(() => {
     if (onOpen && open) onOpen();
@@ -68,10 +79,11 @@ const Modal: React.FC<ModalProps> = ({
             >
               <div className="flex flex-col gap-4 max-sm:px-4 p-6">
                 <div className="flex flex-col gap-1">
-                  <h2 className="text-xl text-black dark:text-white font-bold font-Noto_sans">
-                    {title}
-                  </h2>
-                  <p className="text-gray-700 dark:text-gray-300">
+                  <span className="text-xl text-black dark:text-white font-bold font-Noto_sans">
+                    {icon && <span className="inline-block text-2xl mr-3">{icon}</span>}
+                    <h2 className="inline">{title}</h2>
+                  </span>
+                  <p className="text-zinc-800 dark:text-zinc-300 text-base leading-[25px] font-roboto">
                     {description}
                   </p>
                 </div>
@@ -81,23 +93,23 @@ const Modal: React.FC<ModalProps> = ({
               <div
                 className={twMerge(
                   submitLabel && [
-                    "w-full flex gap-4 justify-between pt-3 pb-5 sm:px-5 px-4 border-t-[0.5px] border-slate-200 dark:border-[#525252] bg-purple-50 dark:bg-[#172227]",
+                    "w-full flex gap-4 justify-between pt-4 pb-5 sm:px-5 px-4 border-t-[0.5px] border-slate-200 dark:border-[#525252] bg-zinc-100 dark:bg-[#172227] rounded-tl-3xl rounded-tr-3xl",
                   ]
                 )}
               >
                 {!submitLabel ? (
                   <button
-                    className="p-2 rounded-full text-2xl text-black dark:text-white absolute top-4 right-1 bg-red-50 hover:bg-red-500 hover:text-white dark:bg-[#242424] dark:hover:bg-[#505050] transition-[color_background]"
-                    onClick={handleClose}
+                    className="p-2 rounded-3xl text-2xl text-black dark:text-white absolute top-4 right-1 bg-red-50 hover:bg-red-500 hover:text-white dark:bg-[#242424] dark:hover:bg-[#505050] transition-[color_background]"
+                    onClick={handleModalClose}
                     disabled={isLoading}
                   >
                     <AiOutlineClose />
                   </button>
                 ) : (
                   <Button
-                    className="px-5 bg-red-500 border border-red-600 rounded-md"
+                    className="px-5 bg-red-500 border border-red-600 rounded-3xl"
                     disabled={isLoading}
-                    onClick={handleClose}
+                    onClick={handleModalClose}
                   >
                     Cancel
                   </Button>
@@ -108,7 +120,7 @@ const Modal: React.FC<ModalProps> = ({
                     onClick={onSubmit}
                     disabled={isLoading || isSubmitButtonDisabled}
                     isGradientBg={true}
-                    className="dark:text-white  rounded-md"
+                    className="dark:text-white  rounded-3xl"
                   >
                     {submitLabel}
                   </Button>

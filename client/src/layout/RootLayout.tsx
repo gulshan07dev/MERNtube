@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
@@ -46,7 +46,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({
         >
           <ScrollRestoration />
           <Suspense fallback={<Loader />}>
-          <Outlet />
+            <Outlet />
           </Suspense>
         </section>
       </main>

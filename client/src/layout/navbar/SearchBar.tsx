@@ -1,7 +1,6 @@
 import { FormEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
-import { Search } from "@mui/icons-material";
 import { twMerge } from "tailwind-merge";
 import { MdOutlineCancel } from "react-icons/md";
 
@@ -61,7 +60,7 @@ export default function SearchBar() {
             title="Search"
             className="rounded-se-full rounded-ee-full cursor-pointer max-md:hidden md:px-4 px-2.5 py-1 text-gray-600 dark:text-slate-100 dark:hover:text-slate-300"
           >
-            <Search className="md:text-sm text-[10px]" />
+            <FaSearch className="md:text-sm text-[10px]" />
           </button>
         </form>
 
@@ -93,7 +92,7 @@ export default function SearchBar() {
             }, 0);
           }}
         >
-          <Search />
+          <FaSearch />
         </Button>
       </div>
     </>

@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-
-import RootLayout from "../layout/RootLayout";
 import { lazy } from "react";
+
+const RootLayout = lazy(() => import("../layout/RootLayout"))
 const AuthRequired = lazy(() => import("../helper/auth/AuthRequired"));
 const AuthNotRequired = lazy(() => import("../helper/auth/AuthNotRequired"));
 const Home = lazy(() => import("../pages/Home"));
