@@ -87,7 +87,7 @@ const ScrollPagination = ({
             )}
           {loading && (
             <div className="w-full flex justify-center mb-5 max-md:mt-3">
-              <div className="w-14 h-14 rounded-full bg-none border-[3px] border-t-0 border-r-0 border-violet-500 animate-spin delay-1000 duration-150" />
+              <div className="w-14 h-14 rounded-full bg-none border-[3px] border-t-0 border-r-0 border-violet-500 animate-spin duration-700" />
             </div>
           )}
         </>
