@@ -17,17 +17,17 @@ import UpdateTweetDialog from "./UpdateTweetDialog";
 import DeleteTweetDialog from "./DeleteTweetDialog";
 import CommentBox from "../comment/CommentBox";
 import Devider from "../Divider";
+import DeletedMessage from "../DeletedMessage";
 
 const TweetCard = ({ tweet }: { tweet: ITweet }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
-  const [tweetContent, setTweetContent] = useState(tweet?.content);
+  const [tweetData, setTweetData] = useState(tweet);
+  const [isTweetDeleted, setIsTweetDeleted] = useState(false);
+  const [showCommentSection, setShowCommentSection] = useState(false);
   const [modalOpen, setModalOpen] = useState<
     "update_tweet_dialog" | "delete_tweet_dialog" | null
   >(null);
-
-  const [isTweetDeleted, setIsTweetDeleted] = useState(false);
-  const [showCommentSection, setShowCommentSection] = useState(false);
 
   const { isLoading: isTweetLikeLoading, handler: toggleTweetLike } =
     useService(LikeService.toggleTweetLike, {
@@ -41,22 +41,19 @@ const TweetCard = ({ tweet }: { tweet: ITweet }) => {
 
   const toggleCommentSection = () => setShowCommentSection((prev) => !prev);
 
-  const { _id: userId } = user || {};
+  const { _id: userId } = user!;
   const {
+    content,
     owner,
     createdAt,
     isLiked,
     tweetLikesCount,
     _id: tweetId,
-  } = tweet || {};
-  const { avatar, fullName, username } = owner || {};
+  } = tweetData;
+  const { avatar, fullName, username } = owner;
 
   if (isTweetDeleted) {
-    return (
-      <p className="p-2 bg-slate-50 dark:bg-[#252525] text-black dark:text-white">
-        This tweet has been deleted.
-      </p>
-    );
+    return <DeletedMessage message="This tweet has been deleted." />;
   }
 
   return (
@@ -96,12 +93,14 @@ const TweetCard = ({ tweet }: { tweet: ITweet }) => {
                 </Button>
               }
             >
+              {/* tweet edit - btn */}
               <Button
                 className="w-full py-1.5 px-7 bg-blue-500 border-none"
                 onClick={() => setModalOpen("update_tweet_dialog")}
               >
                 edit
               </Button>
+              {/* tweet delete btn */}
               <Button
                 className="w-full py-1.5 px-7 bg-red-600 border-none"
                 onClick={() => setModalOpen("delete_tweet_dialog")}
@@ -112,8 +111,10 @@ const TweetCard = ({ tweet }: { tweet: ITweet }) => {
             <UpdateTweetDialog
               open={modalOpen === "update_tweet_dialog"}
               handleClose={() => setModalOpen(null)}
-              tweet={tweet}
-              onUpdate={(content) => setTweetContent(content)}
+              tweet={tweetData}
+              onUpdate={(updatedTweet) =>
+                setTweetData({ ...tweet, content: updatedTweet?.content })
+              }
             />
             <DeleteTweetDialog
               open={modalOpen === "delete_tweet_dialog"}
@@ -124,21 +125,24 @@ const TweetCard = ({ tweet }: { tweet: ITweet }) => {
           </>
         )}
       </div>
+      {/* tweet content */}
       <div className="bg-gray-100 dark:bg-[#172227] p-3 rounded-lg mb-3">
         <TextWithToggle
           initialShowLine={2}
           className="text-lg text-gray-800 dark:text-slate-100 font-poppins font-medium"
         >
-          {tweetContent}
+          {content}
         </TextWithToggle>
       </div>
       <div className="flex justify-between items-center pl-3">
+        {/* tweet like - btn */}
         <LikeBtn
           isLiked={isLiked}
           likeCount={tweetLikesCount}
           onToggleLike={handleToggleTweetLike}
           isLoading={isTweetLikeLoading}
         />
+        {/* tweet comment section - toggle btn */}
         <button
           className={`flex items-center space-x-1 text-gray-600 dark:text-slate-200 text-lg transition-all rounded-full px-3 py-1 ${
             showCommentSection
@@ -153,6 +157,7 @@ const TweetCard = ({ tweet }: { tweet: ITweet }) => {
           <span>Comment</span>
         </button>
       </div>
+      {/* tweet comment section */}
       {showCommentSection && (
         <>
           <Devider className="my-3" />

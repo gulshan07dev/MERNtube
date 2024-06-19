@@ -4,12 +4,13 @@ import TextAreaInput from "../CoreUI/TextAreaInput";
 import useForm from "@/hooks/useForm";
 import useService from "@/hooks/useService";
 import tweetService from "@/services/tweetService";
+import { useEffect } from "react";
 
 interface UpdateTweetDialogProps {
   open: boolean;
   handleClose: () => void;
   tweet: ITweet;
-  onUpdate: (content: string) => void;
+  onUpdate: (updatedTweet: ITweet) => void;
 }
 
 export default function UpdateTweetDialog({
@@ -18,7 +19,7 @@ export default function UpdateTweetDialog({
   tweet,
   onUpdate,
 }: UpdateTweetDialogProps) {
-  const { formData, handleInputChange } = useForm({
+  const { formData, handleInputChange, resetForm } = useForm({
     initialFormState: { content: tweet?.content },
   });
 
@@ -31,15 +32,23 @@ export default function UpdateTweetDialog({
   );
 
   const handleSubmitForm = async () => {
-    const { success, error } = await updateTweet({
+    const { responseData, success, error } = await updateTweet({
       tweetId: tweet?._id,
       data: { content: formData?.content },
     });
     if (success && !error) {
       handleClose();
-      onUpdate(formData?.content);
+      onUpdate(responseData?.data?.tweet);
     }
   };
+
+  useEffect(() => {
+    resetForm();
+    return () => {
+      resetForm();
+    };
+  }, []);
+
   return (
     <Modal
       open={open}
@@ -48,7 +57,9 @@ export default function UpdateTweetDialog({
       description="update your tweet by providing new content"
       submitLabel={isLoading ? "loading..." : "Update Tweet"}
       onSubmit={handleSubmitForm}
-      isSubmitButtonDisabled={formData?.content?.length < 25}
+      isSubmitButtonDisabled={
+        formData?.content?.length < 25 || formData?.content === tweet?.content
+      }
       isLoading={isLoading}
       className="flex flex-col gap-4"
     >
