@@ -11,6 +11,27 @@ import useForm from "@/hooks/useForm";
 import FileUpload from "../FileUpload";
 
 export default function VideoCreateForm() {
+  const videoFileRef = useRef<HTMLInputElement>(null);
+  const thumbnailRef = useRef<HTMLInputElement>(null);
+
+  const initialVideoDetails: {
+    title: string;
+    description: string;
+    videoFile: File | null;
+    thumbnail: File | null;
+    isPublished: boolean;
+  } = {
+    title: "",
+    description: "",
+    videoFile: null,
+    thumbnail: null,
+    isPublished: true,
+  };
+
+  const { formData, handleInputChange, resetForm } = useForm({
+    initialFormState: initialVideoDetails,
+  });
+
   const {
     error,
     isLoading,
@@ -18,19 +39,6 @@ export default function VideoCreateForm() {
   } = useService(videoService.createVideo, {
     isShowToastMessage: true,
     toastMessages: { loadingMessage: "Uploading video..." },
-  });
-
-  const initialVideoDetails = {
-    title: "",
-    description: "",
-    videoFile: null,
-    thumbnail: null,
-    isPublished: true,
-  };
-  const videoFileRef = useRef<HTMLInputElement>(null);
-  const thumbnailRef = useRef<HTMLInputElement>(null);
-  const { formData, handleInputChange, resetForm } = useForm({
-    initialFormState: initialVideoDetails,
   });
 
   const onSubmit = async () => {

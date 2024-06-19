@@ -7,7 +7,7 @@ interface useFormProps<T> {
 const useForm = <T>({ initialFormState }: useFormProps<T>) => {
   const [formData, setFormData] = useState<T>(initialFormState);
 
-  const handleInputChange = (field: keyof T, value: T[keyof T] | File) => {
+  const handleInputChange = (field: keyof T, value: T[keyof T]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 

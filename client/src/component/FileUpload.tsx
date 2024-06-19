@@ -14,7 +14,7 @@ interface FileUploadProps {
   label: string;
   icon?: React.ReactNode;
   defaultImageSrc?: string;
-  onChange?: (file: File | null) => void;
+  onChange?: (file: File) => void;
   accept?: string;
   className?: string;
   disabled?: boolean;
@@ -38,7 +38,7 @@ const FileUpload = forwardRef(
     const [filePreview, setFilePreview] = useState<string | null>(null);
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const selectedFile = e.target.files?.[0] || null;
+      const selectedFile = e.target.files?.[0]!;
 
       if (selectedFile) {
         setFilePreview(URL.createObjectURL(selectedFile));
