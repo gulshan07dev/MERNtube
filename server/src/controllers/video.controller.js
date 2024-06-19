@@ -368,7 +368,6 @@ const deleteVideo = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid videoId!");
     }
 
-    // Retrieve video details
     const video = await Video.findById(videoId);
 
     if (!video) {
@@ -377,15 +376,24 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
     // Delete video & thumbnail from cloudinary
     if (video.videoFile) {
-        await deleteOnCloudinary(video.videoFile, "video");
+        const deletedVideoFile = await deleteOnCloudinary(video.videoFile, "video");
+        if (!deletedVideoFile) {
+            throw new ApiError(500, "Failed to delete video!")
+        }
     }
 
     if (video.thumbnail) {
-        await deleteOnCloudinary(video.thumbnail);
+        const deletedThumbnail = await deleteOnCloudinary(video.thumbnail);
+        if (!deletedThumbnail) {
+            throw new ApiError(500, "Failed to delete video!")
+        }
     }
 
     // Delete record from the database
     await Video.findByIdAndDelete(videoId);
+
+    // Delete views
+    await View.deleteMany({ video: videoId })
 
     // Delete all the likes and comments associated to this video
     await Like.deleteMany({ video: videoId });
