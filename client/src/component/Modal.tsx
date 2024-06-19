@@ -39,16 +39,14 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const ModalRef = useRef<HTMLDivElement>(null);
 
-  if (!submitLabel) {
-    useClickOutside({
-      ref: ModalRef,
-      callback: () => {
-        if (!isLoading) {
-          handleClose();
-        }
-      },
-    });
-  }
+  useClickOutside({
+    ref: ModalRef,
+    callback: () => {
+      if (!isLoading && !submitLabel) {
+        handleClose();
+      }
+    },
+  });
 
   const handleModalClose = () => {
     handleClose();
@@ -59,7 +57,9 @@ const Modal: React.FC<ModalProps> = ({
 
   useEffect(() => {
     if (onOpen && open) onOpen();
-    return;
+    return () => {
+      if (onOpen && open) onOpen();
+    };
   }, [open]);
 
   return (
@@ -80,7 +80,9 @@ const Modal: React.FC<ModalProps> = ({
               <div className="flex flex-col gap-4 max-sm:px-4 p-6">
                 <div className="flex flex-col gap-1">
                   <span className="text-xl text-black dark:text-white font-bold font-Noto_sans">
-                    {icon && <span className="inline-block text-2xl mr-3">{icon}</span>}
+                    {icon && (
+                      <span className="inline-block text-2xl mr-3">{icon}</span>
+                    )}
                     <h2 className="inline">{title}</h2>
                   </span>
                   <p className="text-zinc-800 dark:text-zinc-300 text-base leading-[25px] font-roboto">
