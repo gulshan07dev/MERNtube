@@ -141,7 +141,7 @@ export default function VideoPlayer() {
       ) : (
         <>
           {/* video and channel details */}
-          <div className="xl:flex-grow w-full">
+          <div className="xl:flex-grow w-full ">
             {/* video player */}
             {isFetchingVideo || !video ? (
               <Skeleton className="md:h-[400px] sm:h-[300px] h-[180px] w-full rounded-lg" />
@@ -280,10 +280,10 @@ export default function VideoPlayer() {
           {/* comments */}
           <div
             className={twMerge(
-              "xl:w-[645px] w-full rounded-md px-1 dark:md:bg-[#0f0f0f]",
+              "xl:w-[645px] w-full xl:h-[87vh] lg:sticky xl:top-[72px] xl:overflow-y-scroll show-scrollbar rounded-md px-1 bg-white dark:bg-[#000000]",
               !isFetchingVideo &&
                 video && [
-                  "md:shadow-[10px_25px_150px_#e3e3e3] md:dark:shadow-[50px_-15px_150px_#333333] md:px-4",
+                  "border border-slate-300 dark:border-zinc-600 px-4 pb-4",
                 ]
             )}
           >
