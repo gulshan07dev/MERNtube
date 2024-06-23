@@ -13,9 +13,10 @@ import Avatar from "../CoreUI/Avatar";
 import LikeBtn from "../CoreUI/LikeBtn";
 import DropdownMenu from "../CoreUI/DropdownMenu";
 import Button from "../CoreUI/Button";
-import EditableTextarea from "../CoreUI/EditableTextarea";
 import Modal from "../Modal";
 import TextWithToggle from "../CoreUI/TextWithToggle";
+import DeletedMessage from "../DeletedMessage";
+import AutoExpandingTextarea from "../CoreUI/AutoExpandingTextarea";
 
 interface CommentCardProps {
   comment: IComment;
@@ -25,6 +26,8 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [commentContent, setCommentContent] = useState(comment?.content);
+  const [isCommentDeleteDialogOpen, setIsCommentDeleteDialogOpen] =
+    useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment?.content);
@@ -50,7 +53,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
       isShowToastMessage: true,
     });
 
-  const handleDelete = async () => {
+  const handleDeleteComment = async () => {
     setIsDeleted(false);
     const { success } = await deleteComment(comment?._id);
 
@@ -59,7 +62,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
     }
   };
 
-  const handleEdit = () => {
+  const handleEditComment = () => {
     setIsEditing(true);
   };
 
@@ -68,7 +71,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
     setEditedContent(comment.content);
   };
 
-  const handleUpdate = async () => {
+  const handleUpdateComment = async () => {
     const { success, error } = await updateComment({
       data: { content: editedContent },
       commentId: comment._id,
@@ -85,57 +88,98 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
   };
 
   if (isDeleted) {
-    return (
-      <p className="p-2 bg-slate-50 dark:bg-[#252525] text-black dark:text-white">
-        This comment has been deleted.
-      </p>
-    );
+    return <DeletedMessage message="This comment has been deleted." />;
   }
 
   return (
-    <div className="group/item flex gap-2">
+    <div className="group/item flex gap-3">
       <div className="flex flex-grow gap-2">
         <Avatar
           url={comment?.owner?.avatar}
           fullName={comment.owner.fullName}
-          className="h-10 w-10"
+          className="h-6 w-6"
           onClick={() => navigate(`/c/${comment?.owner?.username}`)}
         />
         {isEditing ? (
           <div className="flex flex-col flex-grow h-auto gap-3">
-            <EditableTextarea
+            <AutoExpandingTextarea
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
             />
             <div className="flex gap-2 self-end">
               <Button
                 onClick={handleCancelEdit}
-                className="bg-gray-500 text-white"
+                isLarge={false}
+                className="py-1.5 px-6 text-[15px] rounded-full bg-[#212121] hover:bg-[#505050]"
                 disabled={isUpdating}
               >
                 Cancel
               </Button>
-              <Button onClick={handleUpdate} disabled={isUpdating}>
+              <Button
+                onClick={handleUpdateComment}
+                isLarge={false}
+                className={"py-1.5 px-6 text-[15px] rounded-full"}
+                disabled={isUpdating}
+              >
                 {isUpdating ? "Updating..." : "Update"}
               </Button>
             </div>
           </div>
         ) : (
           <div className="flex flex-grow w-min flex-col gap-1">
-            <div className="flex gap-3 items-start">
-              <h2 className="text-[13px] leading-none text-gray-600 dark:text-[#AAAAAA] font-nunito_sans font-semibold">
+            <div className="relative flex gap-3 items-start w-full">
+              <h2 className="text-[12px] leading-none text-zinc-950 dark:text-slate-50 font-poppins font-[500]">
                 {comment?.owner?.username}
               </h2>
               <p className="text-xs leading-none text-gray-500 dark:text-[#AAAAAA]">
                 <TimeAgo date={comment?.createdAt} />
               </p>
+              {user?._id === comment.owner._id && !isEditing && (
+                <>
+                  <DropdownMenu
+                    className="absolute -right-4 top-0"
+                    triggerButton={
+                      <Button
+                        btnType="icon-btn"
+                        className="focus-within:block max-md:block text-lg"
+                      >
+                        <FiMoreVertical />
+                      </Button>
+                    }
+                  >
+                    <Button
+                      onClick={handleEditComment}
+                      className="w-full py-1.5 px-7 bg-blue-500 border-none"
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      className="w-full py-1.5 px-7 bg-red-600 border-none"
+                      onClick={() => setIsCommentDeleteDialogOpen(true)}
+                    >
+                      Delete
+                    </Button>
+                  </DropdownMenu>
+                  <Modal
+                    open={isCommentDeleteDialogOpen}
+                    handleClose={() => setIsCommentDeleteDialogOpen(false)}
+                    title="Delete Comment"
+                    description="Are you sure you want to delete the comment?"
+                    submitLabel={isDeleting ? "Deleting..." : "Delete"}
+                    isLoading={isDeleting}
+                    onSubmit={() => handleDeleteComment()}
+                  />
+                </>
+              )}
             </div>
-            <TextWithToggle
-              initialShowLine={2}
-              className="text-sm text-gray-800 dark:text-slate-50 font-roboto whitespace-break-spaces break-all"
-            >
-              {commentContent}
-            </TextWithToggle>
+            <div className="w-[94%]">
+              <TextWithToggle
+                initialShowLine={4}
+                className="text-sm text-gray-800 dark:text-slate-200 font-[400] font-poppins leading-[18.5px]"
+              >
+                {commentContent}
+              </TextWithToggle>
+            </div>
             <LikeBtn
               isLiked={comment?.isLiked}
               likeCount={comment?.commentLikesCount}
@@ -145,42 +189,6 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
           </div>
         )}
       </div>
-      {user?._id === comment.owner._id && !isEditing && (
-        <>
-          <DropdownMenu
-            triggerButton={
-              <Button
-                btnType="icon-btn"
-                className="focus-within:block hidden group-hover/item:block max-md:block"
-              >
-                <FiMoreVertical size={15} />
-              </Button>
-            }
-          >
-            <Button
-              onClick={handleEdit}
-              className="w-full py-1.5 px-7 bg-blue-500 border-none"
-            >
-              Edit
-            </Button>
-            <Button
-              className="w-full py-1.5 px-7 bg-red-600 border-none"
-              onClick={handleDelete}
-            >
-              {isDeleting ? "Deleting..." : "Delete"}
-            </Button>
-          </DropdownMenu>
-          <Modal
-            open={isDeleted}
-            handleClose={() => setIsDeleted(false)}
-            title="Delete Comment"
-            description="Are you sure you want to delete the comment?"
-            submitLabel={isDeleting ? "Deleting..." : "Delete"}
-            isLoading={isDeleting}
-            onSubmit={() => handleDelete()}
-          />
-        </>
-      )}
     </div>
   );
 };

@@ -9,6 +9,7 @@ import { RootState } from "@/store/store";
 import Avatar from "../CoreUI/Avatar";
 import Button from "../CoreUI/Button";
 import useForm from "@/hooks/useForm";
+import AutoExpandingTextarea from "../CoreUI/AutoExpandingTextarea";
 
 interface AddCommentProps {
   contentId: string;
@@ -76,38 +77,56 @@ const AddComment: React.FC<AddCommentProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-1">
-      <div className="flex items-center md:gap-5 gap-3 py-1.5">
+      <div
+        className={twMerge(
+          "group flex items-center focus-within:items-start gap-3 py-1.5",
+          formData?.content?.length && ["items-start"]
+        )}
+      >
         <Avatar
           url={user?.avatar}
           fullName={user?.fullName}
           onClick={() => navigate(`/c/${user?.username}`)}
+          className={twMerge(
+            "h-6 w-6 group-focus-within:h-10 group-focus-within:w-10",
+            formData?.content?.length && ["h-10 w-10"]
+          )}
         />
-        <input
-          type="text"
+        <AutoExpandingTextarea
           name="content"
           placeholder="Type your comment..."
           autoComplete="off"
           value={formData.content}
           onChange={(e) => handleInputChange("content", e.target.value)}
-          className="peer flex-grow pb-2 border-b border-slate-200 dark:border-slate-500 placeholder-slate-500 text-gray-700 dark:text-white text-lg font-roboto focus:border-b-black dark:focus:border-b-white bg-transparent transition-[border] duration-100 break-all"
+          className="peer flex-grow pb-2 border-t-0 border-l-0 border-r-0 border-b border-slate-200 dark:border-slate-500 placeholder-slate-600 dark:placeholder-slate-400 text-gray-700 dark:text-white text-sm font-roboto focus:border-b-black dark:focus:border-b-white transition-[border] duration-100"
         />
       </div>
-      <Button
-        type="submit"
-        isLarge={false}
-        className={twMerge(
-          "self-end py-1.5 px-6 text-[15px] rounded-full border-none",
-          "hidden",
-          formData.content.length > 0 && "block"
-        )}
-        disabled={
-          type === "video" ? isAddingCommentToVideo : isAddingCommentToTweet
-        }
-      >
-        {(type === "video" ? isAddingCommentToVideo : isAddingCommentToTweet)
-          ? "Adding comment..."
-          : "Comment"}
-      </Button>
+      {formData?.content?.length > 0 && (
+        <div className="flex gap-2 justify-end">
+          <Button
+            type="button"
+            onClick={resetForm}
+            isLarge={false}
+            className="py-1.5 px-6 text-[15px] rounded-full bg-[#212121] hover:bg-[#505050]"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            isLarge={false}
+            className={"py-1.5 px-6 text-[15px] rounded-full"}
+            disabled={
+              type === "video" ? isAddingCommentToVideo : isAddingCommentToTweet
+            }
+          >
+            {(
+              type === "video" ? isAddingCommentToVideo : isAddingCommentToTweet
+            )
+              ? "Adding comment..."
+              : "Comment"}
+          </Button>
+        </div>
+      )}
     </form>
   );
 };

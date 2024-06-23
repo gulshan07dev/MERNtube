@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ScrollPagination from "../ScrollPagination";
 import { ITweetComment, IVideoComment } from "@/interfaces";
 import commentService from "@/services/commentService";
-import useService from "@/hooks/useService"; 
+import useService from "@/hooks/useService";
 import AddComment from "./AddComment";
 import CommentCard from "./CommentCard";
 import EmptyMessage from "../error/EmptyMessage";
@@ -14,7 +14,9 @@ interface CommentBoxProps {
 }
 
 const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
-  const [comments, setComments] = useState<(IVideoComment | ITweetComment)[]>([]);
+  const [comments, setComments] = useState<(IVideoComment | ITweetComment)[]>(
+    []
+  );
   const [sortType, setSortType] = useState<"recent" | "oldest">("recent");
   const [paginationInfo, setPaginationInfo] = useState({
     currentPage: 0,
@@ -36,6 +38,9 @@ const CommentBox: React.FC<CommentBoxProps> = ({ contentId, type }) => {
   } = useService(commentService.getTweetComment);
 
   const fetchComments = async (page: number) => {
+    if (page === 1) {
+      setComments([]);
+    }
     if (type === "video") {
       const { success, responseData } = await getVideoComment({
         videoId: contentId,
