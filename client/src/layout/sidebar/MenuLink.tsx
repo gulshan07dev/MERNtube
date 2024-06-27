@@ -22,21 +22,13 @@ export default function MenuLink({
   const dispatch = useDispatch();
   const { isOpen } = useSelector((state: RootState) => state.sidebar);
   return (
-    <NavLink
-      to={`${slug}`}
-      onClick={() => isOpen && dispatch(onClose())}
-      onDoubleClick={() => {
-        if (window.location.pathname === slug) {
-          window.scroll({ top: 0, behavior: "auto" });
-        }
-      }}
-    >
+    <NavLink to={`${slug}`} onClick={() => isOpen && dispatch(onClose())}>
       {({ isActive }) => (
         <button
           className={twMerge(
-            "flex gap-6 items-cente font-Noto_sans px-4 py-[7px] rounded-lg w-full",
+            "flex gap-6 items-center font-Noto_sans px-4 h-10 rounded-lg w-full",
             isActive
-              ? "bg-[#edf4ff] dark:bg-[#272727] text-[#000000] dark:text-white"
+              ? "bg-[#edf4ff] hover:bg-[#ddecff] dark:bg-[#272727] hover:dark:bg-[#353535] text-[#000000] dark:text-white"
               : "text-[#202427] dark:text-slate-50 hover:bg-slate-100 dark:hover:bg-[#202020]",
             className
           )}
