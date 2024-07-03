@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 const TextWithToggle = ({
   children,
@@ -36,7 +37,7 @@ const TextWithToggle = ({
     <div ref={containerRef}>
       <p
         ref={contentRef}
-        className={className}
+        className={twMerge("whitespace-break-spaces", className)}
         style={
           showAll
             ? { overflow: "unset", display: "block" }

@@ -67,16 +67,16 @@ const TweetCard = ({ tweet }: { tweet: ITweet }) => {
               className="h-10 w-10"
               onClick={() => navigate(`/c/${username}`)}
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-1 leading-none">
               <h2 className="text-[16.5px] text-gray-800 dark:text-white font-nunito_sans font-semibold">
                 {fullName}
               </h2>
-              <h2 className="text-[15px] leading-none text-gray-600 dark:text-[#AAAAAA] font-nunito_sans font-semibold">
+              <h2 className="text-[15px] text-gray-600 dark:text-[#AAAAAA] font-nunito_sans font-semibold">
                 {username}
               </h2>
             </div>
           </div>
-          <p className="md:text-sm text-xs text-gray-500 dark:text-[#AAAAAA]">
+          <p className="md:text-sm text-xs text-gray-500 dark:text-[#AAAAAA] md:leading-tight">
             <TimeAgo date={createdAt} />
           </p>
         </div>

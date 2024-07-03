@@ -97,7 +97,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
         <Avatar
           url={comment?.owner?.avatar}
           fullName={comment.owner.fullName}
-          className="h-6 w-6"
+          className="h-6 w-6 text-xs"
           onClick={() => navigate(`/c/${comment?.owner?.username}`)}
         />
         {isEditing ? (

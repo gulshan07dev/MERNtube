@@ -79,19 +79,10 @@ const AddComment: React.FC<AddCommentProps> = ({
     <form onSubmit={handleSubmit} className="flex flex-col gap-1">
       <div
         className={twMerge(
-          "group flex items-center focus-within:items-start gap-3 py-1.5",
+          "group flex items-center flex-row-reverse focus-within:items-start gap-3 py-1.5",
           formData?.content?.length && ["items-start"]
         )}
       >
-        <Avatar
-          url={user?.avatar}
-          fullName={user?.fullName}
-          onClick={() => navigate(`/c/${user?.username}`)}
-          className={twMerge(
-            "h-6 w-6 group-focus-within:h-10 group-focus-within:w-10",
-            formData?.content?.length && ["h-10 w-10"]
-          )}
-        />
         <AutoExpandingTextarea
           name="content"
           placeholder="Type your comment..."
@@ -99,6 +90,15 @@ const AddComment: React.FC<AddCommentProps> = ({
           value={formData.content}
           onChange={(e) => handleInputChange("content", e.target.value)}
           className="peer flex-grow pb-2 border-t-0 border-l-0 border-r-0 border-b border-slate-200 dark:border-slate-500 placeholder-slate-600 dark:placeholder-slate-400 text-gray-700 dark:text-white text-sm font-roboto focus:border-b-black dark:focus:border-b-white transition-[border] duration-100"
+        />
+        <Avatar
+          url={user?.avatar}
+          fullName={user?.fullName}
+          onClick={() => navigate(`/c/${user?.username}`)}
+          className={twMerge(
+            "h-6 w-6 text-xs peer-focus-visible:h-10 peer-focus-visible:text-xl peer-focus-visible:w-10",
+            formData?.content?.length && ["h-10 w-10 text-xl"]
+          )}
         />
       </div>
       {formData?.content?.length > 0 && (
