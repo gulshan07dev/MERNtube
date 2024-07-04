@@ -7,21 +7,21 @@ import { MdDelete } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 
 import PageLayout from "@/layout/PageLayout";
-import ScrollPagination from "@/component/ScrollPagination";
+import ScrollPagination from "@/components/ScrollPagination";
 import playlistService from "@/services/playlistService";
 import useService from "@/hooks/useService";
 import { setPlaylist } from "@/store/slices/playlistSlice";
 import { RootState } from "@/store/store";
 import { IVideo } from "@/interfaces";
-import Skeleton from "@/component/Skeleton";
-import ErrorDialog from "@/component/error/ErrorDialog";
-import DropdownMenu from "@/component/CoreUI/DropdownMenu";
-import Button from "@/component/CoreUI/Button";
-import DeletePlaylistDialogButton from "@/component/playlist/DeletePlaylistDialogButton";
-import UpdatePlaylistDialog from "@/component/playlist/UpdatePlaylistDialog";
-import PlaylistVideoCard from "@/component/playlist/playlistVideo/PlaylistVideoCard";
-import PlaylistVideoSkeleton from "@/component/playlist/playlistVideo/PlaylistVideoSkeleton";
-import TextWithToggle from "@/component/CoreUI/TextWithToggle";
+import Skeleton from "@/components/Skeleton";
+import ErrorDialog from "@/components/error/ErrorDialog";
+import DropdownMenu from "@/components/CoreUI/DropdownMenu";
+import Button from "@/components/CoreUI/Button";
+import DeletePlaylistDialogButton from "@/components/playlist/DeletePlaylistDialogButton";
+import UpdatePlaylistDialog from "@/components/playlist/UpdatePlaylistDialog";
+import PlaylistVideoCard from "@/components/playlist/playlistVideo/PlaylistVideoCard";
+import PlaylistVideoSkeleton from "@/components/playlist/playlistVideo/PlaylistVideoSkeleton";
+import TextWithToggle from "@/components/CoreUI/TextWithToggle";
 
 type SortType =
   | "date-added-newest"

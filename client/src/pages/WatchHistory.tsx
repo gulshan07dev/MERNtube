@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
 import PageLayout from "@/layout/PageLayout";
-import ScrollPagination from "@/component/ScrollPagination";
+import ScrollPagination from "@/components/ScrollPagination";
 import watchHistoryService from "@/services/watchHistoryService";
 import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
@@ -13,11 +13,11 @@ import {
   setWatchHistories,
 } from "@/store/slices/watchHistorySlice";
 import { IVideo, IWatchHistoryVideo } from "@/interfaces";
-import EmptyMessage from "@/component/error/EmptyMessage";
-import WatchHistoryVideoCard from "@/component/watchHistory/WatchHistoryVideoCard";
-import WatchHistoryVideoSkeleton from "@/component/watchHistory/WatchHistoryVideoSkeleton";
-import ClearWatchHistory from "@/component/settings/watchHistory/ClearWatchHistory";
-import ToggleWatchHistoryPauseStatus from "@/component/settings/watchHistory/ToggleWatchHistoryPauseStatus";
+import EmptyMessage from "@/components/error/EmptyMessage";
+import WatchHistoryVideoCard from "@/components/watchHistory/WatchHistoryVideoCard";
+import WatchHistoryVideoSkeleton from "@/components/watchHistory/WatchHistoryVideoSkeleton";
+import ClearWatchHistory from "@/components/settings/watchHistory/ClearWatchHistory";
+import ToggleWatchHistoryPauseStatus from "@/components/settings/watchHistory/ToggleWatchHistoryPauseStatus";
 
 export default function WatchHistory() {
   const dispatch: AppDispatch = useDispatch();

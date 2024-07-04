@@ -4,7 +4,7 @@ import { Outlet, ScrollRestoration } from "react-router-dom";
 
 import Navbar from "./navbar/Navbar";
 import Sidebar from "./sidebar/Sidebar";
-import Loader from "@/component/Loader";
+import Loader from "@/components/Loader";
 
 interface RootLayoutProps {
   byDefaultSidebarHidden?: boolean;

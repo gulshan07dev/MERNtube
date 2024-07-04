@@ -16,7 +16,7 @@ const AutoExpandingTextarea = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    // Automatically adjust height to fit content on component mount
+    // Automatically adjust height to fit content on components mount
     if (textareaRef.current) {
       const textarea = textareaRef.current;
       textarea.style.height = "auto";

@@ -5,7 +5,7 @@ import PageLayout from "@/layout/PageLayout";
 import AuthForm, {
   AuthFormType,
   AuthInputs,
-} from "@/component/authForm/AuthForm";
+} from "@/components/authForm/AuthForm";
 import authService from "@/services/authService";
 import useService from "@/hooks/useService";
 

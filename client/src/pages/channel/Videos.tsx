@@ -3,15 +3,15 @@ import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
 import PageLayout from "@/layout/PageLayout";
-import ScrollPagination from "@/component/ScrollPagination";
+import ScrollPagination from "@/components/ScrollPagination";
 import { IVideo } from "@/interfaces";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import { RootState } from "@/store/store";
-import VideoCard from "@/component/video/VideoCard";
-import VideoSkeleton from "@/component/video/VideoSkeleton";
-import Button from "@/component/CoreUI/Button";
-import EmptyMessage from "@/component/error/EmptyMessage";
+import VideoCard from "@/components/video/VideoCard";
+import VideoSkeleton from "@/components/video/VideoSkeleton";
+import Button from "@/components/CoreUI/Button";
+import EmptyMessage from "@/components/error/EmptyMessage";
 
 const Home: React.FC = () => {
   const { channel } = useSelector((state: RootState) => state?.auth);

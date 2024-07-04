@@ -17,17 +17,17 @@ import { AppDispatch, RootState } from "@/store/store";
 import { setVideo } from "@/store/slices/videoSlice";
 import { setChannel } from "@/store/slices/authSlice";
 import { IChannel } from "@/interfaces";
-import LikeBtn from "@/component/CoreUI/LikeBtn";
-import ShareDialog from "@/component/ShareDialog";
-import AddVideoToPlaylistDialog from "@/component/playlist/AddVideoToPlaylistDialog";
-import AddVideoToWatchLaterDialog from "@/component/watchLater/AddVideoToWatchLaterDialog";
-import SubscribeBtn from "@/component/subscription/SubscribeBtn";
-import CommentBox from "@/component/comment/CommentBox";
-import Skeleton from "@/component/Skeleton";
-import Avatar from "@/component/CoreUI/Avatar";
-import TextWithToggle from "@/component/CoreUI/TextWithToggle";
-import Button from "@/component/CoreUI/Button";
-import ErrorDialog from "@/component/error/ErrorDialog";
+import LikeBtn from "@/components/CoreUI/LikeBtn";
+import ShareDialog from "@/components/ShareDialog";
+import AddVideoToPlaylistDialog from "@/components/playlist/AddVideoToPlaylistDialog";
+import AddVideoToWatchLaterDialog from "@/components/watchLater/AddVideoToWatchLaterDialog";
+import SubscribeBtn from "@/components/subscription/SubscribeBtn";
+import CommentBox from "@/components/comment/CommentBox";
+import Skeleton from "@/components/Skeleton";
+import Avatar from "@/components/CoreUI/Avatar";
+import TextWithToggle from "@/components/CoreUI/TextWithToggle";
+import Button from "@/components/CoreUI/Button";
+import ErrorDialog from "@/components/error/ErrorDialog";
 
 export default function VideoPlayer() {
   const dispatch: AppDispatch = useDispatch();
@@ -83,20 +83,20 @@ export default function VideoPlayer() {
     return success;
   };
 
-   const onSubscribeToggle = () => {
-     dispatch(
-       setChannel({
-         ...channel,
-         subscriberCount: channel?.isSubscribed
-           ? channel?.subscriberCount === 0
-             ? 0
-             : channel?.subscriberCount - 1
-           : (channel?.subscriberCount || 0) + 1,
-         isSubscribed: !channel?.isSubscribed,
-       } as IChannel)
-     );
-   };
-   
+  const onSubscribeToggle = () => {
+    dispatch(
+      setChannel({
+        ...channel,
+        subscriberCount: channel?.isSubscribed
+          ? channel?.subscriberCount === 0
+            ? 0
+            : channel?.subscriberCount - 1
+          : (channel?.subscriberCount || 0) + 1,
+        isSubscribed: !channel?.isSubscribed,
+      } as IChannel)
+    );
+  };
+
   const handleModalClose = () => {
     setModalOpen(null);
   };
@@ -115,7 +115,7 @@ export default function VideoPlayer() {
       return;
     }
     (async () => {
-      const res = await watchHistoryService.addVideoToWatchHistory(videoId)
+      const res = await watchHistoryService.addVideoToWatchHistory(videoId);
       if (res?.data?.success) {
         setIsVideoAddedToWatchHistory(true);
       }

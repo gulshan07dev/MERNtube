@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import authService from "@/services/authService";
 import useService from "@/hooks/useService";
 import { logout } from "@/store/slices/authSlice";
-import Button from "../../component/CoreUI/Button";
+import Button from "../../components/CoreUI/Button";
 
 export default function LogoutBtn({ className = "" }: { className?: string }) {
   const dispatch = useDispatch();

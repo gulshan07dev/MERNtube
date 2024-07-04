@@ -4,14 +4,14 @@ import { twMerge } from "tailwind-merge";
 
 import { AppDispatch, RootState } from "@/store/store";
 import PageLayout from "@/layout/PageLayout";
-import ScrollPagination from "@/component/ScrollPagination";
+import ScrollPagination from "@/components/ScrollPagination";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import { setVideosPaginationInfo, setVideos } from "@/store/slices/videoSlice";
-import VideoCard from "@/component/video/VideoCard";
-import VideoSkeleton from "@/component/video/VideoSkeleton";
-import Button from "@/component/CoreUI/Button";
-import EmptyMessage from "@/component/error/EmptyMessage";
+import VideoCard from "@/components/video/VideoCard";
+import VideoSkeleton from "@/components/video/VideoSkeleton";
+import Button from "@/components/CoreUI/Button";
+import EmptyMessage from "@/components/error/EmptyMessage";
 
 const Home: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

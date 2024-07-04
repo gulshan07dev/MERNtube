@@ -4,7 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import { twMerge } from "tailwind-merge";
 import { MdOutlineCancel } from "react-icons/md";
 
-import Button from "../../component/CoreUI/Button";
+import Button from "../../components/CoreUI/Button";
 
 export default function SearchBar() {
   const navigate = useNavigate();
@@ -17,13 +17,13 @@ export default function SearchBar() {
       return;
     }
     navigate(`/search?query=${searchInputRef.current?.value}`);
-    searchInputRef.current.blur()
+    searchInputRef.current.blur();
   };
 
   return (
     <>
       <div
-      role="searchbox"
+        role="searchbox"
         className={twMerge(
           "lg:w-[45%] md:w-[40%] max-md:hidden",
           isSearchbarOpenInMobile && [
@@ -44,7 +44,7 @@ export default function SearchBar() {
               className="text-gray-400 font-extralight hidden group-focus-within:block"
             />
             <input
-            role="search"
+              role="search"
               type="text"
               placeholder="search"
               ref={searchInputRef}

@@ -4,7 +4,7 @@ import Button from "./CoreUI/Button";
 import { twMerge } from "tailwind-merge";
 
 interface TabsProps {
-  tabs: { label: string; component: React.ReactElement }[];
+  tabs: { label: string; components: React.ReactElement }[];
   className?: string;
 }
 
@@ -33,8 +33,8 @@ const Tabs = ({ tabs, className = "" }: TabsProps) => {
           </Button>
         ))}
       </div>
-      {/* Render the selected tab component */}
-      {tabs.map(({ label, component }) => (
+      {/* Render the selected tab components */}
+      {tabs.map(({ label, components }) => (
         <div
           key={label}
           className={twMerge(
@@ -45,7 +45,7 @@ const Tabs = ({ tabs, className = "" }: TabsProps) => {
           )}
           style={{ transitionDuration: "0.3s" }}
         >
-          {component}
+          {components}
         </div>
       ))}
     </div>

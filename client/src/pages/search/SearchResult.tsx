@@ -4,10 +4,10 @@ import { useLocation } from "react-router-dom";
 import PageLayout from "@/layout/PageLayout";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
-import { IVideo } from "@/interfaces"; 
-import ScrollPagination from "@/component/ScrollPagination";
-import EmptyMessage from "@/component/error/EmptyMessage";
-import SearchVideoCard from "@/component/search/SearchVideoCard";
+import { IVideo } from "@/interfaces";
+import ScrollPagination from "@/components/ScrollPagination";
+import EmptyMessage from "@/components/error/EmptyMessage";
+import SearchVideoCard from "@/components/search/SearchVideoCard";
 
 function SearchResult() {
   const location = useLocation();

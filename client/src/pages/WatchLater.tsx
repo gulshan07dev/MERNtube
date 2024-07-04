@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
 import PageLayout from "@/layout/PageLayout";
-import ScrollPagination from "@/component/ScrollPagination";
+import ScrollPagination from "@/components/ScrollPagination";
 import watchLaterService from "@/services/watchLaterService";
 import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
@@ -11,8 +11,8 @@ import {
   setWatchLaterVideosPaginationInfo,
   setWatchLaterVideos,
 } from "@/store/slices/watchLaterSlice";
-import EmptyMessage from "@/component/error/EmptyMessage";
-import WatchLaterVideoCard from "@/component/watchLater/WatchLaterVideoCard";
+import EmptyMessage from "@/components/error/EmptyMessage";
+import WatchLaterVideoCard from "@/components/watchLater/WatchLaterVideoCard";
 
 export default function WatchLater() {
   const dispatch: AppDispatch = useDispatch();

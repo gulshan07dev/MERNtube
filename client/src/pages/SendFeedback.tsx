@@ -2,9 +2,9 @@ import { FiSend } from "react-icons/fi";
 
 import PageLayout from "@/layout/PageLayout";
 import useForm from "@/hooks/useForm";
-import Form from "@/component/CoreUI/Form";
-import Input from "@/component/CoreUI/Input";
-import TextAreaInput from "@/component/CoreUI/TextAreaInput";
+import Form from "@/components/CoreUI/Form";
+import Input from "@/components/CoreUI/Input";
+import TextAreaInput from "@/components/CoreUI/TextAreaInput";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import useService from "@/hooks/useService";

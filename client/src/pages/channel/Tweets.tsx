@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import PageLayout from "@/layout/PageLayout";
 import { AppDispatch, RootState } from "@/store/store";
-import ScrollPagination from "@/component/ScrollPagination";
+import ScrollPagination from "@/components/ScrollPagination";
 import tweetService from "@/services/tweetService";
 import useService from "@/hooks/useService";
 import { setTweets, setTweetsPaginationInfo } from "@/store/slices/tweetSlice";
-import TweetCard from "@/component/tweet/TweetCard";
-import TweetSkeleton from "@/component/tweet/TweetSkeleton";
-import EmptyMessage from "@/component/error/EmptyMessage";
+import TweetCard from "@/components/tweet/TweetCard";
+import TweetSkeleton from "@/components/tweet/TweetSkeleton";
+import EmptyMessage from "@/components/error/EmptyMessage";
 
 export default function Tweets() {
   const dispatch: AppDispatch = useDispatch();

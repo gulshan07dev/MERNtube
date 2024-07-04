@@ -1,18 +1,18 @@
 import { useSelector } from "react-redux";
 
 import PageLayout from "@/layout/PageLayout";
-import Tabs from "@/component/Tabs";
-import VideoCreateForm from "@/component/createForms/VideoCreateForm";
-import TweetCreateForm from "@/component/createForms/TweetCreateForm";
+import Tabs from "@/components/Tabs";
+import VideoCreateForm from "@/components/createForms/VideoCreateForm";
+import TweetCreateForm from "@/components/createForms/TweetCreateForm";
 import { RootState } from "@/store/store";
-import Loader from "@/component/Loader";
+import Loader from "@/components/Loader";
 
 export default function Create() {
   const { isAppLoading } = useSelector((state: RootState) => state.appLoading);
 
   const tabs = [
-    { label: "Video", component: <VideoCreateForm /> },
-    { label: "Tweet", component: <TweetCreateForm /> },
+    { label: "Video", components: <VideoCreateForm /> },
+    { label: "Tweet", components: <TweetCreateForm /> },
   ];
 
   return (

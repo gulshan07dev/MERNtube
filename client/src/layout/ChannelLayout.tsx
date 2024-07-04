@@ -10,14 +10,14 @@ import useService from "@/hooks/useService";
 import authService from "@/services/authService";
 import { setChannel } from "@/store/slices/authSlice";
 import { IChannel } from "@/interfaces";
-import Skeleton from "@/component/Skeleton";
-import Button from "@/component/CoreUI/Button";
-import Avatar from "@/component/CoreUI/Avatar";
-import UpdateAvatarDialog from "@/component/channel/UpdateAvatarDialog";
-import UpdateCoverImageDialog from "@/component/channel/UpdateCoverImageDialog";
-import SubscribeBtn from "@/component/subscription/SubscribeBtn";
-import ErrorDialog from "@/component/error/ErrorDialog";
-import Loader from "@/component/Loader";
+import Skeleton from "@/components/Skeleton";
+import Button from "@/components/CoreUI/Button";
+import Avatar from "@/components/CoreUI/Avatar";
+import UpdateAvatarDialog from "@/components/channel/UpdateAvatarDialog";
+import UpdateCoverImageDialog from "@/components/channel/UpdateCoverImageDialog";
+import SubscribeBtn from "@/components/subscription/SubscribeBtn";
+import ErrorDialog from "@/components/error/ErrorDialog";
+import Loader from "@/components/Loader";
 
 const ChannelLayout: React.FC = () => {
   const dispatch = useDispatch();
@@ -113,7 +113,7 @@ const ChannelLayout: React.FC = () => {
         // Render channel details if no error
         <section className="w-full relative flex flex-col gap-8">
           {isLoading ? (
-            // Use ChannelLayoutSkeleton component while loading
+            // Use ChannelLayoutSkeleton components while loading
             <ChannelLayoutSkeleton />
           ) : (
             <>

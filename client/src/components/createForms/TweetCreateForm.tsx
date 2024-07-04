@@ -3,7 +3,7 @@ import { FaTwitter } from "react-icons/fa";
 
 import tweetService from "@/services/tweetService";
 import useService from "@/hooks/useService";
-import Form from "@/component/CoreUI/Form";
+import Form from "@/components/CoreUI/Form";
 import TextAreaInput from "../CoreUI/TextAreaInput";
 import useForm from "@/hooks/useForm";
 

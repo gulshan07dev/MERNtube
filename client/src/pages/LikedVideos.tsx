@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 
 import PageLayout from "@/layout/PageLayout";
-import ScrollPagination from "@/component/ScrollPagination";
+import ScrollPagination from "@/components/ScrollPagination";
 import LikeService from "@/services/likeService";
 import useService from "@/hooks/useService";
 import { AppDispatch, RootState } from "@/store/store";
@@ -11,8 +11,8 @@ import {
   setLikedVideos,
   setLikedVideosPaginationInfo,
 } from "@/store/slices/likeSlice";
-import EmptyMessage from "@/component/error/EmptyMessage";
-import LikedVideoCard from "@/component/likedVideo/LikedVideoCard";
+import EmptyMessage from "@/components/error/EmptyMessage";
+import LikedVideoCard from "@/components/likedVideo/LikedVideoCard";
 
 export default function LikedVideos() {
   const dispatch: AppDispatch = useDispatch();

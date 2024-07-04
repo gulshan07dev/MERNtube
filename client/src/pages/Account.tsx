@@ -1,18 +1,18 @@
 import { useSelector } from "react-redux";
 
 import PageLayout from "@/layout/PageLayout";
-import UpdateAccountDetailsForm from "@/component/accountForms/UpdateAccountDetailsForm";
-import UpdatePasswordForm from "@/component/accountForms/UpdatePasswordForm";
-import Tabs from "@/component/Tabs";
+import UpdateAccountDetailsForm from "@/components/accountForms/UpdateAccountDetailsForm";
+import UpdatePasswordForm from "@/components/accountForms/UpdatePasswordForm";
+import Tabs from "@/components/Tabs";
 import { RootState } from "@/store/store";
-import Loader from "@/component/Loader";
+import Loader from "@/components/Loader";
 
 export default function Account() {
   const { isAppLoading } = useSelector((state: RootState) => state.appLoading);
 
   const tabs = [
-    { label: "Account", component: <UpdateAccountDetailsForm /> },
-    { label: "Password", component: <UpdatePasswordForm /> },
+    { label: "Account", components: <UpdateAccountDetailsForm /> },
+    { label: "Password", components: <UpdatePasswordForm /> },
   ];
 
   return (

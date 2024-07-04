@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import PageLayout from "@/layout/PageLayout";
-import AuthForm, { AuthFormType } from "@/component/authForm/AuthForm";
+import AuthForm, { AuthFormType } from "@/components/authForm/AuthForm";
 import useService from "@/hooks/useService";
 import authService from "@/services/authService";
 import { useDispatch } from "react-redux";

@@ -8,7 +8,7 @@ import { setAppLoading } from "./store/slices/appLoadingSlice";
 import authService from "./services/authService";
 import useService from "./hooks/useService";
 import router from "./routes";
-import MainAppLoader from "./component/MainAppLoader";
+import MainAppLoader from "./components/MainAppLoader";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();

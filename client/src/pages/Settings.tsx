@@ -1,7 +1,7 @@
 import PageLayout from "@/layout/PageLayout";
-import SettingsCategory from "@/component/settings/SettingsCategory";
-import PreferencesSettings from "@/component/settings/preferences/PreferencesSettings";
-import WatchHistorySettings from "@/component/settings/watchHistory/WatchHistorySettings";
+import SettingsCategory from "@/components/settings/SettingsCategory";
+import PreferencesSettings from "@/components/settings/preferences/PreferencesSettings";
+import WatchHistorySettings from "@/components/settings/watchHistory/WatchHistorySettings";
 
 const Settings = () => {
   return (

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 
-import Form from "@/component/CoreUI/Form";
-import Input from "@/component/CoreUI/Input";
+import Form from "@/components/CoreUI/Form";
+import Input from "@/components/CoreUI/Input";
 import useForm from "@/hooks/useForm";
 import { RootState } from "@/store/store";
 import authService from "@/services/authService";

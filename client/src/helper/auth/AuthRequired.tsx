@@ -3,7 +3,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { FiAlertTriangle } from "react-icons/fi";
 
 import { RootState } from "@/store/store";
-import Modal from "@/component/Modal";
+import Modal from "@/components/Modal";
 import { useState } from "react";
 
 export default function AuthRequired() {

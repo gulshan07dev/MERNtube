@@ -7,10 +7,10 @@ import { FiMoreVertical } from "react-icons/fi";
 import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
-import { IVideo } from "@/interfaces"; 
-import DropdownMenu from "@/component/CoreUI/DropdownMenu";
-import Button from "@/component/CoreUI/Button";
-import ShareDialog from "@/component/ShareDialog";
+import { IVideo } from "@/interfaces";
+import DropdownMenu from "@/components/CoreUI/DropdownMenu";
+import Button from "@/components/CoreUI/Button";
+import ShareDialog from "@/components/ShareDialog";
 import AddVideoToWatchLaterDialog from "../watchLater/AddVideoToWatchLaterDialog";
 import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
 import Avatar from "../CoreUI/Avatar";

@@ -13,12 +13,12 @@ import dashboardService from "@/services/dashboardService";
 import useService from "@/hooks/useService";
 import { RootState } from "@/store/store";
 import { setChannelVideos, setStats } from "@/store/slices/dashboardSlice";
-import StatCard from "@/component/dashboard/StatCard";
-import Button from "@/component/CoreUI/Button";
-import ErrorDialog from "@/component/error/ErrorDialog";
-import Skeleton from "@/component/Skeleton";
-import ChannelVideosTableRow from "@/component/dashboard/ChannelVideosTableRow";
-import ErrorMessage from "@/component/error/ErrorMessage";
+import StatCard from "@/components/dashboard/StatCard";
+import Button from "@/components/CoreUI/Button";
+import ErrorDialog from "@/components/error/ErrorDialog";
+import Skeleton from "@/components/Skeleton";
+import ChannelVideosTableRow from "@/components/dashboard/ChannelVideosTableRow";
+import ErrorMessage from "@/components/error/ErrorMessage";
 
 export default function Dashboard() {
   const dispatch = useDispatch();

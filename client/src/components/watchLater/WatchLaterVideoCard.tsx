@@ -4,24 +4,38 @@ import { abbreviateNumber } from "js-abbreviation-number";
 import TimeAgo from "react-timeago";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { FiMoreVertical } from "react-icons/fi";
+import { MdDelete } from "react-icons/md";
 import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
-import { IVideo } from "@/interfaces"; 
-import DropdownMenu from "@/component/CoreUI/DropdownMenu";
-import Button from "@/component/CoreUI/Button";
-import ShareDialog from "@/component/ShareDialog";
+import { IVideo } from "@/interfaces";
+import DropdownMenu from "@/components/CoreUI/DropdownMenu";
+import Button from "@/components/CoreUI/Button";
+import ShareDialog from "@/components/ShareDialog";
 import AddVideoToWatchLaterDialog from "../watchLater/AddVideoToWatchLaterDialog";
 import AddVideoToPlaylistDialog from "../playlist/AddVideoToPlaylistDialog";
+import RemoveVideoFromWatchLaterDialog from "./RemoveVideoFromWatchLaterDialog";
 
-const LikedVideoCard = ({ video }: { video: IVideo }) => {
+const WatchLaterVideoCard = ({ video }: { video: IVideo }) => {
   const [
     isShowAddVideoToWatchLaterDialog,
     setIsShowAddVideoToWatchLaterDialog,
   ] = useState(false);
   const [isShowAddVideoToPlaylistDialog, setIsShowAddVideoToPlaylistDialog] =
     useState(false);
+  const [isVideoRemovedFromWatchLater, setIsVideoRemovedFromWatchLater] =
+    useState(false);
+  const [isShowVideoRemoveConfirmDialog, setIsShowVideoRemoveConfirmDialog] =
+    useState(false);
   const [isShowShareDialog, setIsShowShareDialog] = useState(false);
+
+  if (isVideoRemovedFromWatchLater) {
+    return (
+      <p className="p-2 bg-slate-50 dark:bg-[#252525] text-black dark:text-white">
+        This video has been removed from the watch later.
+      </p>
+    );
+  }
 
   return (
     <div className="group/item w-full flex md:gap-3 gap-2.5 p-3 max-md:pr-0 max-md:pl-2 rounded-lg hover:bg-slate-200 dark:hover:bg-[#202020]">
@@ -72,6 +86,14 @@ const LikedVideoCard = ({ video }: { video: IVideo }) => {
           </Button>
 
           <Button
+            icon={<MdDelete />}
+            className="bg-red-500 text-sm text-white font-roboto hover:opacity-75 w-full py-2"
+            onClick={() => setIsShowVideoRemoveConfirmDialog((prev) => !prev)}
+          >
+            Remove from watch later
+          </Button>
+
+          <Button
             icon={<FaShare />}
             className="bg-white border-gray-500 dark:border-none text-sm text-black font-roboto hover:opacity-75 w-full py-2"
             onClick={() => setIsShowShareDialog((prev) => !prev)}
@@ -90,6 +112,12 @@ const LikedVideoCard = ({ video }: { video: IVideo }) => {
         open={isShowAddVideoToPlaylistDialog}
         handleClose={() => setIsShowAddVideoToPlaylistDialog(false)}
       />
+      <RemoveVideoFromWatchLaterDialog
+        open={isShowVideoRemoveConfirmDialog}
+        handleClose={() => setIsShowVideoRemoveConfirmDialog(false)}
+        videoId={video?._id}
+        onRemove={() => setIsVideoRemovedFromWatchLater(true)}
+      />
       <ShareDialog
         url={`${document.baseURI}watch/${video?._id}`}
         open={isShowShareDialog}
@@ -99,4 +127,4 @@ const LikedVideoCard = ({ video }: { video: IVideo }) => {
   );
 };
 
-export default LikedVideoCard;
+export default WatchLaterVideoCard;

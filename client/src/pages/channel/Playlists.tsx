@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BiPlusCircle } from "react-icons/bi";
 
 import PageLayout from "@/layout/PageLayout";
-import ScrollPagination from "@/component/ScrollPagination";
+import ScrollPagination from "@/components/ScrollPagination";
 import playlistService from "@/services/playlistService";
 import useService from "@/hooks/useService";
 import { RootState } from "@/store/store";
@@ -11,11 +11,11 @@ import {
   setPlaylists,
   setPlaylistsPaginationInfo,
 } from "@/store/slices/playlistSlice";
-import EmptyMessage from "@/component/error/EmptyMessage";
-import PlaylistSkeleton from "@/component/playlist/PlaylistSkeleton";
-import PlaylistCard from "@/component/playlist/PlaylistCard";
-import CreatePlaylistDialog from "@/component/playlist/CreatePlaylistDialog";
-import Button from "@/component/CoreUI/Button";
+import EmptyMessage from "@/components/error/EmptyMessage";
+import PlaylistSkeleton from "@/components/playlist/PlaylistSkeleton";
+import PlaylistCard from "@/components/playlist/PlaylistCard";
+import CreatePlaylistDialog from "@/components/playlist/CreatePlaylistDialog";
+import Button from "@/components/CoreUI/Button";
 import { useParams } from "react-router-dom";
 
 export default function Playlists() {

@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 
 import PageLayout from "@/layout/PageLayout";
 import { AppDispatch, RootState } from "@/store/store";
-import ScrollPagination from "@/component/ScrollPagination";
-import Avatar from "@/component/CoreUI/Avatar";
-import ErrorDialog from "@/component/error/ErrorDialog";
-import SubscribeBtn from "@/component/subscription/SubscribeBtn";
+import ScrollPagination from "@/components/ScrollPagination";
+import Avatar from "@/components/CoreUI/Avatar";
+import ErrorDialog from "@/components/error/ErrorDialog";
+import SubscribeBtn from "@/components/subscription/SubscribeBtn";
 import useService from "@/hooks/useService";
 import subscriptionService from "@/services/subscriptionService";
 import { setSubscriberList } from "@/store/slices/subscriptionSlice";

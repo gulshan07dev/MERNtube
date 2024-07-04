@@ -3,10 +3,10 @@ import { FaUpload } from "react-icons/fa";
 
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
-import Form from "@/component/CoreUI/Form";
-import Input from "@/component/CoreUI/Input";
-import TextAreaInput from "@/component/CoreUI/TextAreaInput";
-import CheckBox from "@/component/CoreUI/CheckBox";
+import Form from "@/components/CoreUI/Form";
+import Input from "@/components/CoreUI/Input";
+import TextAreaInput from "@/components/CoreUI/TextAreaInput";
+import CheckBox from "@/components/CoreUI/CheckBox";
 import useForm from "@/hooks/useForm";
 import FileUpload from "../FileUpload";
 

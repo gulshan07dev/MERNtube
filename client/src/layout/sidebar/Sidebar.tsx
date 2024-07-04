@@ -14,9 +14,9 @@ import { MdCloudUpload } from "react-icons/md";
 import { AppDispatch, RootState } from "@/store/store";
 import { onClose, onOpen } from "@/store/slices/sidebarSlice";
 import MenuLink from "./MenuLink";
-import Divider from "../../component/Divider";
+import Divider from "../../components/Divider";
 import SidebarToggleBtn from "./SidebarToggleBtn";
-import Logo from "../../component/CoreUI/Logo";
+import Logo from "../../components/CoreUI/Logo";
 
 const Sidebar = ({
   byDefaultSidebarHidden = false,

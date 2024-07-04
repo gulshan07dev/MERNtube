@@ -1,4 +1,4 @@
-import Skeleton from "@/component/Skeleton";
+import Skeleton from "@/components/Skeleton";
 
 export default function PlaylistVideoSkeleton() {
   return (
