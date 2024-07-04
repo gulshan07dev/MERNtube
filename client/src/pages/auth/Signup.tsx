@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import AuthForm, {
   AuthFormType,
   AuthInputs,

@@ -6,7 +6,7 @@ import { abbreviateNumber } from "js-abbreviation-number";
 import { MdDelete } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import ScrollPagination from "@/components/ScrollPagination";
 import playlistService from "@/services/playlistService";
 import useService from "@/hooks/useService";

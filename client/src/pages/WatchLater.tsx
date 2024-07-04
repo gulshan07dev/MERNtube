@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import ScrollPagination from "@/components/ScrollPagination";
 import watchLaterService from "@/services/watchLaterService";
 import useService from "@/hooks/useService";

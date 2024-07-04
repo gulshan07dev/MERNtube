@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";
 import { IVideo } from "@/interfaces";

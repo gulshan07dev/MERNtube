@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import Tabs from "@/components/Tabs";
 import VideoCreateForm from "@/components/createForms/VideoCreateForm";
 import TweetCreateForm from "@/components/createForms/TweetCreateForm";

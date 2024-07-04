@@ -8,7 +8,7 @@ import {
   FaSyncAlt,
 } from "react-icons/fa";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import dashboardService from "@/services/dashboardService";
 import useService from "@/hooks/useService";
 import { RootState } from "@/store/store";

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import { AppDispatch, RootState } from "@/store/store";
 import ScrollPagination from "@/components/ScrollPagination";
 import Avatar from "@/components/CoreUI/Avatar";

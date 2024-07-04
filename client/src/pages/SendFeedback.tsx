@@ -1,6 +1,6 @@
 import { FiSend } from "react-icons/fi";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import useForm from "@/hooks/useForm";
 import Form from "@/components/CoreUI/Form";
 import Input from "@/components/CoreUI/Input";

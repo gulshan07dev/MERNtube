@@ -7,7 +7,7 @@ import TimeAgo from "react-timeago";
 import { FaShare } from "react-icons/fa";
 import { BiSolidPlaylist } from "react-icons/bi";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import videoService from "@/services/videoService";
 import authService from "@/services/authService";
 import likeService from "@/services/likeService";

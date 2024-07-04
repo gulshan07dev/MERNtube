@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import { AppDispatch, RootState } from "@/store/store";
 import ScrollPagination from "@/components/ScrollPagination";
 import tweetService from "@/services/tweetService";

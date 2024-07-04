@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiPlusCircle } from "react-icons/bi";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import ScrollPagination from "@/components/ScrollPagination";
 import playlistService from "@/services/playlistService";
 import useService from "@/hooks/useService";

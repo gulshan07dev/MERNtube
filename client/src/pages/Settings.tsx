@@ -1,4 +1,4 @@
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import SettingsCategory from "@/components/settings/SettingsCategory";
 import PreferencesSettings from "@/components/settings/preferences/PreferencesSettings";
 import WatchHistorySettings from "@/components/settings/watchHistory/WatchHistorySettings";

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import UpdateAccountDetailsForm from "@/components/accountForms/UpdateAccountDetailsForm";
 import UpdatePasswordForm from "@/components/accountForms/UpdatePasswordForm";
 import Tabs from "@/components/Tabs";

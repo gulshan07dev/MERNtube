@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
 import { AppDispatch, RootState } from "@/store/store";
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 import ScrollPagination from "@/components/ScrollPagination";
 import videoService from "@/services/videoService";
 import useService from "@/hooks/useService";

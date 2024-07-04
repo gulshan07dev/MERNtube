@@ -1,4 +1,4 @@
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layouts/PageLayout";
 
 export default function Channel() {
   return (

@@ -1,14 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
 import { lazy } from "react";
 
-const RootLayout = lazy(() => import("../layout/RootLayout"))
+const RootLayout = lazy(() => import("../layouts/RootLayout"));
 const AuthRequired = lazy(() => import("../helper/auth/AuthRequired"));
 const AuthNotRequired = lazy(() => import("../helper/auth/AuthNotRequired"));
 const Home = lazy(() => import("../pages/Home"));
 const Login = lazy(() => import("../pages/auth/Login"));
 const Signup = lazy(() => import("../pages/auth/Signup"));
 const Account = lazy(() => import("../pages/Account"));
-const ChannelLayout = lazy(() => import("../layout/ChannelLayout"));
+const ChannelLayout = lazy(() => import("../layouts/ChannelLayout"));
 const Channel = lazy(() => import("../pages/channel/Channel"));
 const Videos = lazy(() => import("../pages/channel/Videos"));
 const Tweets = lazy(() => import("../pages/channel/Tweets"));
@@ -25,7 +25,6 @@ const SendFeedback = lazy(() => import("../pages/SendFeedback"));
 const Subscriptions = lazy(() => import("../pages/Subscriptions"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 const SearchResult = lazy(() => import("@/pages/search/SearchResult"));
-
 
 const router = createBrowserRouter([
   {
