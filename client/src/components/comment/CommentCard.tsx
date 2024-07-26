@@ -97,7 +97,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
         <Avatar
           url={comment?.owner?.avatar}
           fullName={comment.owner.fullName}
-          className="h-6 w-6 text-xs"
+          className="h-6 w-6 text-xs shrink-0"
           onClick={() => navigate(`/c/${comment?.owner?.username}`)}
         />
         {isEditing ? (
@@ -126,7 +126,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-grow w-min flex-col gap-1">
+          <div className="flex flex-grow flex-col gap-1">
             <div className="relative flex gap-3 items-start w-full">
               <h2 className="text-[12px] leading-none text-zinc-950 dark:text-slate-50 font-poppins font-[500]">
                 {comment?.owner?.username}
@@ -134,10 +134,25 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
               <p className="text-xs leading-none text-gray-500 dark:text-[#AAAAAA]">
                 <TimeAgo date={comment?.createdAt} />
               </p>
+            </div>
+            <div className="flex flex-grow gap-1">
+              <div className="flex flex-grow flex-col gap-[0.2px]">
+                <TextWithToggle
+                  initialShowLine={4}
+                  className="text-sm text-gray-800 dark:text-slate-200 font-[400] font-poppins leading-[18.5px]"
+                >
+                  {commentContent}
+                </TextWithToggle>
+                <LikeBtn
+                  isLiked={comment?.isLiked}
+                  likeCount={comment?.commentLikesCount}
+                  onToggleLike={handleToggleLike}
+                  isLoading={isCommentLikeLoading}
+                />
+              </div>
               {user?._id === comment.owner._id && !isEditing && (
                 <>
                   <DropdownMenu
-                    className="absolute -right-4 top-0"
                     triggerButton={
                       <Button
                         btnType="icon-btn"
@@ -172,20 +187,6 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
                 </>
               )}
             </div>
-            <div className="w-[94%]">
-              <TextWithToggle
-                initialShowLine={4}
-                className="text-sm text-gray-800 dark:text-slate-200 font-[400] font-poppins leading-[18.5px]"
-              >
-                {commentContent}
-              </TextWithToggle>
-            </div>
-            <LikeBtn
-              isLiked={comment?.isLiked}
-              likeCount={comment?.commentLikesCount}
-              onToggleLike={handleToggleLike}
-              isLoading={isCommentLikeLoading}
-            />
           </div>
         )}
       </div>
