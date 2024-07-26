@@ -16,36 +16,51 @@ const TextWithToggle = ({
   const [isOverflowing, setIsOverflowing] = useState(false);
 
   useEffect(() => {
-    setIsOverflowing(isTextOverflowing());
-  }, [children, initialShowLine, contentRef]);
+    const container = containerRef.current;
+    const content = contentRef.current;
+    console.log(window.outerWidth)
+    if (container && content) {
+      const lineHeight = parseFloat(
+        window.getComputedStyle(content).lineHeight
+      );
+      const maxHeight = lineHeight * initialShowLine + 1.5;
+      const contentHeight = content.scrollHeight;
+      const containerWidth = container.clientWidth;
+      const contentWidth = content.scrollWidth;
+
+      // Check for both vertical and horizontal overflow
+      if (contentHeight > maxHeight) {
+        setIsOverflowing(true); 
+      } else if (contentWidth > containerWidth) { 
+        setIsOverflowing(true);
+      } else {
+        setIsOverflowing(false);
+      }
+    }
+  }, [children, initialShowLine, showAll]);
 
   const toggleShow = () => {
     setShowAll(!showAll);
   };
 
-  // Function to check if text exceeds the initial show line
-  function isTextOverflowing() {
-    if (containerRef.current && contentRef.current) {
-      const containerHeight = containerRef.current.clientHeight;
-      const contentHeight = contentRef.current.scrollHeight;
-      return contentHeight > containerHeight;
-    }
-    return false;
-  }
-
   return (
-    <div ref={containerRef}>
+    <div
+      ref={containerRef}
+      className="w-full"
+      style={{ maxHeight: showAll ? "none" : `${initialShowLine * 1.5}em` }}
+    >
       <p
         ref={contentRef}
-        className={twMerge("whitespace-break-spaces", className)}
+        className={twMerge("w-fit whitespace-break-spaces", className)}
         style={
           showAll
-            ? { overflow: "unset", display: "block" }
+            ? { overflow: "unset", display: "block", wordBreak: "break-word" }
             : {
                 overflow: "hidden",
                 display: "-webkit-box",
                 WebkitLineClamp: initialShowLine,
                 WebkitBoxOrient: "vertical",
+                wordBreak: "break-word",
               }
         }
       >
