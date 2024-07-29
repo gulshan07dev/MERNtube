@@ -18,7 +18,7 @@ const TextWithToggle = ({
   useEffect(() => {
     const container = containerRef.current;
     const content = contentRef.current;
-    console.log(window.outerWidth)
+
     if (container && content) {
       const lineHeight = parseFloat(
         window.getComputedStyle(content).lineHeight
@@ -30,8 +30,8 @@ const TextWithToggle = ({
 
       // Check for both vertical and horizontal overflow
       if (contentHeight > maxHeight) {
-        setIsOverflowing(true); 
-      } else if (contentWidth > containerWidth) { 
+        setIsOverflowing(true);
+      } else if (contentWidth > containerWidth) {
         setIsOverflowing(true);
       } else {
         setIsOverflowing(false);
@@ -44,14 +44,10 @@ const TextWithToggle = ({
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full"
-      style={{ maxHeight: showAll ? "none" : `${initialShowLine * 1.5}em` }}
-    >
-      <p
+    <div ref={containerRef} className={twMerge("w-full", className)}>
+      <span
         ref={contentRef}
-        className={twMerge("w-fit whitespace-break-spaces", className)}
+        className={"w-fit whitespace-break-spaces"}
         style={
           showAll
             ? { overflow: "unset", display: "block", wordBreak: "break-word" }
@@ -65,7 +61,7 @@ const TextWithToggle = ({
         }
       >
         {children}
-      </p>
+      </span>
       {isOverflowing && !showAll && (
         <button
           onClick={toggleShow}
